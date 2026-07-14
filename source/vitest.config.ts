@@ -15,6 +15,7 @@ export default defineConfig({
       "transaction/tests/**/*.test.ts",
       "presentation/tests/**/*.test.ts",
       "viewer/tests/**/*.test.ts",
+      "platform-extensions/**/*.test.ts",
       "apps/mobi-studio/tests/**/*.test.ts",
       "apps/mobi-constructor/tests/**/*.test.ts",
       "apps/mobi-sketchup-adapter/tests/**/*.test.ts",
