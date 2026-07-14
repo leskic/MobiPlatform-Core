@@ -20,6 +20,7 @@ import { App } from "../src/App";
 import { ExecutionController } from "../src/ExecutionController";
 import type { ExecutionViewModel } from "../src/ExecutionViewModel";
 import { defaultNewProjectDraft } from "../src/NewProjectDraft";
+import { emptyDoorEditorState } from "../src/doors/DoorModel";
 import { ProjectFileLoader, type LoadedProject } from "../src/ProjectFileLoader";
 import { SimpleKitchenProjectFactory } from "../src/SimpleKitchenProjectFactory";
 import { ExecutionDiagnosticsView } from "../src/ui/ExecutionDiagnosticsView";
@@ -128,6 +129,7 @@ describe("CP007 Executable Mobi Studio", () => {
         projectCode: "PRJ-TESTE",
       },
       wallEditor: defaultFourWallState(),
+      doorEditor: emptyDoorEditorState(),
       execution: null,
       message: "Criando projeto.",
     });
@@ -256,6 +258,7 @@ describe("CP007 Executable Mobi Studio", () => {
       project: loadedProject(),
       draft: defaultNewProjectDraft(),
       wallEditor: defaultFourWallState(),
+      doorEditor: emptyDoorEditorState(),
       execution,
       message: "Fluxo aprovado.",
     });
@@ -272,6 +275,7 @@ describe("CP007 Executable Mobi Studio", () => {
       project: loadedProject(),
       draft: defaultNewProjectDraft(),
       wallEditor: defaultFourWallState(),
+      doorEditor: emptyDoorEditorState(),
       execution,
       message: null,
     });
@@ -287,6 +291,7 @@ describe("CP007 Executable Mobi Studio", () => {
       project: loadedProject(),
       draft: defaultNewProjectDraft(),
       wallEditor: defaultFourWallState(),
+      doorEditor: emptyDoorEditorState(),
       execution,
       message: null,
     });
@@ -311,6 +316,7 @@ describe("CP007 Executable Mobi Studio", () => {
       project: loadedProject(),
       draft: defaultNewProjectDraft(),
       wallEditor: defaultFourWallState(),
+      doorEditor: emptyDoorEditorState(),
       execution,
       message: "Fluxo aprovado.",
     });

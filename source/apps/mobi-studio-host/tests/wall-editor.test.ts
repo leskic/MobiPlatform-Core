@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { ExecutionController } from "../src/ExecutionController";
+import { emptyDoorEditorState } from "../src/doors/DoorModel";
 import { normalizeDraft } from "../src/NewProjectDraft";
 import { ProjectFileLoader } from "../src/ProjectFileLoader";
 import { SimpleKitchenProjectFactory } from "../src/SimpleKitchenProjectFactory";
@@ -83,6 +84,7 @@ describe("CP010 Wall Editor journey", () => {
       project: null,
       draft,
       wallEditor: defaultFourWallState(),
+      doorEditor: emptyDoorEditorState(),
       execution: null,
       message: null,
     });
@@ -127,4 +129,3 @@ describe("CP010 Wall Editor journey", () => {
     expect(result.viewModel?.productsExecuted).toContain("MobiView");
   });
 });
-

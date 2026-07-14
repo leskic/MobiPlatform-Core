@@ -1,6 +1,8 @@
 import { ProjectBuilder } from "../../../builder/ProjectBuilder";
 import type { EdgeBanding, Project } from "../../../builder/types/ProjectTypes";
 import type { NewProjectDraft } from "./NewProjectDraft";
+import { emptyDoorEditorState, type DoorEditorState } from "./doors/DoorModel";
+import { DoorSerializer } from "./doors/DoorSerializer";
 import { defaultFourWallState, type WallEditorState } from "./walls/WallModel";
 import { WallSerializer } from "./walls/WallSerializer";
 
@@ -13,9 +15,9 @@ const towerModule = "9d0e6a20-12a2-4f5f-bd3a-000000000933";
 const topModule = "9d0e6a20-12a2-4f5f-bd3a-000000000934";
 
 export class SimpleKitchenProjectFactory {
-  constructor(private readonly wallSerializer = new WallSerializer()) {}
+  constructor(private readonly wallSerializer = new WallSerializer(), private readonly doorSerializer = new DoorSerializer()) {}
 
-  create(draft: NewProjectDraft, wallState: WallEditorState = defaultFourWallState()): Project {
+  create(draft: NewProjectDraft, wallState: WallEditorState = defaultFourWallState(), doorState: DoorEditorState = emptyDoorEditorState()): Project {
     const date = "2026-07-14T09:00:00-03:00";
     const builder = new ProjectBuilder()
       .createProject({
@@ -41,19 +43,22 @@ export class SimpleKitchenProjectFactory {
         status: "validated",
       });
 
-    this.addArchitecture(builder, wallState);
+    this.addArchitecture(builder, wallState, doorState);
     this.addInfrastructure(builder);
     this.addModules(builder);
     return builder.build();
   }
 
-  createJson(draft: NewProjectDraft, wallState: WallEditorState = defaultFourWallState()): string {
-    return JSON.stringify(this.create(draft, wallState), null, 2);
+  createJson(draft: NewProjectDraft, wallState: WallEditorState = defaultFourWallState(), doorState: DoorEditorState = emptyDoorEditorState()): string {
+    return JSON.stringify(this.create(draft, wallState, doorState), null, 2);
   }
 
-  private addArchitecture(builder: ProjectBuilder, wallState: WallEditorState): void {
+  private addArchitecture(builder: ProjectBuilder, wallState: WallEditorState, doorState: DoorEditorState): void {
     for (const wall of this.wallSerializer.toArchitectures(wallState, environmentId)) {
       builder.addArchitecture(environmentId, wall);
+    }
+    for (const door of this.doorSerializer.toArchitectures(doorState, wallState, environmentId, this.wallSerializer.architectureIdByWall(wallState))) {
+      builder.addArchitecture(environmentId, door);
     }
   }
 

@@ -15,6 +15,10 @@ export class WallSerializer {
       finish: "paint-white",
     }));
   }
+
+  architectureIdByWall(state: WallEditorState): Readonly<Record<string, string>> {
+    return Object.freeze(Object.fromEntries(state.walls.map((wall, index) => [wall.id, wallId(index)])));
+  }
 }
 
 function wallId(index: number): string {

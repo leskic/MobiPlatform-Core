@@ -1,4 +1,7 @@
 import type { AppState } from "../AppState";
+import type { DoorDraft } from "../doors/DoorModel";
+import { DoorRenderer } from "../doors/DoorRenderer";
+import { DoorSelection } from "../doors/DoorSelection";
 import type { NewProjectDraft } from "../NewProjectDraft";
 import type { WallDraft } from "../walls/WallModel";
 import { WallRenderer } from "../walls/WallRenderer";
@@ -8,6 +11,7 @@ import { ExecutionEvidenceView } from "./ExecutionEvidenceView";
 import { ExecutionStatusView } from "./ExecutionStatusView";
 import { escapeHtml, ProjectOpenView } from "./ProjectOpenView";
 import { ViewerPanel } from "./ViewerPanel";
+import { DoorInspector } from "./DoorInspector";
 import { WallInspector } from "./WallInspector";
 
 export interface StudioShellHandlers {
@@ -21,6 +25,13 @@ export interface StudioShellHandlers {
   readonly onDeleteWall: () => void;
   readonly onUndoWall: () => void;
   readonly onRedoWall: () => void;
+  readonly onAddDoor: () => void;
+  readonly onSelectDoor: (id: string | null) => void;
+  readonly onMoveDoor: (delta: number) => void;
+  readonly onEditDoor: (draft: DoorDraft) => void;
+  readonly onDeleteDoor: () => void;
+  readonly onUndoDoor: () => void;
+  readonly onRedoDoor: () => void;
   readonly onExecute: () => void;
 }
 
@@ -34,6 +45,9 @@ export class StudioShellView {
     private readonly wallRenderer = new WallRenderer(),
     private readonly wallSelection = new WallSelection(),
     private readonly wallInspector = new WallInspector(),
+    private readonly doorRenderer = new DoorRenderer(),
+    private readonly doorSelection = new DoorSelection(),
+    private readonly doorInspector = new DoorInspector(),
   ) {}
 
   mount(root: HTMLElement, state: AppState, handlers: StudioShellHandlers): void {
@@ -67,6 +81,9 @@ export class StudioShellView {
     root.querySelectorAll<SVGElement>("[data-wall-id]").forEach((wall) => {
       wall.addEventListener("click", () => handlers.onSelectWall(wall.dataset.wallId ?? null));
     });
+    root.querySelectorAll<SVGElement>("[data-door-id]").forEach((door) => {
+      door.addEventListener("click", () => handlers.onSelectDoor(door.dataset.doorId ?? null));
+    });
     root.querySelector<HTMLFormElement>("[data-wall-inspector-form]")?.addEventListener("submit", (event) => {
       event.preventDefault();
       const data = new FormData(event.currentTarget as HTMLFormElement);
@@ -77,6 +94,21 @@ export class StudioShellView {
         thickness: Number(data.get("wallThickness")),
         height: Number(data.get("wallHeight")),
         rotation: Number(data.get("wallRotation")),
+      });
+    });
+    root.querySelector<HTMLButtonElement>("[data-add-door]")?.addEventListener("click", handlers.onAddDoor);
+    root.querySelector<HTMLButtonElement>("[data-door-back]")?.addEventListener("click", () => handlers.onMoveDoor(-50));
+    root.querySelector<HTMLButtonElement>("[data-door-forward]")?.addEventListener("click", () => handlers.onMoveDoor(50));
+    root.querySelector<HTMLButtonElement>("[data-delete-door]")?.addEventListener("click", handlers.onDeleteDoor);
+    root.querySelector<HTMLButtonElement>("[data-undo-door]")?.addEventListener("click", handlers.onUndoDoor);
+    root.querySelector<HTMLButtonElement>("[data-redo-door]")?.addEventListener("click", handlers.onRedoDoor);
+    root.querySelector<HTMLFormElement>("[data-door-inspector-form]")?.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const data = new FormData(event.currentTarget as HTMLFormElement);
+      handlers.onEditDoor({
+        offset: Number(data.get("doorOffset")),
+        width: Number(data.get("doorWidth")),
+        height: Number(data.get("doorHeight")),
       });
     });
     root.querySelector<HTMLButtonElement>("[data-execute-flow]")?.addEventListener("click", handlers.onExecute);
@@ -140,6 +172,7 @@ export class StudioShellView {
           <span>${state.wallEditor.walls.length} paredes</span>
         </div>
         ${this.wallRenderer.render(state.wallEditor)}
+        <svg class="door-overlay" viewBox="-20 -20 420 300" aria-hidden="true">${this.doorRenderer.render(state.doorEditor, state.wallEditor)}</svg>
         <div class="wall-toolbar">
           <button class="secondary-button" data-add-wall>Adicionar Parede</button>
           <button class="secondary-button" data-undo-wall>Desfazer</button>
@@ -155,7 +188,33 @@ export class StudioShellView {
         <form data-wall-inspector-form>
           ${this.wallInspector.render(selected)}
         </form>
+        ${this.renderDoorEditor(state)}
       </section>
+    `;
+  }
+
+  private renderDoorEditor(state: AppState): string {
+    const selected = this.doorSelection.selected(state.doorEditor);
+    return `
+      <div class="door-editor">
+        <div class="panel-title-row">
+          <h2>Door Editor</h2>
+          <span>${state.doorEditor.doors.length} portas</span>
+        </div>
+        <div class="wall-toolbar">
+          <button class="secondary-button" data-add-door>Inserir Porta</button>
+          <button class="secondary-button" data-undo-door>Desfazer Porta</button>
+          <button class="secondary-button" data-redo-door>Refazer Porta</button>
+          <button class="secondary-button" data-delete-door ${selected ? "" : "disabled"}>Excluir Porta</button>
+        </div>
+        <div class="wall-move-controls">
+          <button class="secondary-button" data-door-back>Voltar na parede</button>
+          <button class="secondary-button" data-door-forward>Avancar na parede</button>
+        </div>
+        <form data-door-inspector-form>
+          ${this.doorInspector.render(selected)}
+        </form>
+      </div>
     `;
   }
 }

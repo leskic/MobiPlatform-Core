@@ -6,10 +6,13 @@ import { SimpleKitchenProjectFactory } from "./SimpleKitchenProjectFactory";
 import { StudioShellView } from "./ui/StudioShellView";
 import { WallCommands } from "./walls/WallCommands";
 import { defaultFourWallState, type WallDraft } from "./walls/WallModel";
+import { DoorCommands } from "./doors/DoorCommands";
+import { emptyDoorEditorState, type DoorDraft } from "./doors/DoorModel";
 
 export class App {
   private state: AppState = initialAppState();
   private wallCommands = new WallCommands(this.state.wallEditor);
+  private doorCommands = new DoorCommands(this.state.doorEditor);
 
   constructor(
     private readonly root: HTMLElement,
@@ -35,6 +38,7 @@ export class App {
         project: null,
         draft: this.state.draft,
         wallEditor: this.state.wallEditor,
+        doorEditor: this.state.doorEditor,
         execution: null,
         message: `${loaded.code}: ${loaded.message}`,
       });
@@ -47,6 +51,7 @@ export class App {
       project: loaded.project,
       draft: this.state.draft,
       wallEditor: this.state.wallEditor,
+      doorEditor: this.state.doorEditor,
       execution: null,
       message: "Projeto.mobi carregado e validado.",
     });
@@ -58,6 +63,7 @@ export class App {
       ...this.state,
       status: "creating-project",
       wallEditor: this.state.wallEditor.walls.length > 0 ? this.state.wallEditor : defaultFourWallState(),
+      doorEditor: this.state.doorEditor,
       execution: null,
       message: "Preencha os dados e gere uma Cozinha simples.",
     });
@@ -66,7 +72,7 @@ export class App {
 
   createProject(draftInput: Partial<NewProjectDraft>): void {
     const draft = normalizeDraft(draftInput);
-    const source = this.projectFactory.createJson(draft, this.state.wallEditor);
+    const source = this.projectFactory.createJson(draft, this.state.wallEditor, this.state.doorEditor);
     const loaded = this.loader.loadText(source, `${draft.projectCode}.mobi`);
     if (!loaded.success) {
       this.state = Object.freeze({
@@ -74,6 +80,7 @@ export class App {
         project: null,
         draft,
         wallEditor: this.state.wallEditor,
+        doorEditor: this.state.doorEditor,
         execution: null,
         message: `${loaded.code}: ${loaded.message}`,
       });
@@ -86,6 +93,7 @@ export class App {
       project: loaded.project,
       draft,
       wallEditor: this.state.wallEditor,
+      doorEditor: this.state.doorEditor,
       execution: null,
       message: "Projeto.mobi criado visualmente e validado.",
     });
@@ -109,6 +117,7 @@ export class App {
       project: this.state.project,
       draft: this.state.draft,
       wallEditor: this.state.wallEditor,
+      doorEditor: this.state.doorEditor,
       execution: result.viewModel,
       message: result.error ?? (result.success ? "Fluxo aprovado." : "Fluxo rejeitado."),
     });
@@ -125,19 +134,40 @@ export class App {
       onSelectWall: (id) => this.updateWalls(this.wallCommands.selectWall(id)),
       onMoveWall: (dx, dy) => this.updateWalls(this.wallCommands.moveSelected(dx, dy)),
       onEditWall: (draft) => this.updateWalls(this.wallCommands.editSelected(draft)),
-      onDeleteWall: () => this.updateWalls(this.wallCommands.deleteSelected()),
+      onDeleteWall: () => {
+        this.doorCommands = new DoorCommands(emptyDoorEditorState());
+        this.updateWalls(this.wallCommands.deleteSelected(), emptyDoorEditorState());
+      },
       onUndoWall: () => this.updateWalls(this.wallCommands.undo()),
       onRedoWall: () => this.updateWalls(this.wallCommands.redo()),
+      onAddDoor: () => this.updateDoors(this.doorCommands.addDoor(this.state.wallEditor)),
+      onSelectDoor: (id) => this.updateDoors(this.doorCommands.selectDoor(id)),
+      onMoveDoor: (delta) => this.updateDoors(this.doorCommands.moveSelected(delta, this.state.wallEditor)),
+      onEditDoor: (draft) => this.updateDoors(this.doorCommands.editSelected(draft, this.state.wallEditor)),
+      onDeleteDoor: () => this.updateDoors(this.doorCommands.deleteSelected()),
+      onUndoDoor: () => this.updateDoors(this.doorCommands.undo()),
+      onRedoDoor: () => this.updateDoors(this.doorCommands.redo()),
       onExecute: () => this.executeFlow(),
     });
   }
 
-  private updateWalls(wallEditor: AppState["wallEditor"]): void {
+  private updateWalls(wallEditor: AppState["wallEditor"], doorEditor = this.state.doorEditor): void {
     this.state = Object.freeze({
       ...this.state,
       wallEditor,
+      doorEditor,
       execution: null,
       message: "Parede atualizada. Salve para regenerar o Projeto.mobi.",
+    });
+    this.render();
+  }
+
+  private updateDoors(doorEditor: AppState["doorEditor"]): void {
+    this.state = Object.freeze({
+      ...this.state,
+      doorEditor,
+      execution: null,
+      message: "Porta atualizada. Salve para regenerar o Projeto.mobi.",
     });
     this.render();
   }

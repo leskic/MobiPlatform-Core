@@ -159,6 +159,15 @@ input {
   background: #ffffff;
 }
 
+.door-overlay {
+  width: 100%;
+  min-height: 120px;
+  margin-top: 8px;
+  border: 1px dashed #bcccdc;
+  border-radius: 6px;
+  background: #f8fafc;
+}
+
 .grid line {
   stroke: #eef2f7;
   stroke-width: 1;
@@ -172,6 +181,17 @@ input {
 
 .wall-line.selected {
   stroke: #1f2933;
+}
+
+.door-marker {
+  fill: #d64545;
+  cursor: pointer;
+}
+
+.door-marker.selected {
+  fill: #8b1e1e;
+  stroke: #1f2933;
+  stroke-width: 2;
 }
 
 .wall-toolbar,
@@ -202,6 +222,38 @@ input {
 }
 
 .wall-inspector input {
+  width: 100%;
+  border: 1px solid #bcccdc;
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+
+.door-editor {
+  margin-top: 16px;
+  border-top: 1px solid #e4e7eb;
+  padding-top: 12px;
+}
+
+.door-inspector {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.door-inspector p {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+.door-inspector label {
+  display: grid;
+  gap: 4px;
+  color: #52606d;
+  font-size: 13px;
+}
+
+.door-inspector input {
   width: 100%;
   border: 1px solid #bcccdc;
   border-radius: 6px;
