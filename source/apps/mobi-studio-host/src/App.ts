@@ -4,9 +4,12 @@ import { normalizeDraft, type NewProjectDraft } from "./NewProjectDraft";
 import { ProjectFileLoader } from "./ProjectFileLoader";
 import { SimpleKitchenProjectFactory } from "./SimpleKitchenProjectFactory";
 import { StudioShellView } from "./ui/StudioShellView";
+import { WallCommands } from "./walls/WallCommands";
+import { defaultFourWallState, type WallDraft } from "./walls/WallModel";
 
 export class App {
   private state: AppState = initialAppState();
+  private wallCommands = new WallCommands(this.state.wallEditor);
 
   constructor(
     private readonly root: HTMLElement,
@@ -31,6 +34,7 @@ export class App {
         status: loaded.code === "SCHEMA_ERROR" ? "rejected" : "error",
         project: null,
         draft: this.state.draft,
+        wallEditor: this.state.wallEditor,
         execution: null,
         message: `${loaded.code}: ${loaded.message}`,
       });
@@ -42,6 +46,7 @@ export class App {
       status: "project-loaded",
       project: loaded.project,
       draft: this.state.draft,
+      wallEditor: this.state.wallEditor,
       execution: null,
       message: "Projeto.mobi carregado e validado.",
     });
@@ -52,6 +57,7 @@ export class App {
     this.state = Object.freeze({
       ...this.state,
       status: "creating-project",
+      wallEditor: this.state.wallEditor.walls.length > 0 ? this.state.wallEditor : defaultFourWallState(),
       execution: null,
       message: "Preencha os dados e gere uma Cozinha simples.",
     });
@@ -60,13 +66,14 @@ export class App {
 
   createProject(draftInput: Partial<NewProjectDraft>): void {
     const draft = normalizeDraft(draftInput);
-    const source = this.projectFactory.createJson(draft);
+    const source = this.projectFactory.createJson(draft, this.state.wallEditor);
     const loaded = this.loader.loadText(source, `${draft.projectCode}.mobi`);
     if (!loaded.success) {
       this.state = Object.freeze({
         status: "error",
         project: null,
         draft,
+        wallEditor: this.state.wallEditor,
         execution: null,
         message: `${loaded.code}: ${loaded.message}`,
       });
@@ -78,6 +85,7 @@ export class App {
       status: "project-loaded",
       project: loaded.project,
       draft,
+      wallEditor: this.state.wallEditor,
       execution: null,
       message: "Projeto.mobi criado visualmente e validado.",
     });
@@ -100,6 +108,7 @@ export class App {
       status: result.success ? "approved" : result.viewModel ? "rejected" : "error",
       project: this.state.project,
       draft: this.state.draft,
+      wallEditor: this.state.wallEditor,
       execution: result.viewModel,
       message: result.error ?? (result.success ? "Fluxo aprovado." : "Fluxo rejeitado."),
     });
@@ -112,7 +121,24 @@ export class App {
       onProjectSelected: (file) => void this.openProject(file),
       onNewProject: () => this.startNewProject(),
       onCreateProject: (draft) => this.createProject(draft),
+      onAddWall: () => this.updateWalls(this.wallCommands.addWall({ x: 100, y: 100 })),
+      onSelectWall: (id) => this.updateWalls(this.wallCommands.selectWall(id)),
+      onMoveWall: (dx, dy) => this.updateWalls(this.wallCommands.moveSelected(dx, dy)),
+      onEditWall: (draft) => this.updateWalls(this.wallCommands.editSelected(draft)),
+      onDeleteWall: () => this.updateWalls(this.wallCommands.deleteSelected()),
+      onUndoWall: () => this.updateWalls(this.wallCommands.undo()),
+      onRedoWall: () => this.updateWalls(this.wallCommands.redo()),
       onExecute: () => this.executeFlow(),
     });
+  }
+
+  private updateWalls(wallEditor: AppState["wallEditor"]): void {
+    this.state = Object.freeze({
+      ...this.state,
+      wallEditor,
+      execution: null,
+      message: "Parede atualizada. Salve para regenerar o Projeto.mobi.",
+    });
+    this.render();
   }
 }

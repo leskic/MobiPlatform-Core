@@ -144,6 +144,70 @@ input {
   color: #1f2933;
 }
 
+.panel-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.wall-canvas {
+  width: 100%;
+  min-height: 260px;
+  border: 1px solid #d9e2ec;
+  border-radius: 6px;
+  background: #ffffff;
+}
+
+.grid line {
+  stroke: #eef2f7;
+  stroke-width: 1;
+}
+
+.wall-line {
+  stroke: #52606d;
+  stroke-linecap: round;
+  cursor: pointer;
+}
+
+.wall-line.selected {
+  stroke: #1f2933;
+}
+
+.wall-toolbar,
+.wall-move-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.wall-inspector {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.wall-inspector p {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+.wall-inspector label {
+  display: grid;
+  gap: 4px;
+  color: #52606d;
+  font-size: 13px;
+}
+
+.wall-inspector input {
+  width: 100%;
+  border: 1px solid #bcccdc;
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+
 .stack {
   display: grid;
   gap: 12px;

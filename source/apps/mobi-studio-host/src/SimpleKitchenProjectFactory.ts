@@ -1,6 +1,8 @@
 import { ProjectBuilder } from "../../../builder/ProjectBuilder";
 import type { EdgeBanding, Project } from "../../../builder/types/ProjectTypes";
 import type { NewProjectDraft } from "./NewProjectDraft";
+import { defaultFourWallState, type WallEditorState } from "./walls/WallModel";
+import { WallSerializer } from "./walls/WallSerializer";
 
 const projectId = "9d0e6a20-12a2-4f5f-bd3a-000000000900";
 const environmentId = "9d0e6a20-12a2-4f5f-bd3a-000000000901";
@@ -11,7 +13,9 @@ const towerModule = "9d0e6a20-12a2-4f5f-bd3a-000000000933";
 const topModule = "9d0e6a20-12a2-4f5f-bd3a-000000000934";
 
 export class SimpleKitchenProjectFactory {
-  create(draft: NewProjectDraft): Project {
+  constructor(private readonly wallSerializer = new WallSerializer()) {}
+
+  create(draft: NewProjectDraft, wallState: WallEditorState = defaultFourWallState()): Project {
     const date = "2026-07-14T09:00:00-03:00";
     const builder = new ProjectBuilder()
       .createProject({
@@ -37,49 +41,20 @@ export class SimpleKitchenProjectFactory {
         status: "validated",
       });
 
-    this.addArchitecture(builder);
+    this.addArchitecture(builder, wallState);
     this.addInfrastructure(builder);
     this.addModules(builder);
     return builder.build();
   }
 
-  createJson(draft: NewProjectDraft): string {
-    return JSON.stringify(this.create(draft), null, 2);
+  createJson(draft: NewProjectDraft, wallState: WallEditorState = defaultFourWallState()): string {
+    return JSON.stringify(this.create(draft, wallState), null, 2);
   }
 
-  private addArchitecture(builder: ProjectBuilder): void {
-    const walls = [
-      { id: wallA, width: 3000, position: { x: 0, y: 0, z: 0 }, rotation: 0, referencePlane: { x: 0, y: 1, z: 0 } },
-      { id: "9d0e6a20-12a2-4f5f-bd3a-000000000912", width: 3000, position: { x: 0, y: 2200, z: 0 }, rotation: 180, referencePlane: { x: 0, y: -1, z: 0 } },
-      { id: "9d0e6a20-12a2-4f5f-bd3a-000000000913", width: 2200, position: { x: 0, y: 0, z: 0 }, rotation: 90, referencePlane: { x: 1, y: 0, z: 0 } },
-      { id: "9d0e6a20-12a2-4f5f-bd3a-000000000914", width: 2200, position: { x: 3000, y: 0, z: 0 }, rotation: -90, referencePlane: { x: -1, y: 0, z: 0 } },
-    ];
-
-    for (const wall of walls) {
-      builder.addArchitecture(environmentId, {
-        id: wall.id,
-        parentId: environmentId,
-        type: "wall",
-        hostId: null,
-        size: { width: wall.width, height: 2700, depth: 150 },
-        position: wall.position,
-        rotation: { x: 0, y: 0, z: wall.rotation },
-        referencePlane: wall.referencePlane,
-        finish: "paint-white",
-      });
+  private addArchitecture(builder: ProjectBuilder, wallState: WallEditorState): void {
+    for (const wall of this.wallSerializer.toArchitectures(wallState, environmentId)) {
+      builder.addArchitecture(environmentId, wall);
     }
-
-    builder.addArchitecture(environmentId, {
-      id: "9d0e6a20-12a2-4f5f-bd3a-000000000915",
-      parentId: environmentId,
-      type: "opening",
-      hostId: "9d0e6a20-12a2-4f5f-bd3a-000000000913",
-      size: { width: 800, height: 2100, depth: 150 },
-      position: { x: 100, y: 0, z: 0 },
-      rotation: { x: 0, y: 0, z: 0 },
-      referencePlane: { x: 1, y: 0, z: 0 },
-      finish: "door-opening",
-    });
   }
 
   private addInfrastructure(builder: ProjectBuilder): void {
@@ -169,4 +144,3 @@ function edgeBanding(): EdgeBanding {
     back: { applied: false },
   };
 }
-

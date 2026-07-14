@@ -26,6 +26,7 @@ import { ExecutionDiagnosticsView } from "../src/ui/ExecutionDiagnosticsView";
 import { ExecutionEvidenceView } from "../src/ui/ExecutionEvidenceView";
 import { ExecutionStatusView } from "../src/ui/ExecutionStatusView";
 import { StudioShellView } from "../src/ui/StudioShellView";
+import { defaultFourWallState } from "../src/walls/WallModel";
 
 function realProjectJson(): string {
   const project = new ProjectBuilder()
@@ -99,6 +100,7 @@ function rootElement(): HTMLElement {
   return {
     innerHTML: "",
     querySelector: () => null,
+    querySelectorAll: () => [],
   } as unknown as HTMLElement;
 }
 
@@ -125,6 +127,7 @@ describe("CP007 Executable Mobi Studio", () => {
         environmentName: "Cozinha",
         projectCode: "PRJ-TESTE",
       },
+      wallEditor: defaultFourWallState(),
       execution: null,
       message: "Criando projeto.",
     });
@@ -252,6 +255,7 @@ describe("CP007 Executable Mobi Studio", () => {
       status: "approved",
       project: loadedProject(),
       draft: defaultNewProjectDraft(),
+      wallEditor: defaultFourWallState(),
       execution,
       message: "Fluxo aprovado.",
     });
@@ -267,6 +271,7 @@ describe("CP007 Executable Mobi Studio", () => {
       status: "approved",
       project: loadedProject(),
       draft: defaultNewProjectDraft(),
+      wallEditor: defaultFourWallState(),
       execution,
       message: null,
     });
@@ -281,6 +286,7 @@ describe("CP007 Executable Mobi Studio", () => {
       status: "rejected",
       project: loadedProject(),
       draft: defaultNewProjectDraft(),
+      wallEditor: defaultFourWallState(),
       execution,
       message: null,
     });
@@ -304,6 +310,7 @@ describe("CP007 Executable Mobi Studio", () => {
       status: "approved",
       project: loadedProject(),
       draft: defaultNewProjectDraft(),
+      wallEditor: defaultFourWallState(),
       execution,
       message: "Fluxo aprovado.",
     });

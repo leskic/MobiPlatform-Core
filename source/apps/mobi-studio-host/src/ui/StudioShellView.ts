@@ -1,15 +1,26 @@
 import type { AppState } from "../AppState";
 import type { NewProjectDraft } from "../NewProjectDraft";
+import type { WallDraft } from "../walls/WallModel";
+import { WallRenderer } from "../walls/WallRenderer";
+import { WallSelection } from "../walls/WallSelection";
 import { ExecutionDiagnosticsView } from "./ExecutionDiagnosticsView";
 import { ExecutionEvidenceView } from "./ExecutionEvidenceView";
 import { ExecutionStatusView } from "./ExecutionStatusView";
 import { escapeHtml, ProjectOpenView } from "./ProjectOpenView";
 import { ViewerPanel } from "./ViewerPanel";
+import { WallInspector } from "./WallInspector";
 
 export interface StudioShellHandlers {
   readonly onProjectSelected: (file: File) => void;
   readonly onNewProject: () => void;
   readonly onCreateProject: (draft: Partial<NewProjectDraft>) => void;
+  readonly onAddWall: () => void;
+  readonly onSelectWall: (id: string | null) => void;
+  readonly onMoveWall: (dx: number, dy: number) => void;
+  readonly onEditWall: (draft: WallDraft) => void;
+  readonly onDeleteWall: () => void;
+  readonly onUndoWall: () => void;
+  readonly onRedoWall: () => void;
   readonly onExecute: () => void;
 }
 
@@ -20,6 +31,9 @@ export class StudioShellView {
     private readonly evidence = new ExecutionEvidenceView(),
     private readonly diagnostics = new ExecutionDiagnosticsView(),
     private readonly viewer = new ViewerPanel(),
+    private readonly wallRenderer = new WallRenderer(),
+    private readonly wallSelection = new WallSelection(),
+    private readonly wallInspector = new WallInspector(),
   ) {}
 
   mount(root: HTMLElement, state: AppState, handlers: StudioShellHandlers): void {
@@ -40,6 +54,29 @@ export class StudioShellView {
         clientName: String(data.get("clientName") ?? ""),
         environmentName: String(data.get("environmentName") ?? ""),
         projectCode: String(data.get("projectCode") ?? ""),
+      });
+    });
+    root.querySelector<HTMLButtonElement>("[data-add-wall]")?.addEventListener("click", handlers.onAddWall);
+    root.querySelector<HTMLButtonElement>("[data-wall-left]")?.addEventListener("click", () => handlers.onMoveWall(-50, 0));
+    root.querySelector<HTMLButtonElement>("[data-wall-right]")?.addEventListener("click", () => handlers.onMoveWall(50, 0));
+    root.querySelector<HTMLButtonElement>("[data-wall-up]")?.addEventListener("click", () => handlers.onMoveWall(0, -50));
+    root.querySelector<HTMLButtonElement>("[data-wall-down]")?.addEventListener("click", () => handlers.onMoveWall(0, 50));
+    root.querySelector<HTMLButtonElement>("[data-delete-wall]")?.addEventListener("click", handlers.onDeleteWall);
+    root.querySelector<HTMLButtonElement>("[data-undo-wall]")?.addEventListener("click", handlers.onUndoWall);
+    root.querySelector<HTMLButtonElement>("[data-redo-wall]")?.addEventListener("click", handlers.onRedoWall);
+    root.querySelectorAll<SVGElement>("[data-wall-id]").forEach((wall) => {
+      wall.addEventListener("click", () => handlers.onSelectWall(wall.dataset.wallId ?? null));
+    });
+    root.querySelector<HTMLFormElement>("[data-wall-inspector-form]")?.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const data = new FormData(event.currentTarget as HTMLFormElement);
+      handlers.onEditWall({
+        x: Number(data.get("wallX")),
+        y: Number(data.get("wallY")),
+        length: Number(data.get("wallLength")),
+        thickness: Number(data.get("wallThickness")),
+        height: Number(data.get("wallHeight")),
+        rotation: Number(data.get("wallRotation")),
       });
     });
     root.querySelector<HTMLButtonElement>("[data-execute-flow]")?.addEventListener("click", handlers.onExecute);
@@ -66,6 +103,7 @@ export class StudioShellView {
             ${this.status.render(state)}
           </aside>
           <section class="stack">
+            ${this.renderWallEditor(state)}
             ${this.viewer.render(state)}
             ${this.evidence.render(state)}
             ${this.diagnostics.render(state)}
@@ -85,8 +123,37 @@ export class StudioShellView {
           <label>Cliente<input name="clientName" value="${escapeHtml(state.draft.clientName)}" /></label>
           <label>Ambiente<input name="environmentName" value="${escapeHtml(state.draft.environmentName)}" /></label>
           <label>Codigo<input name="projectCode" value="${escapeHtml(state.draft.projectCode)}" /></label>
-          <p>Preset: Cozinha simples com paredes, infraestrutura, modulos, pecas e ferragens.</p>
+          <p>Preset: Cozinha simples com paredes editaveis, infraestrutura, modulos, pecas e ferragens.</p>
           <button class="primary-button" type="submit">Gerar Projeto.mobi</button>
+        </form>
+      </section>
+    `;
+  }
+
+  private renderWallEditor(state: AppState): string {
+    if (state.status !== "creating-project" && state.status !== "project-loaded") return "";
+    const selected = this.wallSelection.selected(state.wallEditor);
+    return `
+      <section class="studio-panel wall-editor">
+        <div class="panel-title-row">
+          <h2>Wall Editor</h2>
+          <span>${state.wallEditor.walls.length} paredes</span>
+        </div>
+        ${this.wallRenderer.render(state.wallEditor)}
+        <div class="wall-toolbar">
+          <button class="secondary-button" data-add-wall>Adicionar Parede</button>
+          <button class="secondary-button" data-undo-wall>Desfazer</button>
+          <button class="secondary-button" data-redo-wall>Refazer</button>
+          <button class="secondary-button" data-delete-wall ${selected ? "" : "disabled"}>Excluir</button>
+        </div>
+        <div class="wall-move-controls">
+          <button class="secondary-button" data-wall-up>Cima</button>
+          <button class="secondary-button" data-wall-left>Esquerda</button>
+          <button class="secondary-button" data-wall-right>Direita</button>
+          <button class="secondary-button" data-wall-down>Baixo</button>
+        </div>
+        <form data-wall-inspector-form>
+          ${this.wallInspector.render(selected)}
         </form>
       </section>
     `;
