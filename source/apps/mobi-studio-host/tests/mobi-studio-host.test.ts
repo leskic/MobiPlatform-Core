@@ -19,7 +19,9 @@ import { RealProjectRunner, type ExecutionScenario, type RealProjectExecutionRes
 import { App } from "../src/App";
 import { ExecutionController } from "../src/ExecutionController";
 import type { ExecutionViewModel } from "../src/ExecutionViewModel";
+import { defaultNewProjectDraft } from "../src/NewProjectDraft";
 import { ProjectFileLoader, type LoadedProject } from "../src/ProjectFileLoader";
+import { SimpleKitchenProjectFactory } from "../src/SimpleKitchenProjectFactory";
 import { ExecutionDiagnosticsView } from "../src/ui/ExecutionDiagnosticsView";
 import { ExecutionEvidenceView } from "../src/ui/ExecutionEvidenceView";
 import { ExecutionStatusView } from "../src/ui/ExecutionStatusView";
@@ -108,8 +110,79 @@ describe("CP007 Executable Mobi Studio", () => {
 
     expect(root.innerHTML).toContain("Mobi Studio");
     expect(root.innerHTML).toContain("Abrir Projeto.mobi");
+    expect(root.innerHTML).toContain("Novo Projeto");
     expect(root.innerHTML).toContain("Executar Fluxo");
     expect(app.snapshot().status).toBe("idle");
+  });
+
+  it("renders the new project form without requiring JSON editing", () => {
+    const html = new StudioShellView().render({
+      status: "creating-project",
+      project: null,
+      draft: {
+        projectName: "Minha Cozinha",
+        clientName: "Cliente Teste",
+        environmentName: "Cozinha",
+        projectCode: "PRJ-TESTE",
+      },
+      execution: null,
+      message: "Criando projeto.",
+    });
+
+    expect(html).toContain("Novo Projeto");
+    expect(html).toContain("Gerar Projeto.mobi");
+    expect(html).toContain("Preset: Cozinha simples");
+    expect(html).not.toContain("textarea");
+  });
+
+  it("creates a valid Projeto.mobi from the visual simple kitchen preset", () => {
+    const source = new SimpleKitchenProjectFactory().createJson({
+      projectName: "Minha Cozinha",
+      clientName: "Cliente Teste",
+      environmentName: "Cozinha",
+      projectCode: "PRJ-TESTE",
+    });
+    const loaded = new ProjectFileLoader().loadText(source, "PRJ-TESTE.mobi");
+
+    expect(loaded.success).toBe(true);
+    if (loaded.success) {
+      expect(loaded.project.projectName).toBe("Minha Cozinha");
+      expect(loaded.project.project.metadata).toMatchObject({ client: "Cliente Teste", preset: "cozinha-simples" });
+      expect(loaded.project.project.environments[0]?.displayName).toBe("Cozinha");
+      expect(loaded.project.project.environments[0]?.modules).toHaveLength(4);
+    }
+  });
+
+  it("lets the application create and load a project from form data", () => {
+    const root = rootElement();
+    const app = new App(root);
+    app.createProject({
+      projectName: "Cozinha Sem JSON",
+      clientName: "Charles",
+      environmentName: "Cozinha Principal",
+      projectCode: "PRJ-SEM-JSON",
+    });
+
+    expect(app.snapshot().status).toBe("project-loaded");
+    expect(app.snapshot().project?.projectName).toBe("Cozinha Sem JSON");
+    expect(root.innerHTML).toContain("Baixar Projeto.mobi");
+  });
+
+  it("executes the project generated without JSON editing through the full flow", () => {
+    const source = new SimpleKitchenProjectFactory().createJson({
+      projectName: "Cozinha Fluxo",
+      clientName: "Cliente Fluxo",
+      environmentName: "Cozinha",
+      projectCode: "PRJ-FLUXO",
+    });
+    const loaded = new ProjectFileLoader().loadText(source, "PRJ-FLUXO.mobi");
+    if (!loaded.success) throw new Error(loaded.message);
+
+    const result = new ExecutionController().execute(loaded.project);
+
+    expect(result.success).toBe(true);
+    expect(result.viewModel?.status).toBe("APPROVED");
+    expect(result.viewModel?.productsExecuted).toContain("MobiView");
   });
 
   it("loads a valid Projeto.mobi file", () => {
@@ -178,6 +251,7 @@ describe("CP007 Executable Mobi Studio", () => {
     const html = new ExecutionStatusView().render({
       status: "approved",
       project: loadedProject(),
+      draft: defaultNewProjectDraft(),
       execution,
       message: "Fluxo aprovado.",
     });
@@ -192,6 +266,7 @@ describe("CP007 Executable Mobi Studio", () => {
     const html = new ExecutionEvidenceView().render({
       status: "approved",
       project: loadedProject(),
+      draft: defaultNewProjectDraft(),
       execution,
       message: null,
     });
@@ -205,6 +280,7 @@ describe("CP007 Executable Mobi Studio", () => {
     const html = new ExecutionDiagnosticsView().render({
       status: "rejected",
       project: loadedProject(),
+      draft: defaultNewProjectDraft(),
       execution,
       message: null,
     });
@@ -227,6 +303,7 @@ describe("CP007 Executable Mobi Studio", () => {
     const html = new StudioShellView().render({
       status: "approved",
       project: loadedProject(),
+      draft: defaultNewProjectDraft(),
       execution,
       message: "Fluxo aprovado.",
     });

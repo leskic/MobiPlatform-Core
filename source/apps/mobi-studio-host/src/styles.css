@@ -114,6 +114,36 @@ input {
   opacity: 0.45;
 }
 
+.secondary-link {
+  display: inline-flex;
+  margin-top: 8px;
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: #1f2933;
+  background: #e4e7eb;
+  text-decoration: none;
+}
+
+.new-project-form {
+  display: grid;
+  gap: 10px;
+}
+
+.new-project-form label {
+  display: grid;
+  gap: 4px;
+  color: #52606d;
+  font-size: 13px;
+}
+
+.new-project-form input {
+  width: 100%;
+  border: 1px solid #bcccdc;
+  border-radius: 6px;
+  padding: 8px 10px;
+  color: #1f2933;
+}
+
 .stack {
   display: grid;
   gap: 12px;
@@ -167,4 +197,3 @@ input {
     grid-template-columns: 1fr;
   }
 }
-
