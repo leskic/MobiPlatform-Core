@@ -52,6 +52,7 @@ describe("CP011 responsive host layout fix", () => {
       doorEditor: emptyDoorEditorState(),
       technicalDocumentation: null,
       partsFoundation: null,
+      partsHierarchy: null,
       execution: null,
       message: null,
     });
@@ -62,4 +63,3 @@ describe("CP011 responsive host layout fix", () => {
     expect(html).toContain("Inserir Porta");
   });
 });
-

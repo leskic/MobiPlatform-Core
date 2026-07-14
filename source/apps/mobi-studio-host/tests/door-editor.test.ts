@@ -96,6 +96,7 @@ describe("CP011 Door Editor journey", () => {
       doorEditor: commands.addDoor(walls, { wallId: "wall-1" }),
       technicalDocumentation: null,
       partsFoundation: null,
+      partsHierarchy: null,
       execution: null,
       message: null,
     });
@@ -133,4 +134,3 @@ describe("CP011 Door Editor journey", () => {
     expect(result.viewModel?.productsExecuted).toContain("MobiView");
   });
 });
-

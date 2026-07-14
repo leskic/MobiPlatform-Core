@@ -6,6 +6,7 @@ import { SimpleKitchenProjectFactory } from "./SimpleKitchenProjectFactory";
 import { StudioShellView } from "./ui/StudioShellView";
 import { TechnicalDocumentationFactory } from "./TechnicalDocumentationViewModel";
 import { PartsFoundationFactory } from "./PartsFoundationViewModel";
+import { defaultExpanded, PartsHierarchyFactory, toggleExpanded } from "./PartsHierarchyViewModel";
 import { WallCommands } from "./walls/WallCommands";
 import { defaultFourWallState, type WallDraft } from "./walls/WallModel";
 import { DoorCommands } from "./doors/DoorCommands";
@@ -23,6 +24,7 @@ export class App {
     private readonly projectFactory = new SimpleKitchenProjectFactory(),
     private readonly technicalDocumentationFactory = new TechnicalDocumentationFactory(),
     private readonly partsFoundationFactory = new PartsFoundationFactory(),
+    private readonly partsHierarchyFactory = new PartsHierarchyFactory(),
     private readonly view = new StudioShellView(),
   ) {}
 
@@ -46,6 +48,7 @@ export class App {
         execution: null,
         technicalDocumentation: null,
         partsFoundation: null,
+        partsHierarchy: null,
         message: `${loaded.code}: ${loaded.message}`,
       });
       this.render();
@@ -61,6 +64,7 @@ export class App {
       execution: null,
       technicalDocumentation: this.technicalDocumentationFactory.create(loaded.project.project),
       partsFoundation: this.partsFoundationFactory.create(loaded.project.project),
+      partsHierarchy: this.partsHierarchyFactory.create(loaded.project.project),
       message: "Projeto.mobi carregado e validado.",
     });
     this.render();
@@ -75,6 +79,7 @@ export class App {
       execution: null,
       technicalDocumentation: this.state.technicalDocumentation,
       partsFoundation: this.state.partsFoundation,
+      partsHierarchy: this.state.partsHierarchy,
       message: "Preencha os dados e gere uma Cozinha simples.",
     });
     this.render();
@@ -94,6 +99,7 @@ export class App {
         execution: null,
         technicalDocumentation: null,
         partsFoundation: null,
+        partsHierarchy: null,
         message: `${loaded.code}: ${loaded.message}`,
       });
       this.render();
@@ -109,6 +115,7 @@ export class App {
       execution: null,
       technicalDocumentation: this.technicalDocumentationFactory.create(loaded.project.project),
       partsFoundation: this.partsFoundationFactory.create(loaded.project.project),
+      partsHierarchy: this.partsHierarchyFactory.create(loaded.project.project),
       message: "Projeto.mobi criado visualmente e validado.",
     });
     this.render();
@@ -135,6 +142,7 @@ export class App {
       execution: result.viewModel,
       technicalDocumentation: this.state.technicalDocumentation,
       partsFoundation: this.state.partsFoundation,
+      partsHierarchy: this.state.partsHierarchy,
       message: result.error ?? (result.success ? "Fluxo aprovado." : "Fluxo rejeitado."),
     });
     this.render();
@@ -164,6 +172,8 @@ export class App {
       onUndoDoor: () => this.updateDoors(this.doorCommands.undo()),
       onRedoDoor: () => this.updateDoors(this.doorCommands.redo()),
       onSelectPart: (id) => this.selectPart(id),
+      onTogglePartsNode: (id) => this.togglePartsNode(id),
+      onSelectHierarchyPart: (id) => this.selectPart(id),
       onPreviousPart: () => this.movePartSelection(-1),
       onNextPart: () => this.movePartSelection(1),
       onExecute: () => this.executeFlow(),
@@ -178,6 +188,7 @@ export class App {
       execution: null,
       technicalDocumentation: this.state.project ? this.technicalDocumentationFactory.create(this.state.project.project) : this.state.technicalDocumentation,
       partsFoundation: this.state.project ? this.partsFoundationFactory.create(this.state.project.project) : this.state.partsFoundation,
+      partsHierarchy: this.state.project ? this.partsHierarchyFactory.create(this.state.project.project, this.state.partsHierarchy?.expandedNodeIds ?? defaultExpanded(this.state.project.project), this.state.partsFoundation?.selectedPartId ?? null) : this.state.partsHierarchy,
       message: "Parede atualizada. Salve para regenerar o Projeto.mobi.",
     });
     this.render();
@@ -190,6 +201,7 @@ export class App {
       execution: null,
       technicalDocumentation: this.state.project ? this.technicalDocumentationFactory.create(this.state.project.project) : this.state.technicalDocumentation,
       partsFoundation: this.state.project ? this.partsFoundationFactory.create(this.state.project.project) : this.state.partsFoundation,
+      partsHierarchy: this.state.project ? this.partsHierarchyFactory.create(this.state.project.project, this.state.partsHierarchy?.expandedNodeIds ?? defaultExpanded(this.state.project.project), this.state.partsFoundation?.selectedPartId ?? null) : this.state.partsHierarchy,
       message: "Porta atualizada. Salve para regenerar o Projeto.mobi.",
     });
     this.render();
@@ -200,6 +212,20 @@ export class App {
     this.state = Object.freeze({
       ...this.state,
       partsFoundation: this.partsFoundationFactory.create(this.state.project.project, partId),
+      partsHierarchy: this.partsHierarchyFactory.create(this.state.project.project, this.state.partsHierarchy?.expandedNodeIds ?? defaultExpanded(this.state.project.project), partId),
+    });
+    this.render();
+  }
+
+  private togglePartsNode(nodeId: string): void {
+    if (!this.state.project) return;
+    this.state = Object.freeze({
+      ...this.state,
+      partsHierarchy: this.partsHierarchyFactory.create(
+        this.state.project.project,
+        toggleExpanded(this.state.partsHierarchy?.expandedNodeIds ?? defaultExpanded(this.state.project.project), nodeId),
+        this.state.partsFoundation?.selectedPartId ?? null,
+      ),
     });
     this.render();
   }

@@ -132,6 +132,7 @@ describe("CP007 Executable Mobi Studio", () => {
       doorEditor: emptyDoorEditorState(),
       technicalDocumentation: null,
       partsFoundation: null,
+      partsHierarchy: null,
       execution: null,
       message: "Criando projeto.",
     });
@@ -263,6 +264,7 @@ describe("CP007 Executable Mobi Studio", () => {
       doorEditor: emptyDoorEditorState(),
       technicalDocumentation: null,
       partsFoundation: null,
+      partsHierarchy: null,
       execution,
       message: "Fluxo aprovado.",
     });
@@ -282,6 +284,7 @@ describe("CP007 Executable Mobi Studio", () => {
       doorEditor: emptyDoorEditorState(),
       technicalDocumentation: null,
       partsFoundation: null,
+      partsHierarchy: null,
       execution,
       message: null,
     });
@@ -300,6 +303,7 @@ describe("CP007 Executable Mobi Studio", () => {
       doorEditor: emptyDoorEditorState(),
       technicalDocumentation: null,
       partsFoundation: null,
+      partsHierarchy: null,
       execution,
       message: null,
     });
@@ -327,6 +331,7 @@ describe("CP007 Executable Mobi Studio", () => {
       doorEditor: emptyDoorEditorState(),
       technicalDocumentation: null,
       partsFoundation: null,
+      partsHierarchy: null,
       execution,
       message: "Fluxo aprovado.",
     });

@@ -87,6 +87,7 @@ describe("CP010 Wall Editor journey", () => {
       doorEditor: emptyDoorEditorState(),
       technicalDocumentation: null,
       partsFoundation: null,
+      partsHierarchy: null,
       execution: null,
       message: null,
     });

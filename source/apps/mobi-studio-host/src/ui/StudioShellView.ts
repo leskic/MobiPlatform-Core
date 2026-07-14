@@ -13,6 +13,7 @@ import { escapeHtml, ProjectOpenView } from "./ProjectOpenView";
 import { ViewerPanel } from "./ViewerPanel";
 import { DoorInspector } from "./DoorInspector";
 import { PartsFoundationView } from "./PartsFoundationView";
+import { PartsHierarchyView } from "./PartsHierarchyView";
 import { TechnicalDocumentationView } from "./TechnicalDocumentationView";
 import { WallInspector } from "./WallInspector";
 
@@ -35,6 +36,8 @@ export interface StudioShellHandlers {
   readonly onUndoDoor: () => void;
   readonly onRedoDoor: () => void;
   readonly onSelectPart: (id: string | null) => void;
+  readonly onTogglePartsNode: (id: string) => void;
+  readonly onSelectHierarchyPart: (id: string | null) => void;
   readonly onPreviousPart: () => void;
   readonly onNextPart: () => void;
   readonly onExecute: () => void;
@@ -54,6 +57,7 @@ export class StudioShellView {
     private readonly doorSelection = new DoorSelection(),
     private readonly doorInspector = new DoorInspector(),
     private readonly technicalDocumentation = new TechnicalDocumentationView(),
+    private readonly partsHierarchy = new PartsHierarchyView(),
     private readonly partsFoundation = new PartsFoundationView(),
   ) {}
 
@@ -121,6 +125,15 @@ export class StudioShellView {
     root.querySelectorAll<HTMLElement>("[data-part-id]").forEach((part) => {
       part.addEventListener("click", () => handlers.onSelectPart(part.dataset.partId ?? null));
     });
+    root.querySelectorAll<HTMLButtonElement>("[data-tree-toggle]").forEach((toggle) => {
+      toggle.addEventListener("click", () => {
+        const nodeId = toggle.dataset.treeToggle;
+        if (nodeId) handlers.onTogglePartsNode(nodeId);
+      });
+    });
+    root.querySelectorAll<HTMLButtonElement>("[data-tree-part-id]").forEach((part) => {
+      part.addEventListener("click", () => handlers.onSelectHierarchyPart(part.dataset.treePartId ?? null));
+    });
     root.querySelector<HTMLButtonElement>("[data-previous-part]")?.addEventListener("click", handlers.onPreviousPart);
     root.querySelector<HTMLButtonElement>("[data-next-part]")?.addEventListener("click", handlers.onNextPart);
     root.querySelector<HTMLButtonElement>("[data-execute-flow]")?.addEventListener("click", handlers.onExecute);
@@ -149,6 +162,7 @@ export class StudioShellView {
           <section class="stack">
             ${this.renderWallEditor(state)}
             ${this.technicalDocumentation.render(state.technicalDocumentation)}
+            ${this.partsHierarchy.render(state.partsHierarchy)}
             ${this.partsFoundation.render(state.partsFoundation)}
             ${this.viewer.render(state)}
             ${this.evidence.render(state)}

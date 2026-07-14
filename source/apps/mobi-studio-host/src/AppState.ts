@@ -1,5 +1,6 @@
 import type { ExecutionViewModel } from "./ExecutionViewModel";
 import type { PartsFoundationViewModel } from "./PartsFoundationViewModel";
+import type { PartsHierarchyViewModel } from "./PartsHierarchyViewModel";
 import type { TechnicalDocumentationViewModel } from "./TechnicalDocumentationViewModel";
 import { defaultNewProjectDraft, type NewProjectDraft } from "./NewProjectDraft";
 import type { LoadedProject } from "./ProjectFileLoader";
@@ -17,6 +18,7 @@ export interface AppState {
   readonly execution: ExecutionViewModel | null;
   readonly technicalDocumentation: TechnicalDocumentationViewModel | null;
   readonly partsFoundation: PartsFoundationViewModel | null;
+  readonly partsHierarchy: PartsHierarchyViewModel | null;
   readonly message: string | null;
 }
 
@@ -30,6 +32,7 @@ export function initialAppState(): AppState {
     execution: null,
     technicalDocumentation: null,
     partsFoundation: null,
+    partsHierarchy: null,
     message: null,
   });
 }
