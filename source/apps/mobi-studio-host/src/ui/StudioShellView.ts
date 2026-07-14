@@ -2,6 +2,7 @@ import type { AppState } from "../AppState";
 import type { DoorDraft } from "../doors/DoorModel";
 import { DoorRenderer } from "../doors/DoorRenderer";
 import { DoorSelection } from "../doors/DoorSelection";
+import type { EnvironmentDraft } from "../environments/EnvironmentModel";
 import type { NewProjectDraft } from "../NewProjectDraft";
 import type { WallDraft } from "../walls/WallModel";
 import { WallRenderer } from "../walls/WallRenderer";
@@ -12,6 +13,7 @@ import { ExecutionStatusView } from "./ExecutionStatusView";
 import { escapeHtml, ProjectOpenView } from "./ProjectOpenView";
 import { ViewerPanel } from "./ViewerPanel";
 import { DoorInspector } from "./DoorInspector";
+import { EnvironmentEditorView } from "./EnvironmentEditorView";
 import { PartsFoundationView } from "./PartsFoundationView";
 import { PartsHierarchyView } from "./PartsHierarchyView";
 import { TechnicalDocumentationView } from "./TechnicalDocumentationView";
@@ -35,6 +37,10 @@ export interface StudioShellHandlers {
   readonly onDeleteDoor: () => void;
   readonly onUndoDoor: () => void;
   readonly onRedoDoor: () => void;
+  readonly onAddEnvironment: () => void;
+  readonly onSelectEnvironment: (id: string | null) => void;
+  readonly onRenameEnvironment: (draft: EnvironmentDraft) => void;
+  readonly onDeleteEnvironment: () => void;
   readonly onSelectPart: (id: string | null) => void;
   readonly onTogglePartsNode: (id: string) => void;
   readonly onSelectHierarchyPart: (id: string | null) => void;
@@ -56,6 +62,7 @@ export class StudioShellView {
     private readonly doorRenderer = new DoorRenderer(),
     private readonly doorSelection = new DoorSelection(),
     private readonly doorInspector = new DoorInspector(),
+    private readonly environmentEditor = new EnvironmentEditorView(),
     private readonly technicalDocumentation = new TechnicalDocumentationView(),
     private readonly partsHierarchy = new PartsHierarchyView(),
     private readonly partsFoundation = new PartsFoundationView(),
@@ -122,6 +129,16 @@ export class StudioShellView {
         height: Number(data.get("doorHeight")),
       });
     });
+    root.querySelector<HTMLButtonElement>("[data-add-environment]")?.addEventListener("click", handlers.onAddEnvironment);
+    root.querySelector<HTMLButtonElement>("[data-delete-environment]")?.addEventListener("click", handlers.onDeleteEnvironment);
+    root.querySelectorAll<HTMLButtonElement>("[data-environment-id]").forEach((environment) => {
+      environment.addEventListener("click", () => handlers.onSelectEnvironment(environment.dataset.environmentId ?? null));
+    });
+    root.querySelector<HTMLFormElement>("[data-environment-form]")?.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const data = new FormData(event.currentTarget as HTMLFormElement);
+      handlers.onRenameEnvironment({ name: String(data.get("environmentName") ?? "") });
+    });
     root.querySelectorAll<HTMLElement>("[data-part-id]").forEach((part) => {
       part.addEventListener("click", () => handlers.onSelectPart(part.dataset.partId ?? null));
     });
@@ -160,6 +177,7 @@ export class StudioShellView {
             ${this.status.render(state)}
           </aside>
           <section class="stack">
+            ${this.environmentEditor.render(state.environmentEditor)}
             ${this.renderWallEditor(state)}
             ${this.technicalDocumentation.render(state.technicalDocumentation)}
             ${this.partsHierarchy.render(state.partsHierarchy)}

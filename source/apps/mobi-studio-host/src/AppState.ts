@@ -1,4 +1,5 @@
 import type { ExecutionViewModel } from "./ExecutionViewModel";
+import { emptyEnvironmentEditorState, type EnvironmentEditorState } from "./environments/EnvironmentModel";
 import type { PartsFoundationViewModel } from "./PartsFoundationViewModel";
 import type { PartsHierarchyViewModel } from "./PartsHierarchyViewModel";
 import type { TechnicalDocumentationViewModel } from "./TechnicalDocumentationViewModel";
@@ -15,6 +16,7 @@ export interface AppState {
   readonly draft: NewProjectDraft;
   readonly wallEditor: WallEditorState;
   readonly doorEditor: DoorEditorState;
+  readonly environmentEditor: EnvironmentEditorState;
   readonly execution: ExecutionViewModel | null;
   readonly technicalDocumentation: TechnicalDocumentationViewModel | null;
   readonly partsFoundation: PartsFoundationViewModel | null;
@@ -29,6 +31,7 @@ export function initialAppState(): AppState {
     draft: defaultNewProjectDraft(),
     wallEditor: defaultFourWallState(),
     doorEditor: emptyDoorEditorState(),
+    environmentEditor: emptyEnvironmentEditorState(),
     execution: null,
     technicalDocumentation: null,
     partsFoundation: null,

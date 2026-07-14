@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { emptyDoorEditorState } from "../src/doors/DoorModel";
+import { emptyEnvironmentEditorState } from "../src/environments/EnvironmentModel";
 import { normalizeDraft } from "../src/NewProjectDraft";
 import { StudioShellView } from "../src/ui/StudioShellView";
 import { defaultFourWallState } from "../src/walls/WallModel";
@@ -50,6 +51,7 @@ describe("CP011 responsive host layout fix", () => {
       draft: normalizeDraft({ projectName: "Layout", clientName: "Cliente", environmentName: "Cozinha", projectCode: "LAYOUT" }),
       wallEditor: defaultFourWallState(),
       doorEditor: emptyDoorEditorState(),
+      environmentEditor: emptyEnvironmentEditorState(),
       technicalDocumentation: null,
       partsFoundation: null,
       partsHierarchy: null,

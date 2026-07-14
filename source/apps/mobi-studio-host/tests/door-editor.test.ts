@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { ExecutionController } from "../src/ExecutionController";
 import { DoorCommands } from "../src/doors/DoorCommands";
 import { emptyDoorEditorState } from "../src/doors/DoorModel";
+import { emptyEnvironmentEditorState } from "../src/environments/EnvironmentModel";
 import { DoorRenderer } from "../src/doors/DoorRenderer";
 import { DoorSelection } from "../src/doors/DoorSelection";
 import { DoorSerializer } from "../src/doors/DoorSerializer";
@@ -94,6 +95,7 @@ describe("CP011 Door Editor journey", () => {
       draft,
       wallEditor: walls,
       doorEditor: commands.addDoor(walls, { wallId: "wall-1" }),
+      environmentEditor: emptyEnvironmentEditorState(),
       technicalDocumentation: null,
       partsFoundation: null,
       partsHierarchy: null,

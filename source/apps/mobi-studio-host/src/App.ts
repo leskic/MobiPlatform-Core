@@ -11,11 +11,14 @@ import { WallCommands } from "./walls/WallCommands";
 import { emptyWallEditorState, type WallDraft } from "./walls/WallModel";
 import { DoorCommands } from "./doors/DoorCommands";
 import { emptyDoorEditorState, type DoorDraft } from "./doors/DoorModel";
+import { EnvironmentCommands } from "./environments/EnvironmentCommands";
+import { emptyEnvironmentEditorState, environmentStateFromProject, type EnvironmentDraft } from "./environments/EnvironmentModel";
 
 export class App {
   private state: AppState = initialAppState();
   private wallCommands = new WallCommands(this.state.wallEditor);
   private doorCommands = new DoorCommands(this.state.doorEditor);
+  private environmentCommands = new EnvironmentCommands(this.state.environmentEditor);
 
   constructor(
     private readonly root: HTMLElement,
@@ -45,6 +48,7 @@ export class App {
         draft: this.state.draft,
         wallEditor: this.state.wallEditor,
         doorEditor: this.state.doorEditor,
+        environmentEditor: this.state.environmentEditor,
         execution: null,
         technicalDocumentation: null,
         partsFoundation: null,
@@ -61,6 +65,7 @@ export class App {
       draft: this.state.draft,
       wallEditor: this.state.wallEditor,
       doorEditor: this.state.doorEditor,
+      environmentEditor: environmentStateFromProject(loaded.project.project),
       execution: null,
       technicalDocumentation: this.technicalDocumentationFactory.create(loaded.project.project),
       partsFoundation: this.partsFoundationFactory.create(loaded.project.project),
@@ -75,12 +80,14 @@ export class App {
     const doorEditor = emptyDoorEditorState();
     this.wallCommands = new WallCommands(wallEditor);
     this.doorCommands = new DoorCommands(doorEditor);
+    this.environmentCommands = new EnvironmentCommands(emptyEnvironmentEditorState());
     this.state = Object.freeze({
       status: "creating-project",
       project: null,
       draft: this.state.draft,
       wallEditor,
       doorEditor,
+      environmentEditor: emptyEnvironmentEditorState(),
       execution: null,
       technicalDocumentation: null,
       partsFoundation: null,
@@ -92,7 +99,7 @@ export class App {
 
   createProject(draftInput: Partial<NewProjectDraft>): void {
     const draft = normalizeDraft(draftInput);
-    const source = this.projectFactory.createJson(draft, this.state.wallEditor, this.state.doorEditor);
+    const source = this.projectFactory.createJson(draft, this.state.wallEditor, this.state.doorEditor, this.state.environmentEditor);
     const loaded = this.loader.loadText(source, `${draft.projectCode}.mobi`);
     if (!loaded.success) {
       this.state = Object.freeze({
@@ -101,6 +108,7 @@ export class App {
         draft,
         wallEditor: this.state.wallEditor,
         doorEditor: this.state.doorEditor,
+        environmentEditor: this.state.environmentEditor,
         execution: null,
         technicalDocumentation: null,
         partsFoundation: null,
@@ -117,6 +125,7 @@ export class App {
       draft,
       wallEditor: this.state.wallEditor,
       doorEditor: this.state.doorEditor,
+      environmentEditor: environmentStateFromProject(loaded.project.project),
       execution: null,
       technicalDocumentation: this.technicalDocumentationFactory.create(loaded.project.project),
       partsFoundation: this.partsFoundationFactory.create(loaded.project.project),
@@ -144,6 +153,7 @@ export class App {
       draft: this.state.draft,
       wallEditor: this.state.wallEditor,
       doorEditor: this.state.doorEditor,
+      environmentEditor: this.state.environmentEditor,
       execution: result.viewModel,
       technicalDocumentation: this.state.technicalDocumentation,
       partsFoundation: this.state.partsFoundation,
@@ -176,6 +186,10 @@ export class App {
       onDeleteDoor: () => this.updateDoors(this.doorCommands.deleteSelected()),
       onUndoDoor: () => this.updateDoors(this.doorCommands.undo()),
       onRedoDoor: () => this.updateDoors(this.doorCommands.redo()),
+      onAddEnvironment: () => this.updateEnvironments(this.environmentCommands.addEnvironment()),
+      onSelectEnvironment: (id) => this.updateEnvironments(this.environmentCommands.selectEnvironment(id)),
+      onRenameEnvironment: (draft) => this.updateEnvironments(this.environmentCommands.renameSelected(draft)),
+      onDeleteEnvironment: () => this.updateEnvironments(this.environmentCommands.deleteSelected()),
       onSelectPart: (id) => this.selectPart(id),
       onTogglePartsNode: (id) => this.togglePartsNode(id),
       onSelectHierarchyPart: (id) => this.selectPart(id),
@@ -190,6 +204,7 @@ export class App {
       ...this.state,
       wallEditor,
       doorEditor,
+      environmentEditor: this.state.environmentEditor,
       execution: null,
       technicalDocumentation: this.state.project ? this.technicalDocumentationFactory.create(this.state.project.project) : this.state.technicalDocumentation,
       partsFoundation: this.state.project ? this.partsFoundationFactory.create(this.state.project.project) : this.state.partsFoundation,
@@ -203,6 +218,7 @@ export class App {
     this.state = Object.freeze({
       ...this.state,
       doorEditor,
+      environmentEditor: this.state.environmentEditor,
       execution: null,
       technicalDocumentation: this.state.project ? this.technicalDocumentationFactory.create(this.state.project.project) : this.state.technicalDocumentation,
       partsFoundation: this.state.project ? this.partsFoundationFactory.create(this.state.project.project) : this.state.partsFoundation,
@@ -218,6 +234,17 @@ export class App {
       ...this.state,
       partsFoundation: this.partsFoundationFactory.create(this.state.project.project, partId),
       partsHierarchy: this.partsHierarchyFactory.create(this.state.project.project, this.state.partsHierarchy?.expandedNodeIds ?? defaultExpanded(this.state.project.project), partId),
+    });
+    this.render();
+  }
+
+  private updateEnvironments(environmentEditor: AppState["environmentEditor"]): void {
+    this.environmentCommands = new EnvironmentCommands(environmentEditor);
+    this.state = Object.freeze({
+      ...this.state,
+      environmentEditor,
+      execution: null,
+      message: "Ambiente atualizado. Gere o Projeto.mobi para persistir a organizacao.",
     });
     this.render();
   }

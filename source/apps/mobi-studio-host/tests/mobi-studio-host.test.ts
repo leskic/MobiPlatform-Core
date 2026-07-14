@@ -21,6 +21,7 @@ import { ExecutionController } from "../src/ExecutionController";
 import type { ExecutionViewModel } from "../src/ExecutionViewModel";
 import { defaultNewProjectDraft } from "../src/NewProjectDraft";
 import { emptyDoorEditorState } from "../src/doors/DoorModel";
+import { emptyEnvironmentEditorState } from "../src/environments/EnvironmentModel";
 import { ProjectFileLoader, type LoadedProject } from "../src/ProjectFileLoader";
 import { SimpleKitchenProjectFactory } from "../src/SimpleKitchenProjectFactory";
 import { ExecutionDiagnosticsView } from "../src/ui/ExecutionDiagnosticsView";
@@ -130,6 +131,7 @@ describe("CP007 Executable Mobi Studio", () => {
       },
       wallEditor: defaultFourWallState(),
       doorEditor: emptyDoorEditorState(),
+      environmentEditor: emptyEnvironmentEditorState(),
       technicalDocumentation: null,
       partsFoundation: null,
       partsHierarchy: null,
@@ -197,6 +199,7 @@ describe("CP007 Executable Mobi Studio", () => {
     expect(app.snapshot().project).toBeNull();
     expect(app.snapshot().wallEditor.walls).toHaveLength(0);
     expect(app.snapshot().doorEditor.doors).toHaveLength(0);
+    expect(app.snapshot().environmentEditor.environments).toHaveLength(0);
     expect(app.snapshot().execution).toBeNull();
     expect(app.snapshot().technicalDocumentation).toBeNull();
     expect(app.snapshot().partsHierarchy).toBeNull();
@@ -291,6 +294,7 @@ describe("CP007 Executable Mobi Studio", () => {
       draft: defaultNewProjectDraft(),
       wallEditor: defaultFourWallState(),
       doorEditor: emptyDoorEditorState(),
+      environmentEditor: emptyEnvironmentEditorState(),
       technicalDocumentation: null,
       partsFoundation: null,
       partsHierarchy: null,
@@ -311,6 +315,7 @@ describe("CP007 Executable Mobi Studio", () => {
       draft: defaultNewProjectDraft(),
       wallEditor: defaultFourWallState(),
       doorEditor: emptyDoorEditorState(),
+      environmentEditor: emptyEnvironmentEditorState(),
       technicalDocumentation: null,
       partsFoundation: null,
       partsHierarchy: null,
@@ -330,6 +335,7 @@ describe("CP007 Executable Mobi Studio", () => {
       draft: defaultNewProjectDraft(),
       wallEditor: defaultFourWallState(),
       doorEditor: emptyDoorEditorState(),
+      environmentEditor: emptyEnvironmentEditorState(),
       technicalDocumentation: null,
       partsFoundation: null,
       partsHierarchy: null,
@@ -358,6 +364,7 @@ describe("CP007 Executable Mobi Studio", () => {
       draft: defaultNewProjectDraft(),
       wallEditor: defaultFourWallState(),
       doorEditor: emptyDoorEditorState(),
+      environmentEditor: emptyEnvironmentEditorState(),
       technicalDocumentation: null,
       partsFoundation: null,
       partsHierarchy: null,

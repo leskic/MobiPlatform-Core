@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { ExecutionController } from "../src/ExecutionController";
 import { emptyDoorEditorState } from "../src/doors/DoorModel";
+import { emptyEnvironmentEditorState } from "../src/environments/EnvironmentModel";
 import { normalizeDraft } from "../src/NewProjectDraft";
 import { ProjectFileLoader } from "../src/ProjectFileLoader";
 import { SimpleKitchenProjectFactory } from "../src/SimpleKitchenProjectFactory";
@@ -85,6 +86,7 @@ describe("CP010 Wall Editor journey", () => {
       draft,
       wallEditor: defaultFourWallState(),
       doorEditor: emptyDoorEditorState(),
+      environmentEditor: emptyEnvironmentEditorState(),
       technicalDocumentation: null,
       partsFoundation: null,
       partsHierarchy: null,
