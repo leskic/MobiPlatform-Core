@@ -1,0 +1,2 @@
+import type{GoldenAutoFixRule}from"./AutoFixTypes";export class GoldenRules{private readonly rules:GoldenAutoFixRule[]=[{id:"GOLDEN_ASSIGN_MISSING_MATERIAL",diagnosticRuleId:"MATERIAL_MISSING_REFERENCE",sourceRuleId:"CABINETRY_MISSING_MATERIAL",autoFixable:true,action:"ASSIGN_REFERENCE",targetProperty:"materialId",replacementValue:"MDF-15",documented:true,prohibitedDomain:false}];getByDiagnostic(id:string){return this.rules.find(r=>r.diagnosticRuleId===id)}list(){return structuredClone(this.rules)}}
+

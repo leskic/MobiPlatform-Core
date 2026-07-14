@@ -1,0 +1,2 @@
+import type { StudioCommandName } from "../interfaces/StudioApplicationTypes";
+export class ShortcutRegistry { private readonly shortcuts = new Map<string, StudioCommandName>(); register(key: string, command: StudioCommandName): void { if (!key.trim()) throw new Error("Shortcut cannot be empty"); this.shortcuts.set(key, command); } unregister(key: string): void { this.shortcuts.delete(key); } resolve(key: string): StudioCommandName | undefined { return this.shortcuts.get(key); } list(): Record<string, StudioCommandName> { return Object.fromEntries(this.shortcuts); } }

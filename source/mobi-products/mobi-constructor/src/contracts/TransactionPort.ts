@@ -1,0 +1,1 @@
+export interface TransactionCommand{id:string;entityId:string;property:string;value:unknown;author:string;logicalTimestamp:number;operationName:string;operation:(state:unknown)=>void;preview:{apply(presentation:unknown):void;revert(presentation:unknown):void}}export interface TransactionCoordinatorPort{execute(command:TransactionCommand):{success:boolean;transactionId?:string}}

@@ -1,0 +1,1 @@
+import type { StudioRepository } from "../StudioRepository"; export class StatusBarViewModel { constructor(private readonly repository: StudioRepository) {} get(): string { return this.repository.get().status; } }

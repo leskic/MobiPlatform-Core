@@ -1,0 +1,72 @@
+COMMAND: vitest run --coverage --config mobi-products/mobi-constructor/vitest.phase3.config.ts
+EXECUTED_AT_UTC: 2026-07-14T01:19:28Z
+
+
+ RUN  v3.2.7 /workspace/scratch/a54b0b1f716f/mic_rfe_001_implementation
+      Coverage enabled with v8
+
+ ✓ mobi-products/mobi-constructor/tests/industrialization.test.ts (10 tests) 12ms
+ ✓ mobi-products/mobi-constructor/tests/closed-loop.test.ts (12 tests) 24ms
+ ✓ mobi-products/mobi-constructor/tests/constructor.test.ts (10 tests) 9ms
+ ✓ mobi-products/mobi-constructor/tests/mic-contracts.test.ts (6 tests) 23ms
+
+ Test Files  4 passed (4)
+      Tests  38 passed (38)
+   Start at  09:19:28
+   Duration  526ms (transform 346ms, setup 0ms, collect 538ms, tests 68ms, environment 1ms, prepare 233ms)
+
+ % Coverage report from v8
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------|---------|----------|---------|---------|-------------------
+All files          |   99.23 |    96.36 |     100 |   99.23 |                   
+ application       |     100 |      100 |     100 |     100 |                   
+  ...pplication.ts |     100 |      100 |     100 |     100 |                   
+ bom-manager       |     100 |    94.28 |     100 |     100 |                   
+  BOMManager.ts    |     100 |    94.28 |     100 |     100 | 1                 
+ cam-bridge        |     100 |      100 |     100 |     100 |                   
+  CAMBridge.ts     |     100 |      100 |     100 |     100 |                   
+ contracts         |       0 |        0 |       0 |       0 |                   
+  ...tReadModel.ts |       0 |        0 |       0 |       0 |                   
+  ...actionPort.ts |       0 |        0 |       0 |       0 |                   
+ core              |     100 |      100 |     100 |     100 |                   
+  ...cyRegistry.ts |     100 |      100 |     100 |     100 |                   
+  ...tBootstrap.ts |     100 |      100 |     100 |     100 |                   
+ feedback-loop     |     100 |      100 |     100 |     100 |                   
+  FeedbackLoop.ts  |     100 |      100 |     100 |     100 |                   
+ nesting-engine    |     100 |     92.3 |     100 |     100 |                   
+  NestingEngine.ts |     100 |     92.3 |     100 |     100 | 1                 
+ orchestrators     |     100 |      100 |     100 |     100 |                   
+  ...chestrator.ts |     100 |      100 |     100 |     100 |                   
+ outputs           |     100 |      100 |     100 |     100 |                   
+  ...tFramework.ts |     100 |      100 |     100 |     100 |                   
+ part-generator    |     100 |      100 |     100 |     100 |                   
+  ...ialRuleSet.ts |     100 |      100 |     100 |     100 |                   
+  PartGenerator.ts |     100 |      100 |     100 |     100 |                   
+ pipeline          |     100 |      100 |     100 |     100 |                   
+  ...opPipeline.ts |     100 |      100 |     100 |     100 |                   
+  ...orPipeline.ts |     100 |      100 |     100 |     100 |                   
+  ...onPipeline.ts |     100 |      100 |     100 |     100 |                   
+ ...rial-contracts |   99.17 |    92.42 |     100 |   99.17 |                   
+  ...alProvider.ts |   98.99 |    90.19 |     100 |   98.99 | 148-149           
+  ...ionAdapter.ts |     100 |      100 |     100 |     100 |                   
+  MICContracts.ts  |     100 |      100 |     100 |     100 |                   
+  ...iderSource.ts |       0 |        0 |       0 |       0 |                   
+  ...ackChannel.ts |     100 |      100 |     100 |     100 |                   
+ readers           |     100 |      100 |     100 |     100 |                   
+  ProjectReader.ts |     100 |      100 |     100 |     100 |                   
+ services          |     100 |      100 |     100 |     100 |                   
+  ...entService.ts |     100 |      100 |     100 |     100 |                   
+ translators       |     100 |      100 |     100 |     100 |                   
+  ...tionEngine.ts |     100 |      100 |     100 |     100 |                   
+ ui                |     100 |      100 |     100 |     100 |                   
+  ...StatusView.ts |     100 |      100 |     100 |     100 |                   
+ validators        |     100 |      100 |     100 |     100 |                   
+  ...tValidator.ts |     100 |      100 |     100 |     100 |                   
+ ...ication-engine |     100 |      100 |     100 |     100 |                   
+  ...tionEngine.ts |     100 |      100 |     100 |     100 |                   
+ writers           |     100 |      100 |     100 |     100 |                   
+  ResultWriter.ts  |     100 |      100 |     100 |     100 |                   
+-------------------|---------|----------|---------|---------|-------------------
+
+EXIT_CODE: 0

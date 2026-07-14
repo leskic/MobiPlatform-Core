@@ -1,0 +1,1 @@
+import type{ConstructorApplication}from"../application/ConstructorApplication";export class ConstructorOrchestrator{constructor(private readonly app:ConstructorApplication){}execute(){return this.app.run()}}

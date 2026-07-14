@@ -1,0 +1,7 @@
+{
+  "id": "mobidina",
+  "name": "MobiDina",
+  "version": "1.0.0",
+  "type": "vertical-integration",
+  "entry": "src/index.ts"
+}

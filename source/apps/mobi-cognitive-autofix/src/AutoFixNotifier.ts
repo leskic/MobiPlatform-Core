@@ -1,0 +1,2 @@
+import type{PresentationCore}from"../../../presentation/PresentationCore";export class AutoFixNotifier{private messages:{message:string;timestamp:number;presentationSnapshotId:string}[]=[];constructor(private readonly presentation:PresentationCore){}success(timestamp:number){const state=this.presentation.getState(),presentationSnapshotId=`${state.scene.roots.length}:${state.selection.ids.join(",")}:${state.view.mode}`;this.messages.push({message:"Ação corretiva automática aplicada.",timestamp,presentationSnapshotId})}get(){return structuredClone(this.messages)}}
+

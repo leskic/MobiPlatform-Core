@@ -1,0 +1,1 @@
+import type { PrintPackageSnapshot, PartListItem } from "../../../mobi-detalhamento/src/interfaces/DetailingTypes"; export class CuttingQueueBuilder { build(pkg: PrintPackageSnapshot): PartListItem[] { return structuredClone(pkg.cutting.parts); } }

@@ -1,0 +1,2 @@
+import type { DivergenceReportSnapshot } from "../../../../sync/interfaces/SyncTypes"; import type { ClassifiedDivergence, DivergenceKind } from "../interfaces/MobiDinaTypes";
+export class DivergenceAnalyzer { analyze(report: DivergenceReportSnapshot, hint?: DivergenceKind): ClassifiedDivergence { const text = report.entity.toLowerCase(); const kind = hint ?? (text.includes("hardware") ? "HARDWARE" : text.includes("material") ? "MATERIAL" : text.includes("parameter") ? "PARAMETER" : "PROJECT"); return { kind, report: structuredClone(report) }; } }

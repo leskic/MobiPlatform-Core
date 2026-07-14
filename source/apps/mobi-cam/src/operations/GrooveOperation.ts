@@ -1,0 +1,1 @@
+import type { Contour, ToolpathOperationSnapshot } from "../interfaces/CAMTypes"; export class GrooveOperation { create(id: string, partId: string, contour: Contour, depth: number): ToolpathOperationSnapshot { return { id, partId, type: "GROOVE", toolId: null, contour: structuredClone(contour), depth }; } }

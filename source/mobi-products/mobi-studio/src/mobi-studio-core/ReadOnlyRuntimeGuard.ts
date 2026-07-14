@@ -1,0 +1,1 @@
+export class ReadOnlyRuntimeGuard{private writeListeners=0;assertNoWriteListeners(){if(this.writeListeners!==0)throw new Error("WRITE_LISTENER_DETECTED");return true}getState(){return{readOnly:true,writeListeners:0 as const,transactionRequests:false,persistence:false}}}

@@ -1,0 +1,1 @@
+import type { ProductionBatchSnapshot } from "../interfaces/ManufacturingTypes"; export class ResourcePlanner { plan(input: readonly ProductionBatchSnapshot[]): ProductionBatchSnapshot[] { return [...structuredClone(input)]; } }

@@ -1,0 +1,2 @@
+import type { IntegrationSnapshot, SynchronizationResultSnapshot } from "./interfaces/MobiDinaTypes";
+export class IntegrationRepository { private readonly history: SynchronizationResultSnapshot[] = []; save(result: SynchronizationResultSnapshot): void { this.history.push(structuredClone(result)); } clear(): void { this.history.length = 0; } get(): IntegrationSnapshot { return structuredClone({ lastResult: this.history.at(-1) ?? null, history: this.history }); } }

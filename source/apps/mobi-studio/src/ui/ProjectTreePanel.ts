@@ -1,0 +1,2 @@
+import type { PresentationCore } from "../../../../presentation/PresentationCore"; import { ProjectTreeViewModel } from "../viewmodel/ProjectTreeViewModel";
+export class ProjectTreePanel { readonly viewModel: ProjectTreeViewModel; constructor(private readonly presentation: PresentationCore) { this.viewModel = new ProjectTreeViewModel(presentation); } select(id: string, multiple = false): void { if (multiple) this.presentation.repository.selection.add(id); else this.presentation.repository.selection.select(id); } get() { return this.viewModel.get(); } }

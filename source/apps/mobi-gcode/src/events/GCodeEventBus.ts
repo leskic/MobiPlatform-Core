@@ -1,0 +1,2 @@
+import type { GCodeEventSnapshot, GCodeListener } from "../interfaces/GCodeTypes";
+export class GCodeEventBus { private readonly listeners = new Set<GCodeListener>(); subscribe(listener: GCodeListener): void { this.listeners.add(listener); } unsubscribe(listener: GCodeListener): void { this.listeners.delete(listener); } publish(event: GCodeEventSnapshot): void { for (const listener of this.listeners) listener(structuredClone(event)); } clear(): void { this.listeners.clear(); } }

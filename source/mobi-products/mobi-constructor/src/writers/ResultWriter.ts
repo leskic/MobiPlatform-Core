@@ -1,0 +1,1 @@
+import type{ConstructorRun}from"../contracts/ConstructorTypes";export class ResultWriter{private last?:ConstructorRun;write(run:ConstructorRun){this.last=structuredClone(run);return this.read()}read(){return this.last?structuredClone(this.last):undefined}}

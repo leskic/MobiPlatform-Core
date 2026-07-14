@@ -1,0 +1,1 @@
+{"id":"mobi-cognitive-engine","name":"Mobi Cognitive Proposition Engine","version":"1.0.0","phase":"4.2","authority":"propose-only","requestStatus":"PENDING","dependsOn":["mobi-cognitive-analyzer","mobi-cognitive-ui","rule-runner","presentation-core"]}

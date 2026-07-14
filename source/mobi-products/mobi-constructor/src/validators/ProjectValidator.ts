@@ -1,0 +1,1 @@
+import type{ConstructorInput}from"../contracts/ConstructorTypes";export class ProjectValidator{validate(input:ConstructorInput):ConstructorInput{const p=input.project;if(!p.id||p.schemaVersion!=="1.0.0"||p.measurementUnit!=="mm"||p.rotationUnit!=="degrees"||!Array.isArray(p.environments))throw new Error("INVALID_PROJECT");return input}}

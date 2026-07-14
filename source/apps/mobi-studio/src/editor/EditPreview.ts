@@ -1,0 +1,3 @@
+import type { PresentationCore } from "../../../../presentation/PresentationCore";
+import type { EditPreviewInput } from "../interfaces/StudioApplicationTypes";
+export class EditPreview { private active = false; constructor(private readonly definition: EditPreviewInput) {} start(presentation: PresentationCore): void { if (this.active) throw new Error("Edit preview already active"); this.definition.apply(presentation); this.active = true; } cancel(presentation: PresentationCore): void { if (!this.active) return; this.definition.revert(presentation); this.active = false; } finish(): void { this.active = false; } isActive(): boolean { return this.active; } }

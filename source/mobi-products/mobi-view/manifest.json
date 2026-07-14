@@ -1,0 +1,1 @@
+{"id":"mobi-view","version":"1.0.0","entry":"src/index.ts","consumes":["mobi.production-manifest@1.1.0","mobi.bom-output@1.1.0","mobi.neutral-cam-package@1.1.0","mobi.production-feedback-event@1.1.0"]}

@@ -1,0 +1,1 @@
+import type { Contour, Region } from "../interfaces/CAMTypes"; export class RegionBuilder { create(contour: Contour, depth: number): Region { if (depth <= 0) throw new Error("Region depth must be positive"); return { contour: structuredClone(contour), depth }; } }

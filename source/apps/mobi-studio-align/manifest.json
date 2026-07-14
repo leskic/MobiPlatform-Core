@@ -1,0 +1,7 @@
+{
+  "id": "mobi-studio-align",
+  "version": "1.0.0",
+  "operation": "ALIGN_ENTITY",
+  "layer": "products",
+  "foundationMutation": false
+}

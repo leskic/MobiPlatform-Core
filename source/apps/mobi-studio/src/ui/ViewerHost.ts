@@ -1,0 +1,2 @@
+import type { Viewer } from "../../../../viewer/Viewer"; import type { PresentationCore } from "../../../../presentation/PresentationCore";
+export class ViewerHost { constructor(readonly viewer: Viewer, readonly presentation: PresentationCore) {} open(id: string): void { this.viewer.open(id); } close(): void { if (this.viewer.session.isActive()) this.viewer.close(); } resize(width: number, height: number): void { this.viewer.setSize(width, height); } get() { return this.viewer.getState(); } }

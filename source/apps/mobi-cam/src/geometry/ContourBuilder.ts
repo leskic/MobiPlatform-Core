@@ -1,0 +1,1 @@
+import type { Contour } from "../interfaces/CAMTypes"; export class ContourBuilder { rectangle(width: number, height: number): Contour { if (width <= 0 || height <= 0) throw new Error("Contour dimensions must be positive"); return { closed: true, points: [{ x: 0, y: 0 }, { x: width, y: 0 }, { x: width, y: height }, { x: 0, y: height }] }; } }

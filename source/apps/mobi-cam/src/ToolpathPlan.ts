@@ -1,0 +1,1 @@
+import type { MachiningStage, ToolpathPlanSnapshot } from "./interfaces/CAMTypes"; export class ToolpathPlan { constructor(private value: ToolpathPlanSnapshot) {} setStage(stage: MachiningStage): void { this.value.stage = stage; } get(): ToolpathPlanSnapshot { return structuredClone(this.value); } }

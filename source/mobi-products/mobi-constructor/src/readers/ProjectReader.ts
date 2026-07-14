@@ -1,0 +1,1 @@
+import type{ProjectReadModel}from"../contracts/ProjectReadModel";import type{PublicProjectSource}from"../contracts/ConstructorTypes";export class ProjectReader{constructor(private readonly source:PublicProjectSource){}read():Readonly<ProjectReadModel>{return structuredClone(this.source.getProject())}}

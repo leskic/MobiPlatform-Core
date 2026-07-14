@@ -1,0 +1,2 @@
+import type { ConstructionValidation } from "../interfaces/ConstructorTypes"; import type { ConstructorContext } from "../ConstructorContext"; import type { ConstructionValidator } from "../validation/ConstructionValidator";
+export class ValidationStage { constructor(private readonly validator: ConstructionValidator) {} execute(context: ConstructorContext): ConstructionValidation { if (!context.project) throw new Error("Construction project has not been built"); return this.validator.validate(context.project); } }

@@ -1,0 +1,1 @@
+import type { PrintPackageSnapshot, HardwareListItem } from "../../../mobi-detalhamento/src/interfaces/DetailingTypes"; export class HardwareQueueBuilder { build(pkg: PrintPackageSnapshot): HardwareListItem[] { return structuredClone(pkg.hardware); } }

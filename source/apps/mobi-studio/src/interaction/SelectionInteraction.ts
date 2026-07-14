@@ -1,0 +1,2 @@
+import type { PresentationCore } from "../../../../presentation/PresentationCore";
+export class SelectionInteraction { constructor(private readonly presentation: PresentationCore) {} select(id: string, multiple = false): void { if (multiple) this.presentation.repository.selection.add(id); else this.presentation.repository.selection.select(id); } clear(): void { this.presentation.repository.selection.clear(); } }

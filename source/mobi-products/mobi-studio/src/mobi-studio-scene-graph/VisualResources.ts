@@ -1,0 +1,1 @@
+import type{SceneNode}from"../contracts/StudioTypes";export class MeshManager{build(nodes:readonly SceneNode[]){return nodes.map(n=>({id:n.meshId,entityId:n.entityId}))}}export class MaterialManager{build(nodes:readonly SceneNode[]){return[...new Set(nodes.map(n=>n.materialKey))].sort().map(key=>({key}))}}

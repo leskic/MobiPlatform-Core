@@ -1,0 +1,1 @@
+import type { Region, ToolpathOperationSnapshot } from "../interfaces/CAMTypes"; export class PocketOperation { create(id: string, partId: string, region: Region): ToolpathOperationSnapshot { return { id, partId, type: "POCKET", toolId: null, region: structuredClone(region), depth: region.depth }; } }

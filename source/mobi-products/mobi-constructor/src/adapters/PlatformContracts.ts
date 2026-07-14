@@ -1,0 +1,1 @@
+export interface TransactionCoordinatorContract{execute(intent:unknown):unknown}export interface RuleRunnerContract{runAll(context:unknown):readonly unknown[]}export interface ConstructorApiContract{readonly version?:string}export interface CognitiveEventsContract{subscribe(listener:(event:unknown)=>void):void}

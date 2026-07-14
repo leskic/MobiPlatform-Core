@@ -1,0 +1,1 @@
+import type { ToolpathOperationSnapshot } from "../interfaces/CAMTypes"; export class CollisionAnalyzer { analyze(operations: readonly ToolpathOperationSnapshot[]): string[] { const seen = new Set<string>(); return operations.flatMap(operation => { if (seen.has(operation.id)) return [operation.id]; seen.add(operation.id); return []; }); } }

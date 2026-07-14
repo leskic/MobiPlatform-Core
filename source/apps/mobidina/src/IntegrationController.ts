@@ -1,0 +1,2 @@
+import type { DinaboxAdapter } from "../../mobi-dinabox-adapter/src/DinaboxAdapter"; import type { AdapterInput, AdapterResultSnapshot } from "../../mobi-dinabox-adapter/src/interfaces/DinaboxAdapterTypes";
+export class IntegrationController { constructor(private readonly adapter: DinaboxAdapter) {} import(input: AdapterInput, now: () => number = () => 0): AdapterResultSnapshot { return this.adapter.adapt(structuredClone(input), now); } }

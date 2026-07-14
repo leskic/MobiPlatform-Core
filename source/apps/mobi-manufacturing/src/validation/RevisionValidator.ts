@@ -1,0 +1,1 @@
+import { RevisionMonitor } from "../RevisionMonitor"; export class RevisionValidator { validate(planRevision: string, detailingRevision: string): boolean { return !new RevisionMonitor().changed(planRevision, detailingRevision); } }

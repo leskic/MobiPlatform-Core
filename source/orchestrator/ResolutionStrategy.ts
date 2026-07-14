@@ -1,0 +1,9 @@
+export type ResolutionStrategy =
+  | "ACCEPT_INTERNAL"
+  | "ACCEPT_EXTERNAL"
+  | "REQUIRE_USER_CONFIRMATION"
+  | "IGNORE";
+
+export const RESOLUTION_STRATEGIES: readonly ResolutionStrategy[] = [
+  "ACCEPT_INTERNAL", "ACCEPT_EXTERNAL", "REQUIRE_USER_CONFIRMATION", "IGNORE"
+];

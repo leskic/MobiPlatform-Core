@@ -1,0 +1,1 @@
+import type { ManufacturingPlanSnapshot } from "../interfaces/ManufacturingTypes"; export class ProgressTracker { calculate(plan: ManufacturingPlanSnapshot): number { const tasks = plan.batches.flatMap(b => b.orders.flatMap(o => o.tasks)); if (tasks.length === 0) return 0; return tasks.filter(t => t.status === "CONCLUIDO").length / tasks.length; } }

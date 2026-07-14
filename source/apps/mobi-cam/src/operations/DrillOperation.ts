@@ -1,0 +1,1 @@
+import type { Point2D, ToolpathOperationSnapshot } from "../interfaces/CAMTypes"; export class DrillOperation { create(id: string, partId: string, position: Point2D, depth: number): ToolpathOperationSnapshot { return { id, partId, type: "DRILL", toolId: null, position: structuredClone(position), depth }; } }

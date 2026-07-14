@@ -1,0 +1,1 @@
+{"id":"mobi-gcode","version":"1.0.0","entry":"src/index.ts","runtime":"node","capabilities":["post-processing","syntax-validation","dry-run","gcode-package"]}

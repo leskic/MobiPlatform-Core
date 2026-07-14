@@ -1,0 +1,2 @@
+import type { StudioApplicationEventSnapshot, StudioApplicationListener } from "../interfaces/StudioApplicationTypes";
+export class StudioEventBus { private readonly listeners = new Set<StudioApplicationListener>(); subscribe(listener: StudioApplicationListener): void { this.listeners.add(listener); } unsubscribe(listener: StudioApplicationListener): void { this.listeners.delete(listener); } publish(event: StudioApplicationEventSnapshot): void { for (const listener of this.listeners) listener(structuredClone(event)); } clear(): void { this.listeners.clear(); } }

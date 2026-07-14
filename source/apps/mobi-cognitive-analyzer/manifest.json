@@ -1,0 +1,1 @@
+{"id":"mobi-cognitive-analyzer","name":"Mobi Cognitive Analyzer","version":"1.0.0","phase":"4.1","mode":"read-only","dependsOn":["mobi-studio","rule-runner","presentation-core","products-layer"]}

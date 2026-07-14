@@ -1,0 +1,1 @@
+import type { CAMPackageSnapshot, NeutralToolpathSnapshot } from "../interfaces/CAMTypes"; export class CAMPackage { build(toolpath: NeutralToolpathSnapshot): CAMPackageSnapshot { return { projectId: toolpath.plan.projectId, fingerprint: structuredClone(toolpath.fingerprint), toolpath: structuredClone(toolpath) }; } }

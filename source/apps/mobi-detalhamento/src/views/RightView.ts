@@ -1,0 +1,1 @@
+import type { PresentationSnapshot } from "../../../../presentation/interfaces/PresentationTypes"; import type { TechnicalView } from "../interfaces/DetailingTypes"; import { createView } from "./FrontView"; export class RightView { build(id: string, state: PresentationSnapshot): TechnicalView { return createView("RIGHT", id, state); } }

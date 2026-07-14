@@ -1,0 +1,2 @@
+import type { Project } from "../../../../builder/types/ProjectTypes"; import type { HardwareFact } from "../../../mobi-dinabox-adapter/src/interfaces/DinaboxAdapterTypes";
+export class HardwareMapper { fromMobi(project: Project): HardwareFact[] { return project.environments.flatMap(environment => environment.modules.flatMap(module => module.hardwares.map(item => ({ id: item.id, catalogId: item.catalogId, hostId: item.hostId ?? null, parameters: structuredClone(item.metadata ?? {}) })))); } }

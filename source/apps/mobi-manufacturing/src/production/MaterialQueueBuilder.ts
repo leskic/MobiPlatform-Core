@@ -1,0 +1,1 @@
+import type { PrintPackageSnapshot, MaterialListItem } from "../../../mobi-detalhamento/src/interfaces/DetailingTypes"; export class MaterialQueueBuilder { build(pkg: PrintPackageSnapshot): MaterialListItem[] { return structuredClone(pkg.materials); } }

@@ -1,0 +1,1 @@
+{"id":"mobi-cognitive-autofix","name":"Mobi Cognitive Auto-Fix","version":"1.0.0","phase":"4.3","authority":"golden-rules-only","dependsOn":["mobi-cognitive-engine","rule-runner","transaction-coordinator","presentation-core"]}

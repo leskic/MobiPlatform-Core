@@ -1,0 +1,1 @@
+import type { TransactionViewModel } from "../viewmodel/TransactionViewModel"; export class TransactionPanel { constructor(readonly viewModel: TransactionViewModel) {} get() { return this.viewModel.get(); } }

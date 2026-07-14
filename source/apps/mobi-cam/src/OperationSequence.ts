@@ -1,0 +1,1 @@
+import type { OperationSequenceSnapshot, ToolpathOperationSnapshot } from "./interfaces/CAMTypes"; export class OperationSequence { create(operations: readonly ToolpathOperationSnapshot[]): OperationSequenceSnapshot { return { operations: [...structuredClone(operations)] }; } }

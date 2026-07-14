@@ -1,0 +1,1 @@
+import type { MaterialFact, SketchUpMaterialInput } from "../interfaces/SketchUpAdapterTypes"; export class MaterialMapper { map(materials: readonly SketchUpMaterialInput[]): MaterialFact[] { return materials.map(material => ({ id: material.id, name: material.name, color: material.color ?? null, opacity: material.opacity ?? null })); } }

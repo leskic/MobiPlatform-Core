@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": { "noEmit": true },
+  "include": [
+    "platform-extensions/mobi-platform-chain-v1/**/*.ts",
+    "mobi-products/mobi-levantamento/**/*.ts",
+    "mobi-products/mobi-constructor/src/**/*.ts",
+    "mobi-products/mobi-view/**/*.ts",
+    "builder/**/*.ts", "codec/**/*.ts", "validator/**/*.ts"
+  ]
+}

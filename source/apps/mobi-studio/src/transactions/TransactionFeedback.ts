@@ -1,0 +1,3 @@
+import type { TransactionFeedbackSnapshot } from "../interfaces/StudioApplicationTypes";
+import type { TransactionResultSnapshot } from "../../../../transaction/interfaces/TransactionTypes";
+export class TransactionFeedback { private state: TransactionFeedbackSnapshot = { transactionId: "", status: "IDLE", message: null }; update(result: TransactionResultSnapshot): void { this.state = { transactionId: result.transactionId, status: result.success ? "COMMITTED" : "ROLLED_BACK", message: result.error ?? null, result: structuredClone(result) }; } clear(): void { this.state = { transactionId: "", status: "IDLE", message: null }; } get(): TransactionFeedbackSnapshot { return structuredClone(this.state); } }

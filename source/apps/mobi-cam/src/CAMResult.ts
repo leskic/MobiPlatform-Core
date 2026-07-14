@@ -1,0 +1,1 @@
+import type { CAMResultSnapshot } from "./interfaces/CAMTypes"; export class CAMResult { constructor(private value: CAMResultSnapshot) {} get(): CAMResultSnapshot { return structuredClone(this.value); } }

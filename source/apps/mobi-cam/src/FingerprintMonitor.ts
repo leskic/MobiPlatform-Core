@@ -1,0 +1,1 @@
+import type { DocumentFingerprintSnapshot } from "../../mobi-detalhamento/src/interfaces/DetailingTypes"; export class FingerprintMonitor { changed(expected: DocumentFingerprintSnapshot, current: DocumentFingerprintSnapshot): boolean { return expected.projectId !== current.projectId || expected.value !== current.value; } }

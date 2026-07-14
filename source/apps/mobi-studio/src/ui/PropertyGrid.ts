@@ -1,0 +1,2 @@
+import type { PropertyRow } from "../interfaces/StudioApplicationTypes"; import { EditIntent } from "../editor/EditIntent"; import type { EditIntentInput } from "../interfaces/StudioApplicationTypes";
+export class PropertyGrid { private rows: PropertyRow[] = []; set(rows: readonly PropertyRow[]): void { this.rows = rows.map(row => structuredClone(row)); } get(): PropertyRow[] { return structuredClone(this.rows); } createIntent(input: EditIntentInput): EditIntent { return new EditIntent(input); } }

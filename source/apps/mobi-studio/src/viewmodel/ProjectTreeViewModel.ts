@@ -1,0 +1,3 @@
+import type { PresentationCore } from "../../../../presentation/PresentationCore"; import type { SceneNodeSnapshot } from "../../../../presentation/interfaces/PresentationTypes"; import type { TreeNodeView } from "../interfaces/StudioApplicationTypes";
+const mapNode = (node: SceneNodeSnapshot): TreeNodeView => ({ id: node.id, label: node.label, category: node.category, children: node.children.map(mapNode) });
+export class ProjectTreeViewModel { constructor(private readonly presentation: PresentationCore) {} get(): TreeNodeView[] { return this.presentation.repository.scene.get().roots.map(mapNode); } }

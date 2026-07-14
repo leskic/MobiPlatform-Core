@@ -1,0 +1,1 @@
+import type { SketchUpLayerInput } from "../interfaces/SketchUpAdapterTypes"; export class LayerExtractor { extract(input: readonly SketchUpLayerInput[]): SketchUpLayerInput[] { return input.map(layer => structuredClone({ ...layer, attributes: layer.attributes ?? {} })); } }

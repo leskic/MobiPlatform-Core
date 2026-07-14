@@ -1,0 +1,1 @@
+import type { ProductionOrderSnapshot, ProductionStatus } from "./interfaces/ManufacturingTypes"; export class ProductionOrder { constructor(private value: ProductionOrderSnapshot) {} setStatus(status: ProductionStatus): void { this.value.status = status; } get(): ProductionOrderSnapshot { return structuredClone(this.value); } }

@@ -1,0 +1,1 @@
+import type { ToolpathPlanSnapshot } from "./interfaces/CAMTypes"; export class CAMRepository { private plan: ToolpathPlanSnapshot | null = null; save(value: ToolpathPlanSnapshot): void { this.plan = structuredClone(value); } get(): ToolpathPlanSnapshot | null { return structuredClone(this.plan); } clear(): void { this.plan = null; } }

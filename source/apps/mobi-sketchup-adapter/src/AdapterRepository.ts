@@ -1,0 +1,1 @@
+import type { AdapterResultSnapshot } from "./interfaces/SketchUpAdapterTypes"; export class AdapterRepository { private result: AdapterResultSnapshot | null = null; save(result: AdapterResultSnapshot): void { this.result = structuredClone(result); } clear(): void { this.result = null; } get(): AdapterResultSnapshot | null { return structuredClone(this.result); } }

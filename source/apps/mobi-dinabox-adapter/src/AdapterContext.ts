@@ -1,0 +1,2 @@
+import type { AdapterInput, ExtractedDinaboxProject, MappedDinaboxInput } from "./interfaces/DinaboxAdapterTypes";
+export class AdapterContext { extracted?: ExtractedDinaboxProject; mapped?: MappedDinaboxInput; constructor(readonly input: AdapterInput, readonly now: () => number = () => 0) { if (!input.transactionId.trim()) throw new Error("Adapter transactionId cannot be empty"); if (!Number.isSafeInteger(input.logicalTimestamp) || input.logicalTimestamp < 0) throw new Error("Adapter timestamp must be non-negative"); } }

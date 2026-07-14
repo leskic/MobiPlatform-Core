@@ -1,0 +1,7 @@
+{
+  "id": "mobi-studio-move",
+  "version": "1.0.0",
+  "operation": "MOVE_ENTITY",
+  "layer": "products",
+  "foundationMutation": false
+}

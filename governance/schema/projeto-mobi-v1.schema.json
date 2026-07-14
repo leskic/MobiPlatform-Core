@@ -1,0 +1,359 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mobi.platform/projeto-mobi-v1.json",
+  "title": "Projeto.mobi v1.0",
+  "description": "Canonical Schema for the Mobi Platform Domain. Normative reference.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "displayName",
+    "code",
+    "schemaVersion",
+    "measurementUnit",
+    "rotationUnit",
+    "source",
+    "status",
+    "createdAt",
+    "updatedAt",
+    "environments"
+  ],
+  "properties": {
+    "id": { "type": "string", "format": "uuid" },
+    "displayName": { "type": "string" },
+    "code": { "type": "string" },
+    "schemaVersion": { "const": "1.0.0" },
+    "measurementUnit": { "const": "mm" },
+    "rotationUnit": { "const": "degrees" },
+    "source": { "type": "string" },
+    "status": { "enum": ["draft", "validated", "production", "archived"] },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "metadata": { 
+      "type": "object", 
+      "description": "Official extension point. Metadata must never alter, replace, or override the meaning of official attributes.",
+      "additionalProperties": true 
+    },
+    "environments": {
+      "type": "array",
+      "default": [],
+      "items": { "$ref": "#/$defs/Environment" }
+    }
+  },
+  "$defs": {
+    "Environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "parentId",
+        "displayName",
+        "code",
+        "order",
+        "status",
+        "architectures",
+        "infrastructures",
+        "modules"
+      ],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "parentId": { "type": "string", "format": "uuid" },
+        "displayName": { "type": "string" },
+        "code": { "type": "string" },
+        "order": { "type": "integer", "minimum": 0 },
+        "status": { "enum": ["draft", "validated", "production", "archived"] },
+        "architectures": { "type": "array", "default": [], "items": { "$ref": "#/$defs/Architecture" } },
+        "infrastructures": { "type": "array", "default": [], "items": { "$ref": "#/$defs/Infrastructure" } },
+        "modules": { "type": "array", "default": [], "items": { "$ref": "#/$defs/Module" } }
+      }
+    },
+    "Architecture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "parentId",
+        "type",
+        "size",
+        "position",
+        "rotation",
+        "referencePlane",
+        "finish"
+      ],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "parentId": { "type": "string", "format": "uuid" },
+        "type": { "enum": ["wall", "floor", "ceiling", "opening"] },
+        "hostId": { "type": ["string", "null"], "format": "uuid" },
+        "size": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["width", "height", "depth"],
+          "properties": {
+            "width": { "type": "number" },
+            "height": { "type": "number" },
+            "depth": { "type": "number" }
+          }
+        },
+        "position": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["x", "y", "z"],
+          "properties": {
+            "x": { "type": "number" },
+            "y": { "type": "number" },
+            "z": { "type": "number" }
+          }
+        },
+        "rotation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["x", "y", "z"],
+          "properties": {
+            "x": { "type": "number" },
+            "y": { "type": "number" },
+            "z": { "type": "number" }
+          }
+        },
+        "referencePlane": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["x", "y", "z"],
+          "properties": {
+            "x": { "type": "number" },
+            "y": { "type": "number" },
+            "z": { "type": "number" }
+          }
+        },
+        "finish": { "type": "string" }
+      },
+      "if": { "properties": { "type": { "const": "opening" } } },
+      "then": {
+        "required": ["hostId"],
+        "properties": {
+          "hostId": { "$ref": "#/$defs/Architecture/properties/hostId" }
+        }
+      }
+    },
+    "Infrastructure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "parentId", "category", "type", "position"],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "parentId": { "type": "string", "format": "uuid" },
+        "hostId": { "type": ["string", "null"], "format": "uuid" },
+        "category": { "enum": ["electrical", "water", "sewer", "gas", "data", "hvac"] },
+        "type": { "type": "string" },
+        "position": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["x", "y", "z"],
+          "properties": {
+            "x": { "type": "number" },
+            "y": { "type": "number" },
+            "z": { "type": "number" }
+          }
+        },
+        "installationVolume": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "required": ["width", "height", "depth"],
+          "properties": {
+            "width": { "type": "number", "minimum": 0 },
+            "height": { "type": "number", "minimum": 0 },
+            "depth": { "type": "number", "minimum": 0 }
+          }
+        }
+      }
+    },
+    "Module": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "parentId",
+        "code",
+        "displayName",
+        "type",
+        "status",
+        "position",
+        "rotation",
+        "parts",
+        "hardwares"
+      ],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "parentId": { "type": "string", "format": "uuid" },
+        "code": { "type": "string" },
+        "displayName": { "type": "string" },
+        "type": { "enum": ["base", "wall", "tower", "island", "panel", "closet", "office"] },
+        "status": { "enum": ["draft", "validated", "production", "archived"] },
+        "position": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["x", "y", "z"],
+          "properties": {
+            "x": { "type": "number" },
+            "y": { "type": "number" },
+            "z": { "type": "number" }
+          }
+        },
+        "rotation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["x", "y", "z"],
+          "properties": {
+            "x": { "type": "number" },
+            "y": { "type": "number" },
+            "z": { "type": "number" }
+          }
+        },
+        "parts": { "type": "array", "default": [], "items": { "$ref": "#/$defs/Part" } },
+        "hardwares": { "type": "array", "default": [], "items": { "$ref": "#/$defs/Hardware" } },
+        "metadata": { 
+            "type": "object", 
+            "description": "Official extension point. Metadata must not alter the meaning of official attributes.",
+            "additionalProperties": true 
+        }
+      }
+    },
+    "Part": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "parentId",
+        "category",
+        "type",
+        "size",
+        "position",
+        "rotation",
+        "materialId",
+        "edgeBanding",
+        "grainDirection"
+      ],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "parentId": { "type": "string", "format": "uuid" },
+        "category": { "enum": ["structural", "front", "internal", "finish"] },
+        "type": { "enum": ["side_panel", "door", "drawer_front", "shelf", "back_panel", "decorative"] },
+        "size": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["width", "height", "thickness"],
+          "properties": {
+            "width": { "type": "number" },
+            "height": { "type": "number" },
+            "thickness": { "type": "number" }
+          }
+        },
+        "position": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["x", "y", "z"],
+          "properties": {
+            "x": { "type": "number" },
+            "y": { "type": "number" },
+            "z": { "type": "number" }
+          }
+        },
+        "rotation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["x", "y", "z"],
+          "properties": {
+            "x": { "type": "number" },
+            "y": { "type": "number" },
+            "z": { "type": "number" }
+          }
+        },
+        "materialId": { "type": "string" },
+        "edgeBanding": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["top", "bottom", "left", "right", "front", "back"],
+          "properties": {
+            "top": { "$ref": "#/$defs/EdgeBand" },
+            "bottom": { "$ref": "#/$defs/EdgeBand" },
+            "left": { "$ref": "#/$defs/EdgeBand" },
+            "right": { "$ref": "#/$defs/EdgeBand" },
+            "front": { "$ref": "#/$defs/EdgeBand" },
+            "back": { "$ref": "#/$defs/EdgeBand" }
+          }
+        },
+        "grainDirection": { "enum": ["lengthwise", "crosswise", "none"] }
+      }
+    },
+    "EdgeBand": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["applied"],
+      "properties": {
+        "applied": { "type": "boolean" },
+        "materialId": { "type": "string" }
+      }
+    },
+    "Hardware": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "parentId",
+        "category",
+        "type",
+        "catalogId",
+        "position",
+        "rotation"
+      ],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "parentId": { "type": "string", "format": "uuid" },
+        "hostId": { "type": ["string", "null"], "format": "uuid" },
+        "category": {
+          "enum": [
+            "hinge",
+            "slide",
+            "pull",
+            "connector",
+            "fastener",
+            "support",
+            "appliance",
+            "lighting",
+            "accessory"
+          ]
+        },
+        "type": { 
+          "type": "string", 
+          "description": "Hardware type is a string to allow for the rapid evolution of catalog items, proprietary components, and regional technical standards." 
+        },
+        "catalogId": { "type": "string" },
+        "position": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["x", "y", "z"],
+          "properties": {
+            "x": { "type": "number" },
+            "y": { "type": "number" },
+            "z": { "type": "number" }
+          }
+        },
+        "rotation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["x", "y", "z"],
+          "properties": {
+            "x": { "type": "number" },
+            "y": { "type": "number" },
+            "z": { "type": "number" }
+          }
+        },
+        "metadata": { 
+            "type": "object", 
+            "description": "Official extension point. Metadata must not alter the meaning of official attributes.",
+            "additionalProperties": true 
+        }
+      }
+    }
+  }
+}

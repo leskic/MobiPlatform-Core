@@ -1,0 +1,1 @@
+import type { SketchUpMaterialInput } from "../interfaces/SketchUpAdapterTypes"; export class MaterialExtractor { extract(input: readonly SketchUpMaterialInput[]): SketchUpMaterialInput[] { return input.map(material => structuredClone({ ...material, attributes: material.attributes ?? {} })); } }

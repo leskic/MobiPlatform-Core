@@ -1,0 +1,1 @@
+import type { ManufacturingInput } from "../interfaces/ManufacturingTypes"; import { FingerprintMonitor } from "../FingerprintMonitor"; export class FingerprintValidator { validate(input: ManufacturingInput): boolean { return !new FingerprintMonitor().changed(input.project, input.detailing.fingerprint, input.logicalTimestamp); } }

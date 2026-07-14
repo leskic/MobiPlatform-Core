@@ -1,0 +1,1 @@
+import type { GeometryFact, SketchUpEntityInput } from "../interfaces/SketchUpAdapterTypes"; export class GeometryMapper { map(entities: readonly SketchUpEntityInput[]): GeometryFact[] { return entities.map(entity => ({ entityId: entity.id, bounds: structuredClone(entity.bounds ?? null), transform: structuredClone(entity.transform ?? null) })); } }

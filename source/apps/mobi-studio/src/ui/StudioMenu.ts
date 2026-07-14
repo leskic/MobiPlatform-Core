@@ -1,0 +1,1 @@
+export class StudioMenu { readonly items = ["new-project", "open-project", "save-project", "close-project", "publish-navigable-project-placeholder"] as const; get(): string[] { return [...this.items]; } }

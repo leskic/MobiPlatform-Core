@@ -1,0 +1,1 @@
+import type { SynchronizationResultSnapshot } from "./interfaces/MobiDinaTypes"; export class SynchronizationResult { constructor(private readonly value: SynchronizationResultSnapshot) {} get(): SynchronizationResultSnapshot { return structuredClone(this.value); } }

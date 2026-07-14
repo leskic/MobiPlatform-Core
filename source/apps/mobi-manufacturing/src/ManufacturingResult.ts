@@ -1,0 +1,1 @@
+import type { ManufacturingResultSnapshot } from "./interfaces/ManufacturingTypes"; export class ManufacturingResult { constructor(private value: ManufacturingResultSnapshot) {} get(): ManufacturingResultSnapshot { return structuredClone(this.value); } }

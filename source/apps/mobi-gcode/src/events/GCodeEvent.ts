@@ -1,0 +1,2 @@
+import type { GCodeEventSnapshot, GCodeEventType } from "../interfaces/GCodeTypes";
+export class GCodeEvent { constructor(private readonly type: GCodeEventType, private readonly sessionId: string, private readonly projectId: string, private readonly logicalTimestamp: number) { if (logicalTimestamp < 0) throw new Error("Timestamp must be non-negative"); } get(): GCodeEventSnapshot { return { type: this.type, sessionId: this.sessionId, projectId: this.projectId, logicalTimestamp: this.logicalTimestamp }; } }

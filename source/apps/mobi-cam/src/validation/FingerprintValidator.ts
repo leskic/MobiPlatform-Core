@@ -1,0 +1,1 @@
+import { FingerprintMonitor } from "../FingerprintMonitor"; import type { CAMInput } from "../interfaces/CAMTypes"; export class FingerprintValidator { validate(input: CAMInput): boolean { return !new FingerprintMonitor().changed(input.manufacturing.fingerprint, input.currentFingerprint); } }

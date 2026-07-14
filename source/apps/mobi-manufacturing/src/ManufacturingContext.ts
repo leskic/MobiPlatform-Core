@@ -1,0 +1,1 @@
+import type { ManufacturingContextSnapshot, ManufacturingInput, ManufacturingPlanSnapshot } from "./interfaces/ManufacturingTypes"; export class ManufacturingContext { plan: ManufacturingPlanSnapshot | null = null; constructor(readonly input: ManufacturingInput) {} get(): ManufacturingContextSnapshot { return structuredClone({ input: this.input, plan: this.plan }); } }

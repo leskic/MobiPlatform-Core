@@ -1,0 +1,2 @@
+import type { CAMPackageSnapshot, ToolpathOperationSnapshot } from "../../../mobi-cam/src/interfaces/CAMTypes";
+export class NeutralToolpathReader { read(value: CAMPackageSnapshot): ToolpathOperationSnapshot[] { if (value.toolpath.format !== "mobi-neutral-toolpath-v1" || value.toolpath.plan.stage !== "PACKAGED") throw new Error("Invalid neutral CAM package"); return structuredClone(value.toolpath.plan.sequence.operations); } }

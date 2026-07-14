@@ -1,0 +1,7 @@
+{
+  "id": "mobi-studio-edgeband",
+  "version": "1.0.0",
+  "operation": "UPDATE_PART_EDGEBAND",
+  "layer": "products",
+  "phase": 2
+}

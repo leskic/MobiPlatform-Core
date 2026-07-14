@@ -1,0 +1,1 @@
+{ "id": "mobi-studio-openings", "name": "Mobi Studio Openings", "version": "1.0.0", "phase": "3.2", "dependsOn": ["mobi-studio-walls", "mobi-studio-rooms", "mobi-studio"] }

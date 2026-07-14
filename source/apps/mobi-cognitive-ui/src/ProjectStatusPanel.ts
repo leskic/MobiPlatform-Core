@@ -1,0 +1,1 @@
+import type{IntegrityReport}from"../../mobi-cognitive-analyzer/src/DiagnosticTypes";export class ProjectStatusPanel{render(report:IntegrityReport){return{projectId:report.projectId,status:report.status,fingerprint:report.projectFingerprint,counts:structuredClone(report.counts),sequence:report.generatedAtSequence}}}

@@ -1,0 +1,13 @@
+import type { Architecture, Environment } from "../../../builder/types/ProjectTypes";
+import { fromArchitecture, wallLength } from "../../mobi-studio-walls/src/WallGeometry";
+import type { TechnicalPointDescriptor, TechnicalPointIssue, TechnicalPointValidation } from "./TechnicalPointTypes";
+import { fromInfrastructure, isTechnicalPoint } from "./TechnicalPointCodec";
+const E=1e-7;
+const expected:Record<string,string[]>={outlet:["electrical"],switch:["electrical"],lighting:["electrical"],cold_water:["water"],hot_water:["water"],sewer:["sewer"],gas:["gas"],internet:["data"],tv:["data"],exhaust:["hvac"],drain:["water","sewer"],custom:["electrical","water","sewer","gas","data","hvac"]};
+export class TechnicalPointValidator{
+ validate(environment:Environment,point:TechnicalPointDescriptor,ignoreId?:string):TechnicalPointValidation{const issues:TechnicalPointIssue[]=[],host=environment.architectures.find(a=>a.id===point.hostSurfaceId);if(!point.hostSurfaceId||!host)return{valid:false,issues:[this.issue("TECHNICAL_POINT_WITHOUT_SURFACE",[point.id])]};if(!["wall","floor","ceiling"].includes(host.type))issues.push(this.issue("INVALID_HOST_SURFACE",[point.id,host.id]));if(!expected[point.kind]?.includes(point.category))issues.push(this.issue("INVALID_TECHNICAL_CATEGORY",[point.id]));if(!this.onSurface(point,host))issues.push(this.issue("TECHNICAL_POINT_OUT_OF_SURFACE",[point.id,host.id]));if(environment.infrastructures.some(v=>v.id===point.id&&v.id!==ignoreId))issues.push(this.issue("DUPLICATE_TECHNICAL_POINT",[point.id]));return{valid:issues.length===0,issues}}
+ validateEnvironment(environment:Environment):TechnicalPointValidation{const issues=environment.infrastructures.filter(isTechnicalPoint).flatMap(v=>this.validate(environment,fromInfrastructure(v),v.id).issues);return{valid:issues.length===0,issues}}
+ private onSurface(p:TechnicalPointDescriptor,h:Architecture){if(h.type==="wall"){const w=fromArchitecture(h),length=wallLength(w.start,w.end),dx=w.end.x-w.start.x,dz=w.end.z-w.start.z,projection=length<E?0:((p.position.x-w.start.x)*dx+(p.position.z-w.start.z)*dz)/length,distance=length<E?Infinity:Math.abs((p.position.x-w.start.x)*dz-(p.position.z-w.start.z)*dx)/length;return projection>=-E&&projection<=length+E&&distance<=E&&p.position.y>=w.start.y-E&&p.position.y<=w.start.y+w.height+E}return p.position.x>=h.position.x-E&&p.position.x<=h.position.x+h.size.width+E&&p.position.z>=h.position.z-E&&p.position.z<=h.position.z+h.size.depth+E&&Math.abs(p.position.y-h.position.y)<=E}
+ private issue(code:TechnicalPointIssue["code"],ids:string[]):TechnicalPointIssue{return{code,ids,path:"/infrastructures"}}
+}
+

@@ -1,0 +1,1 @@
+{"id":"mobi-cognitive-ui","name":"Mobi Cognitive UI","version":"1.0.0","phase":"4.1","mode":"read-only","dependsOn":["mobi-cognitive-analyzer","presentation-core"]}

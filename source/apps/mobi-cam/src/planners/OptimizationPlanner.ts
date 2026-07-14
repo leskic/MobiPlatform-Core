@@ -1,0 +1,1 @@
+import type { ToolpathOperationSnapshot } from "../interfaces/CAMTypes"; export class OptimizationPlanner { plan(input: readonly ToolpathOperationSnapshot[]): ToolpathOperationSnapshot[] { return [...structuredClone(input)]; } }

@@ -1,0 +1,1 @@
+import type { ManufacturingPlanSnapshot } from "../interfaces/ManufacturingTypes"; export class RevisionTracker { apply(plan: ManufacturingPlanSnapshot, revision: string): ManufacturingPlanSnapshot { return structuredClone({ ...plan, revision, status: "REQUER_REVISAO" as const }); } }

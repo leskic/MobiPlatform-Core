@@ -1,0 +1,1 @@
+import type { DinaboxProjectInput } from "../../../mobi-dinabox-adapter/src/interfaces/DinaboxAdapterTypes"; export class DinaboxProjectMapper { map(input: DinaboxProjectInput): DinaboxProjectInput { return structuredClone(input); } }

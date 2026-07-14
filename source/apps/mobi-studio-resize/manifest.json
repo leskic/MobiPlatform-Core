@@ -1,0 +1,7 @@
+{
+  "id": "mobi-studio-resize",
+  "version": "1.0.0",
+  "operation": "RESIZE_ENTITY",
+  "layer": "products",
+  "foundationMutation": false
+}

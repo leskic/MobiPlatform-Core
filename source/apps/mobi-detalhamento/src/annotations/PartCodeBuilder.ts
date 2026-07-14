@@ -1,0 +1,2 @@
+import type { Part } from "../../../../builder/types/ProjectTypes"; import type { Annotation } from "../interfaces/DetailingTypes"; type FuturePart = Part & { code?: unknown };
+export class PartCodeBuilder { build(part: Part): Annotation | null { const code = (part as FuturePart).code; if (typeof code !== "string" || !code.trim()) return null; return { id: `part-code:${part.id}`, entityId: part.id, text: code, type: "part-code" }; } }

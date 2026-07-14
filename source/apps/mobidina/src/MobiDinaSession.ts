@@ -1,0 +1,2 @@
+import type { MobiDinaSessionSnapshot } from "./interfaces/MobiDinaTypes";
+export class MobiDinaSession { private id: string | undefined; create(id: string): MobiDinaSessionSnapshot { if (!id.trim()) throw new Error("MobiDina session id cannot be empty"); this.id = id; return this.get(); } close(): MobiDinaSessionSnapshot { this.require(); this.id = undefined; return this.get(); } require(): string { if (!this.id) throw new Error("No active MobiDina session"); return this.id; } get(): MobiDinaSessionSnapshot { return { id: this.id ?? "", active: this.id !== undefined }; } }

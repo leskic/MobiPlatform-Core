@@ -1,0 +1,1 @@
+import type { InspectorViewModel } from "../viewmodel/InspectorViewModel"; export class InspectorPanel { constructor(readonly viewModel: InspectorViewModel) {} get() { return this.viewModel.get(); } }

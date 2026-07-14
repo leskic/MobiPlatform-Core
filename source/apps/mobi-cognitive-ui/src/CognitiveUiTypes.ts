@@ -1,0 +1,2 @@
+import type{ChecklistItem,Diagnostic,IntegrityReport,MonitorRecord}from"../../mobi-cognitive-analyzer/src/DiagnosticTypes";export interface CognitiveUiSnapshot{status:IntegrityReport["status"];projectId:string;checklist:ChecklistItem[];diagnostics:Diagnostic[];alerts:Diagnostic[];inconsistencies:Diagnostic[];events:MonitorRecord[];readOnly:true;empty:boolean}export type DiagnosticFilter={severity?:Diagnostic["severity"];origin?:string;entityId?:string};
+

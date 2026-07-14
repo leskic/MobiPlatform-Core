@@ -1,0 +1,2 @@
+import type { ConstructorEventSnapshot, ConstructorListener } from "../interfaces/ConstructorTypes";
+export class ConstructorEventBus { private readonly listeners = new Set<ConstructorListener>(); subscribe(listener: ConstructorListener): void { this.listeners.add(listener); } unsubscribe(listener: ConstructorListener): void { this.listeners.delete(listener); } publish(event: ConstructorEventSnapshot): void { for (const listener of this.listeners) listener(structuredClone(event)); } clear(): void { this.listeners.clear(); } }

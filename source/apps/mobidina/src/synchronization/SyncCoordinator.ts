@@ -1,0 +1,2 @@
+import type { SyncManager } from "../../../../sync/SyncManager"; import type { DivergenceReportSnapshot } from "../../../../sync/interfaces/SyncTypes";
+export class SyncCoordinator { constructor(private readonly manager: SyncManager) {} compare(entity: string, source: unknown, destination: unknown, timestamp: number, transactionId: string): DivergenceReportSnapshot { return this.manager.detectDivergence(entity, "dinabox", "mobi", source, destination, timestamp, transactionId); } }

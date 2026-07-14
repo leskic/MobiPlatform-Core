@@ -1,0 +1,7 @@
+{
+  "id": "mobi.dinabox-adapter",
+  "name": "Mobi Dinabox Adapter",
+  "version": "1.0.0",
+  "type": "adapter",
+  "entry": "src/index.ts"
+}

@@ -1,0 +1,13 @@
+{
+  "id": "mobi-studio-intent-edit",
+  "name": "Mobi Studio Intent-Edit Extension",
+  "version": "1.0.0",
+  "layer": "products",
+  "phase": "intent-edit",
+  "operation": "UPDATE_PART_GRAIN_DIRECTION",
+  "dependencies": {
+    "mobi-studio": "1.0.0",
+    "mobi-presentation": "1.0.0",
+    "mobi-transaction": "1.0.0"
+  }
+}

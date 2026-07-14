@@ -1,0 +1,1 @@
+import type { TransactionFeedback } from "../transactions/TransactionFeedback"; export class TransactionViewModel { constructor(private readonly feedback: TransactionFeedback) {} get() { return this.feedback.get(); } }

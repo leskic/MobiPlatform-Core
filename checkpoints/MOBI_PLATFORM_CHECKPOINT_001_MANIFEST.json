@@ -1,0 +1,20 @@
+{
+  "checkpoint": "MOBI_PLATFORM_CHECKPOINT_001",
+  "status": "READY_FOR_HUMAN_VALIDATION",
+  "rfe": "RfE_MOBI_PLATFORM_001",
+  "publicExtensionVersion": "1.0.0",
+  "micVersion": "1.1.0",
+  "projectSchemaVersion": "1.0.0",
+  "validation": {
+    "typescriptStrict": true,
+    "checkpointTestsPassed": 43,
+    "checkpointTestsTotal": 43,
+    "coveragePercent": 100,
+    "baselineRegressionPassed": 313,
+    "baselineRegressionTotal": 313,
+    "foundationModified": false,
+    "directProductDependencies": false
+  },
+  "nextRecipient": "CHARLES",
+  "freezeAuthorized": false
+}

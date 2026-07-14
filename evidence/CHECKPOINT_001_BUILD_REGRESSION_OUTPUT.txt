@@ -1,0 +1,66 @@
+COMMAND: npm run build && npm test
+EXECUTED_AT_UTC: 2026-07-14T02:51:09Z
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> projeto-mobi-schema-validator@1.0.0 build
+> tsc --noEmit
+
+npm notice
+npm notice New minor version of npm available! 11.9.0 -> 11.18.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.18.0
+npm notice To update run: npm install -g npm@11.18.0
+npm notice
+BUILD_EXIT_CODE: 0
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> projeto-mobi-schema-validator@1.0.0 test
+> vitest run
+
+
+ RUN  v3.2.7 /workspace/scratch/a54b0b1f716f/mobi_platform_checkpoint_001_resumed
+
+ ✓ apps/mobi-constructor/tests/mobi-constructor.test.ts (17 tests) 32ms
+ ✓ apps/mobi-detalhamento/tests/detalhamento.test.ts (15 tests) 39ms
+ ✓ apps/mobi-dinabox-adapter/tests/dinabox-adapter.test.ts (17 tests) 40ms
+ ✓ apps/mobi-sketchup-adapter/tests/sketchup-adapter.test.ts (16 tests) 66ms
+ ✓ apps/mobi-manufacturing/tests/manufacturing.test.ts (18 tests) 95ms
+ ✓ transaction/tests/transaction-engine.test.ts (11 tests) 15ms
+ ✓ apps/mobidina/tests/mobidina.test.ts (18 tests) 83ms
+ ✓ copilot/rulebook/packages/tests/hardware-package.test.ts (10 tests) 37ms
+ ✓ apps/mobi-cam/tests/cam.test.ts (16 tests) 119ms
+ ✓ viewer/tests/viewer.test.ts (13 tests) 38ms
+ ✓ copilot/rulebook/packages/tests/cabinetry-package.test.ts (8 tests) 53ms
+ ✓ copilot/rulebook/packages/tests/core-package.test.ts (8 tests) 18ms
+ ✓ copilot/rulebook/packages/tests/production-package.test.ts (9 tests) 22ms
+ ✓ apps/mobi-gcode/tests/gcode.test.ts (13 tests) 18ms
+ ✓ codec/tests/codec.test.ts (8 tests) 19ms
+ ✓ sync/tests/sync-manager.test.ts (10 tests) 19ms
+ ✓ studio/tests/studio.test.ts (7 tests) 13ms
+ ✓ orchestrator/tests/orchestrator.test.ts (12 tests) 30ms
+ ✓ apps/mobi-studio/tests/mobi-studio-application.test.ts (15 tests) 25ms
+ ✓ copilot/tests/copilot.test.ts (8 tests) 29ms
+ ✓ bridge/adapters/tests/adapters.test.ts (8 tests) 19ms
+ ✓ bridge/tests/bridge.test.ts (10 tests) 15ms
+ ✓ origin/tests/origin.test.ts (7 tests) 25ms
+ ✓ presentation/tests/presentation.test.ts (12 tests) 10ms
+ ✓ builder/tests/project-builder.test.ts (4 tests) 12ms
+ ✓ copilot/tests/ruleset.test.ts (8 tests) 12ms
+ ✓ validator/tests/invalid-uuid.test.ts (2 tests) 16ms
+ ✓ copilot/tests/rulebook.test.ts (8 tests) 9ms
+ ✓ validator/tests/invalid-enum.test.ts (1 test) 6ms
+ ✓ validator/tests/missing-required.test.ts (1 test) 7ms
+ ✓ apps/mobi-cam/tests/machining-stage.test.ts (1 test) 2ms
+ ✓ validator/tests/valid-project.test.ts (2 tests) 5ms
+
+ Test Files  32 passed (32)
+      Tests  313 passed (313)
+   Start at  19:51:12
+   Duration  2.57s (transform 2.76s, setup 0ms, collect 10.10s, tests 948ms, environment 5ms, prepare 1.72s)
+
+npm notice
+npm notice New minor version of npm available! 11.9.0 -> 11.18.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.18.0
+npm notice To update run: npm install -g npm@11.18.0
+npm notice
+REGRESSION_EXIT_CODE: 0

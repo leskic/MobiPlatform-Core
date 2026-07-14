@@ -1,0 +1,2 @@
+import type { AdapterInput, ExtractedModel, MappedSketchUpInput } from "./interfaces/SketchUpAdapterTypes";
+export class AdapterContext { extracted?: ExtractedModel; mapped?: MappedSketchUpInput; constructor(readonly input: AdapterInput, readonly now: () => number = () => 0) { if (!input.transactionId.trim()) throw new Error("Adapter transactionId cannot be empty"); if (!Number.isSafeInteger(input.logicalTimestamp) || input.logicalTimestamp < 0) throw new Error("Adapter timestamp must be non-negative"); } }

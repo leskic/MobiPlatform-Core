@@ -1,0 +1,2 @@
+import type { GCodeReportEntry, GCodeReportSnapshot } from "./interfaces/GCodeTypes";
+export class GCodeReport { private readonly entries: GCodeReportEntry[] = []; private readonly startedAt: number; constructor(private readonly clock: () => number = () => 0) { this.startedAt = clock(); } add(entry: GCodeReportEntry): void { this.entries.push(structuredClone(entry)); } get(): GCodeReportSnapshot { const finishedAt = this.clock(); return { entries: structuredClone(this.entries), startedAt: this.startedAt, finishedAt, durationMs: finishedAt - this.startedAt }; } }

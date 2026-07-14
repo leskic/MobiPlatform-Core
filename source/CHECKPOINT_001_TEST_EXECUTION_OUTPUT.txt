@@ -1,0 +1,34 @@
+COMMAND: vitest run --coverage --config vitest.checkpoint001.config.ts
+EXECUTED_AT_UTC: 2026-07-14T02:51:01Z
+
+
+ RUN  v3.2.7 /workspace/scratch/a54b0b1f716f/mobi_platform_checkpoint_001_resumed
+      Coverage enabled with v8
+
+ ✓ mobi-products/mobi-constructor/tests/industrialization.test.ts (10 tests) 17ms
+ ✓ mobi-products/mobi-constructor/tests/closed-loop.test.ts (12 tests) 25ms
+ ✓ mobi-products/mobi-constructor/tests/constructor.test.ts (10 tests) 11ms
+ ✓ mobi-products/mobi-constructor/tests/mic-contracts.test.ts (6 tests) 27ms
+ ✓ platform-extensions/mobi-platform-chain-v1/tests/chain.test.ts (5 tests) 25ms
+
+ Test Files  5 passed (5)
+      Tests  43 passed (43)
+   Start at  19:51:01
+   Duration  920ms (transform 588ms, setup 0ms, collect 1.18s, tests 104ms, environment 1ms, prepare 345ms)
+
+ % Coverage report from v8
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------|---------|----------|---------|---------|-------------------
+All files          |     100 |      100 |     100 |     100 |                   
+ ...c/public-chain |     100 |      100 |     100 |     100 |                   
+  ...PublicFlow.ts |     100 |      100 |     100 |     100 |                   
+ ...vantamento/src |     100 |      100 |     100 |     100 |                   
+  ...toProducer.ts |     100 |      100 |     100 |     100 |                   
+ .../mobi-view/src |     100 |      100 |     100 |     100 |                   
+  ...ntegration.ts |     100 |      100 |     100 |     100 |                   
+ ...m-chain-v1/src |     100 |      100 |     100 |     100 |                   
+  ...ectAdapter.ts |     100 |      100 |     100 |     100 |                   
+-------------------|---------|----------|---------|---------|-------------------
+
+EXIT_CODE: 0

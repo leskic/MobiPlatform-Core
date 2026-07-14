@@ -1,0 +1,1 @@
+{"id":"mobi-studio-walls","name":"Mobi Studio Walls","version":"1.0.0","layer":"products","phase":"3.1","operations":["CREATE_WALL","UPDATE_WALL","DELETE_WALL","MERGE_WALLS","SPLIT_WALL","CONNECT_WALLS_L","CONNECT_WALLS_T","CONNECT_WALLS_X"]}

@@ -1,0 +1,1 @@
+{"id":"mobi-studio","name":"Mobi Studio","version":"1.0.0","phase":"CANVAS_VISUALIZATION_ENGINE","mode":"READ_ONLY","entry":"src/index.ts","capabilities":["project-read","transaction-events","cognitive-events","render","camera","selection"],"forbidden":["edit","save","transaction-request","persistence","constructor"]}

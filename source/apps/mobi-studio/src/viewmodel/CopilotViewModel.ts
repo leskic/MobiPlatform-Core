@@ -1,0 +1,2 @@
+import type { MobiCopilot } from "../../../../copilot/MobiCopilot"; import type { CopilotPanelSnapshot } from "../interfaces/StudioApplicationTypes";
+export class CopilotViewModel { constructor(private readonly copilot: MobiCopilot) {} get(): CopilotPanelSnapshot { return { suggestions: this.copilot.getSuggestions().map(({ code, severity, path, message }) => ({ code, severity, path, message })) }; } }

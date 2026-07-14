@@ -1,0 +1,7 @@
+{
+  "id": "mobi-studio-thickness",
+  "version": "1.0.0",
+  "operation": "UPDATE_PART_THICKNESS",
+  "layer": "products",
+  "phase": 2
+}

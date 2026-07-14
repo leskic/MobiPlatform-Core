@@ -1,0 +1,2 @@
+import type { SketchUpEntityInput } from "../interfaces/SketchUpAdapterTypes"; import type { EntityExtractor } from "./EntityExtractor";
+export class ComponentExtractor { constructor(private readonly entities: EntityExtractor) {} extract(input: readonly SketchUpEntityInput[]): SketchUpEntityInput[] { return this.entities.flatten(input).filter(entity => entity.kind === "component"); } definitions(input: readonly SketchUpEntityInput[]): string[] { return [...new Set(this.extract(input).map(entity => entity.definitionId).filter((id): id is string => id !== undefined))]; } }

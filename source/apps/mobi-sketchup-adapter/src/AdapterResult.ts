@@ -1,0 +1,1 @@
+import type { AdapterResultSnapshot } from "./interfaces/SketchUpAdapterTypes"; export class AdapterResult { constructor(private readonly value: AdapterResultSnapshot) {} get(): AdapterResultSnapshot { return structuredClone(this.value); } }

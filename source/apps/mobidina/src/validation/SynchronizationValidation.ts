@@ -1,0 +1,2 @@
+import type { SynchronizationContext } from "../SynchronizationContext";
+export class SynchronizationValidation { validate(context: SynchronizationContext): void { if (!context.sourceProject) throw new Error("Synchronization source project is required"); if (!context.destinationProject) throw new Error("Synchronization destination project is required"); if (!context.divergence) throw new Error("Synchronization divergence report is required"); } }

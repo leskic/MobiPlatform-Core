@@ -1,0 +1,2 @@
+import type { PresentationEventSnapshot, PresentationEventType } from "./interfaces/PresentationTypes";
+export class PresentationEvent { constructor(private readonly type: PresentationEventType, private readonly sessionId: string, private readonly logicalTimestamp: number) { if (!Number.isSafeInteger(logicalTimestamp) || logicalTimestamp < 0) throw new Error("Presentation timestamp must be non-negative"); } get(): PresentationEventSnapshot { return { type: this.type, sessionId: this.sessionId, logicalTimestamp: this.logicalTimestamp }; } }

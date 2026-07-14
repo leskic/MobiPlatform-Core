@@ -1,0 +1,2 @@
+import type { MobiDinaEventSnapshot, MobiDinaListener } from "../interfaces/MobiDinaTypes";
+export class MobiDinaEventBus { private readonly listeners = new Set<MobiDinaListener>(); subscribe(listener: MobiDinaListener): void { this.listeners.add(listener); } unsubscribe(listener: MobiDinaListener): void { this.listeners.delete(listener); } publish(event: MobiDinaEventSnapshot): void { for (const listener of this.listeners) listener(structuredClone(event)); } clear(): void { this.listeners.clear(); } }

@@ -1,0 +1,7 @@
+{
+  "id": "mobi-studio-rotate",
+  "version": "1.0.0",
+  "operation": "ROTATE_ENTITY",
+  "layer": "products",
+  "foundationMutation": false
+}

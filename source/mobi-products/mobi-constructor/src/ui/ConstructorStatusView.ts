@@ -1,0 +1,1 @@
+import type{ConstructorRun}from"../contracts/ConstructorTypes";export class ConstructorStatusView{render(run:ConstructorRun){return{status:"READY"as const,projectId:run.output.model.projectId,industrialOutputsEnabled:false}}}

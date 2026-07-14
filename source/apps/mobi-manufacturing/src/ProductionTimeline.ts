@@ -1,0 +1,1 @@
+import type { TimelineEntry } from "./interfaces/ManufacturingTypes"; export class ProductionTimeline { private entries: TimelineEntry[] = []; add(value: TimelineEntry): void { this.entries.push(structuredClone(value)); } get(): TimelineEntry[] { return structuredClone(this.entries); } }

@@ -1,0 +1,1 @@
+import type{Diagnostic}from"../../mobi-cognitive-analyzer/src/DiagnosticTypes";export class DiagnosticsPanel{render(items:readonly Diagnostic[]){return items.map(d=>({id:d.id,severity:d.severity,origin:d.origin,rule:d.ruleId,entity:d.entityId,message:d.message,trace:`${d.traceability.path}@${d.traceability.sequence}`}))}}

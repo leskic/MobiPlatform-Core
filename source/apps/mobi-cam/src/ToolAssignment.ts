@@ -1,0 +1,1 @@
+import type { ToolAssignmentSnapshot } from "./interfaces/CAMTypes"; export class ToolAssignment { create(operationId: string, toolId: string): ToolAssignmentSnapshot { if (!operationId.trim() || !toolId.trim()) throw new Error("Operation and tool are required"); return { operationId, toolId }; } }

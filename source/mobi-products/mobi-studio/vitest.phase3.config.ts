@@ -1,0 +1,1 @@
+import{defineConfig}from"vitest/config";export default defineConfig({test:{include:["mobi-products/mobi-studio/tests/**/*.test.ts"],coverage:{reportsDirectory:"mobi-products/mobi-studio/coverage-phase3",include:["mobi-products/mobi-studio/src/**/*.ts"],exclude:["**/index.ts","**/*Types.ts"],thresholds:{statements:95,branches:95,functions:95,lines:95}}}});

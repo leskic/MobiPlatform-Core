@@ -1,0 +1,2 @@
+import type { GCodeMachineProfile } from "../interfaces/GCodeTypes";
+export class HeaderGenerator { create(prefix: string, projectId: string, fingerprint: string, profile: GCodeMachineProfile, timestamp: number): string[] { return [`${prefix} PROJECT=${projectId}`, `${prefix} FINGERPRINT=${fingerprint}`, `${prefix} VERSION=${profile.version}`, `${prefix} TIMESTAMP=${timestamp}`, `${prefix} MACHINE=${profile.id}`]; } }

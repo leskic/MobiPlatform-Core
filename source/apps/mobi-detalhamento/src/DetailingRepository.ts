@@ -1,0 +1,1 @@
+import type { DetailingResultSnapshot } from "./interfaces/DetailingTypes"; export class DetailingRepository { private value: DetailingResultSnapshot | null = null; save(value: DetailingResultSnapshot): void { this.value = structuredClone(value); } get(): DetailingResultSnapshot | null { return structuredClone(this.value); } clear(): void { this.value = null; } }

@@ -1,0 +1,7 @@
+{
+  "id": "mobi-studio-materials",
+  "version": "1.0.0",
+  "operation": "UPDATE_PART_MATERIAL",
+  "layer": "products",
+  "phase": 2
+}

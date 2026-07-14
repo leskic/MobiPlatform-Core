@@ -1,0 +1,1 @@
+import { PRODUCTION_STATUSES } from "../ProductionStatus"; import type { ProductionStatus } from "../interfaces/ManufacturingTypes"; export class StatusTracker { validate(status: ProductionStatus): void { if (!PRODUCTION_STATUSES.includes(status)) throw new Error("Unknown production status"); } }

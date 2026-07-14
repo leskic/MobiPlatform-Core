@@ -1,0 +1,1 @@
+import type { Contour, ToolpathOperationSnapshot } from "../interfaces/CAMTypes"; export class EngravingOperation { create(id: string, partId: string, contour: Contour, depth: number, text: string): ToolpathOperationSnapshot { return { id, partId, type: "ENGRAVING", toolId: null, contour: structuredClone(contour), depth, text }; } }

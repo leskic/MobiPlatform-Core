@@ -1,0 +1,1 @@
+import type { SheetLayoutSnapshot } from "../interfaces/DetailingTypes"; export class SheetLayout { create(scale = 1, margin = 10, titleBlock = "Mobi"): SheetLayoutSnapshot { if (scale <= 0 || margin < 0) throw new Error("Invalid sheet layout"); return { width: 841, height: 594, margin, scale, titleBlock }; } }

@@ -1,0 +1,15 @@
+{
+  "id": "mobi-constructor",
+  "name": "Mobi Constructor",
+  "version": "1.0.1",
+  "kind": "mobi-product",
+  "platformConsumption": "public-apis-only",
+  "entry": "src/index.ts",
+  "industrialFeatures": true,
+  "publicIndustrialProvider": {
+    "rfe": "RFE-MIC-001",
+    "micVersion": "1.1.0",
+    "contracts": ["ProductionManifest", "BOMOutput", "NeutralCAMPackage", "ProductionFeedbackStream", "IndustrialTransactionPort"]
+  },
+  "outputs": ["manufacturing", "bom", "cam", "gcode", "detailing", "reports"]
+}

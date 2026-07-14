@@ -1,0 +1,1 @@
+import type { ProductionStatus } from "./interfaces/ManufacturingTypes"; export const PRODUCTION_STATUSES: readonly ProductionStatus[] = ["PENDENTE", "AGUARDANDO", "LIBERADO", "EM_PRODUCAO", "PAUSADO", "CONCLUIDO", "REQUER_REVISAO", "CANCELADO"];

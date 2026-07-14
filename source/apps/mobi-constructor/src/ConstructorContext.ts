@@ -1,0 +1,2 @@
+import type { ConstructionInput, MappedConstruction } from "./interfaces/ConstructorTypes"; import type { Project } from "../../../builder/types/ProjectTypes";
+export class ConstructorContext { mapped?: MappedConstruction; project?: Project; constructor(readonly input: ConstructionInput, readonly now: () => number = () => 0) { if (!input.transactionId.trim()) throw new Error("Construction transactionId cannot be empty"); if (!Number.isSafeInteger(input.logicalTimestamp) || input.logicalTimestamp < 0) throw new Error("Construction timestamp must be non-negative"); } }

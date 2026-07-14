@@ -1,0 +1,7 @@
+{
+  "id": "mobi-studio-grain",
+  "version": "1.0.0",
+  "operation": "UPDATE_PART_GRAIN_DIRECTION",
+  "layer": "products",
+  "phase": 2
+}

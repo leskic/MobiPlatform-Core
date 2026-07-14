@@ -1,0 +1,2 @@
+import type { Project } from "../../../../builder/types/ProjectTypes"; export interface MobiMaterialReference { partId: string; materialId: string; thickness: number }
+export class MaterialMapper { fromMobi(project: Project): MobiMaterialReference[] { return project.environments.flatMap(environment => environment.modules.flatMap(module => module.parts.map(part => ({ partId: part.id, materialId: part.materialId, thickness: part.size.thickness })))); } }

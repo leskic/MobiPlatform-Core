@@ -1,0 +1,2 @@
+import type { Project } from "../../../../builder/types/ProjectTypes"; import { RuleContext } from "../../../../copilot/rules/RuleContext"; import type { RuleResult } from "../../../../copilot/rules/RuleResult"; import type { RuleRunner } from "../../../../copilot/rules/RuleRunner";
+export class RuleValidationStep { constructor(private readonly runner: RuleRunner) {} validate(project: Project): RuleResult[] { return [...this.runner.runAll(new RuleContext(project))]; } }

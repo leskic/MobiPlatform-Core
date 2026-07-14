@@ -1,0 +1,1 @@
+import type { WorkstationAssignmentSnapshot } from "./interfaces/ManufacturingTypes"; export class WorkstationAssignment { assign(taskId: string, workstation: string): WorkstationAssignmentSnapshot { if (!taskId.trim() || !workstation.trim()) throw new Error("Task and workstation are required"); return { taskId, workstation }; } }

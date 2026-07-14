@@ -1,0 +1,3 @@
+import type { PresentationCore } from "../../../../presentation/PresentationCore"; import type { SceneNodeSnapshot } from "../../../../presentation/interfaces/PresentationTypes";
+const find = (nodes: readonly SceneNodeSnapshot[], id: string): SceneNodeSnapshot | undefined => { for (const node of nodes) { if (node.id === id) return node; const child = find(node.children, id); if (child) return child; } return undefined; };
+export class InspectorViewModel { constructor(private readonly presentation: PresentationCore) {} get(): SceneNodeSnapshot | null { const id = this.presentation.repository.selection.get().ids[0]; return id ? structuredClone(find(this.presentation.repository.scene.get().roots, id) ?? null) : null; } }

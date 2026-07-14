@@ -1,0 +1,7 @@
+{
+  "id": "mobi-studio-hardware",
+  "version": "1.0.0",
+  "operation": "UPDATE_PART_HARDWARE",
+  "layer": "products",
+  "phase": 2
+}

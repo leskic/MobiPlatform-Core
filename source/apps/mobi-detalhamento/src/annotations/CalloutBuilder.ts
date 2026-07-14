@@ -1,0 +1,1 @@
+import type { Annotation } from "../interfaces/DetailingTypes"; export class CalloutBuilder { build(id: string, entityId: string, text: string): Annotation { return { id, entityId, text, type: "callout" }; } }

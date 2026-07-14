@@ -1,0 +1,7 @@
+{
+  "id": "mobi.sketchup-adapter",
+  "name": "Mobi SketchUp Adapter",
+  "version": "1.0.0",
+  "entry": "src/index.ts",
+  "headless": true
+}

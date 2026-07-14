@@ -1,0 +1,2 @@
+import type { EditIntentSnapshot } from "../interfaces/StudioApplicationTypes";
+export class EditorState { private intent: EditIntentSnapshot | null = null; set(intent: EditIntentSnapshot): void { this.intent = structuredClone(intent); } clear(): void { this.intent = null; } get(): EditIntentSnapshot | null { return structuredClone(this.intent); } get editing(): boolean { return this.intent !== null; } }

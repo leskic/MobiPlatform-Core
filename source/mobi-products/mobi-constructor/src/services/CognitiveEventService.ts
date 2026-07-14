@@ -1,0 +1,1 @@
+import type{CognitiveEvent}from"../contracts/ConstructorTypes";export class CognitiveEventService{private events:CognitiveEvent[]=[];observe(event:CognitiveEvent){this.events.push(structuredClone(event))}snapshot():readonly CognitiveEvent[]{return structuredClone(this.events)}}

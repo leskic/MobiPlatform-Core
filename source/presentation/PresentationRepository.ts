@@ -1,0 +1,3 @@
+import { CameraState } from "./CameraState"; import { SceneModel } from "./SceneModel"; import { SelectionModel } from "./SelectionModel"; import { ViewState } from "./ViewState"; import { VisibilityState } from "./VisibilityState";
+import type { PresentationSnapshot } from "./interfaces/PresentationTypes";
+export class PresentationRepository { readonly scene = new SceneModel(); readonly selection = new SelectionModel(); readonly visibility = new VisibilityState(); readonly camera = new CameraState(); readonly view = new ViewState(); get(): PresentationSnapshot { return { scene: this.scene.get(), selection: this.selection.get(), visibility: this.visibility.get(), camera: this.camera.get(), view: this.view.get() }; } }

@@ -1,0 +1,1 @@
+import type { ToolpathOperationSnapshot } from "./interfaces/CAMTypes"; export class ToolpathOperation { constructor(private value: ToolpathOperationSnapshot) {} assign(toolId: string): void { if (!toolId.trim()) throw new Error("Tool id cannot be empty"); this.value.toolId = toolId; } get(): ToolpathOperationSnapshot { return structuredClone(this.value); } }

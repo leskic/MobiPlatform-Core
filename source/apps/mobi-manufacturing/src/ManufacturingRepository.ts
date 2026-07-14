@@ -1,0 +1,1 @@
+import type { ManufacturingPlanSnapshot } from "./interfaces/ManufacturingTypes"; export class ManufacturingRepository { private plan: ManufacturingPlanSnapshot | null = null; save(value: ManufacturingPlanSnapshot): void { this.plan = structuredClone(value); } get(): ManufacturingPlanSnapshot | null { return structuredClone(this.plan); } clear(): void { this.plan = null; } }

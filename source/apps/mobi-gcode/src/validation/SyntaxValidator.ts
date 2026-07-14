@@ -1,0 +1,2 @@
+import type { GCodeFile } from "../interfaces/GCodeTypes";
+export class SyntaxValidator { validate(file: GCodeFile): string[] { const errors: string[] = []; if (!file.content.trim()) errors.push("EMPTY_FILE"); for (const field of ["PROJECT", "FINGERPRINT", "VERSION", "TIMESTAMP", "MACHINE"]) if (!file.content.includes(`${field}=`)) errors.push(`MISSING_HEADER:${field}`); if (/\b(?:NaN|Infinity|undefined)\b/.test(file.content)) errors.push("INVALID_NUMERIC_COMMAND"); if (file.content.includes("\0")) errors.push("INVALID_CHARACTER"); return errors; } }

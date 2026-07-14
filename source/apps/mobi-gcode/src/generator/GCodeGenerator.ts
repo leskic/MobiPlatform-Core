@@ -1,0 +1,2 @@
+import type { CAMPackageSnapshot } from "../../../mobi-cam/src/interfaces/CAMTypes"; import type { GCodeFile, GCodeMachineProfile, PostProcessor } from "../interfaces/GCodeTypes";
+export class GCodeGenerator { generate(processor: PostProcessor, input: CAMPackageSnapshot, profile: GCodeMachineProfile, timestamp: number): GCodeFile { if (processor.controller !== profile.controller) throw new Error("Post-processor and machine mismatch"); return processor.process(input, profile, timestamp); } }

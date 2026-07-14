@@ -1,0 +1,2 @@
+import type { ClassifiedDivergence, DivergenceGroup, DivergenceKind } from "../interfaces/MobiDinaTypes";
+export class DivergenceReporter { group(items: readonly ClassifiedDivergence[]): DivergenceGroup[] { const order: DivergenceKind[] = ["PROJECT", "PARAMETER", "MATERIAL", "HARDWARE"]; return order.map(kind => ({ kind, items: items.filter(item => item.kind === kind).map(item => structuredClone(item)) })).filter(group => group.items.length > 0); } }

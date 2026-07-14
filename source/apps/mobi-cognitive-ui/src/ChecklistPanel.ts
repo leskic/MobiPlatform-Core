@@ -1,0 +1,1 @@
+import type{ChecklistItem}from"../../mobi-cognitive-analyzer/src/DiagnosticTypes";export class ChecklistPanel{render(items:readonly ChecklistItem[]){return items.map(item=>({id:item.id,label:item.label,status:item.status,count:item.diagnosticIds.length}))}}

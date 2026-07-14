@@ -1,0 +1,2 @@
+import type { DinaboxMaterialInput } from "../interfaces/DinaboxAdapterTypes";
+export class MaterialExtractor { extract(input: readonly DinaboxMaterialInput[]): DinaboxMaterialInput[] { return input.map(material => { if (!material.id.trim() || !material.name.trim()) throw new Error("Dinabox material id and name are required"); return structuredClone({ ...material, attributes: material.attributes ?? {}, metadata: material.metadata ?? {} }); }); } }

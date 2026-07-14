@@ -1,0 +1,1 @@
+import type { CuttingReport, PartListItem } from "../interfaces/DetailingTypes"; export class CuttingReportBuilder { build(parts: readonly PartListItem[]): CuttingReport { return { parts: [...structuredClone(parts)], totalArea: parts.reduce((sum, p) => sum + p.width * p.height * p.quantity, 0) }; } }

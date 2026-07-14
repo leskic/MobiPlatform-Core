@@ -1,0 +1,2 @@
+import type { GCodeMachineProfile } from "../interfaces/GCodeTypes"; import type { ToolpathOperationSnapshot } from "../../../mobi-cam/src/interfaces/CAMTypes";
+export class MachineValidator { validate(profile: GCodeMachineProfile, operations: ToolpathOperationSnapshot[]): string[] { const errors: string[] = []; if (!profile.id.trim() || !profile.version.trim()) errors.push("INVALID_MACHINE_PROFILE"); for (const operation of operations) if (!profile.supportedOperations.includes(operation.type)) errors.push(`UNSUPPORTED_OPERATION:${operation.id}`); return errors; } }

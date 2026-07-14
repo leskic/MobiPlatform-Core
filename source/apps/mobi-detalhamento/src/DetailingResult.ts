@@ -1,0 +1,1 @@
+import type { DetailingResultSnapshot } from "./interfaces/DetailingTypes"; export class DetailingResult { constructor(private value: DetailingResultSnapshot) {} get(): DetailingResultSnapshot { return structuredClone(this.value); } }
