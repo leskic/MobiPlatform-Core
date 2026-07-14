@@ -1,0 +1,384 @@
+{
+  "id": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1000",
+  "displayName": "Projeto Referência",
+  "code": "REF-COZINHA-001",
+  "schemaVersion": "1.0.0",
+  "measurementUnit": "mm",
+  "rotationUnit": "degrees",
+  "source": "mobi-platform-cp008-reference",
+  "status": "validated",
+  "createdAt": "2026-07-14T08:00:00-03:00",
+  "updatedAt": "2026-07-14T08:00:00-03:00",
+  "metadata": {
+    "client": "Cliente Referência",
+    "checkpoint": "CP008",
+    "referenceProject": true
+  },
+  "environments": [
+    {
+      "id": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1001",
+      "parentId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1000",
+      "displayName": "Cozinha Referência",
+      "code": "AMB-COZINHA-REF",
+      "order": 0,
+      "status": "validated",
+      "architectures": [
+        {
+          "id": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1101",
+          "parentId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1001",
+          "type": "wall",
+          "hostId": null,
+          "size": { "width": 3600, "height": 2700, "depth": 150 },
+          "position": { "x": 0, "y": 0, "z": 0 },
+          "rotation": { "x": 0, "y": 0, "z": 0 },
+          "referencePlane": { "x": 0, "y": 1, "z": 0 },
+          "finish": "paint-white"
+        },
+        {
+          "id": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1102",
+          "parentId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1001",
+          "type": "wall",
+          "hostId": null,
+          "size": { "width": 3600, "height": 2700, "depth": 150 },
+          "position": { "x": 0, "y": 2400, "z": 0 },
+          "rotation": { "x": 0, "y": 0, "z": 180 },
+          "referencePlane": { "x": 0, "y": -1, "z": 0 },
+          "finish": "paint-white"
+        },
+        {
+          "id": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1103",
+          "parentId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1001",
+          "type": "wall",
+          "hostId": null,
+          "size": { "width": 2400, "height": 2700, "depth": 150 },
+          "position": { "x": 0, "y": 0, "z": 0 },
+          "rotation": { "x": 0, "y": 0, "z": 90 },
+          "referencePlane": { "x": 1, "y": 0, "z": 0 },
+          "finish": "paint-white"
+        },
+        {
+          "id": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1104",
+          "parentId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1001",
+          "type": "wall",
+          "hostId": null,
+          "size": { "width": 2400, "height": 2700, "depth": 150 },
+          "position": { "x": 3600, "y": 0, "z": 0 },
+          "rotation": { "x": 0, "y": 0, "z": -90 },
+          "referencePlane": { "x": -1, "y": 0, "z": 0 },
+          "finish": "paint-white"
+        },
+        {
+          "id": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1110",
+          "parentId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1001",
+          "type": "opening",
+          "hostId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1103",
+          "size": { "width": 820, "height": 2100, "depth": 150 },
+          "position": { "x": 120, "y": 0, "z": 0 },
+          "rotation": { "x": 0, "y": 0, "z": 0 },
+          "referencePlane": { "x": 1, "y": 0, "z": 0 },
+          "finish": "door-opening"
+        },
+        {
+          "id": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1111",
+          "parentId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1001",
+          "type": "opening",
+          "hostId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1101",
+          "size": { "width": 1200, "height": 900, "depth": 150 },
+          "position": { "x": 1900, "y": 0, "z": 1100 },
+          "rotation": { "x": 0, "y": 0, "z": 0 },
+          "referencePlane": { "x": 0, "y": 1, "z": 0 },
+          "finish": "window-opening"
+        }
+      ],
+      "infrastructures": [
+        {
+          "id": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1201",
+          "parentId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1001",
+          "hostId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1101",
+          "category": "electrical",
+          "type": "outlet-127v",
+          "position": { "x": 900, "y": 80, "z": 1150 },
+          "installationVolume": { "width": 120, "height": 80, "depth": 60 }
+        },
+        {
+          "id": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1202",
+          "parentId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1001",
+          "hostId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1101",
+          "category": "water",
+          "type": "cold-water-point",
+          "position": { "x": 1550, "y": 80, "z": 600 },
+          "installationVolume": { "width": 100, "height": 100, "depth": 80 }
+        },
+        {
+          "id": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1203",
+          "parentId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1001",
+          "hostId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1101",
+          "category": "sewer",
+          "type": "sink-drain",
+          "position": { "x": 1550, "y": 80, "z": 250 },
+          "installationVolume": { "width": 120, "height": 120, "depth": 120 }
+        }
+      ],
+      "modules": [
+        {
+          "id": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1301",
+          "parentId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1001",
+          "code": "MOD-INF-001",
+          "displayName": "Módulo Inferior Referência",
+          "type": "base",
+          "status": "validated",
+          "position": { "x": 600, "y": 150, "z": 0 },
+          "rotation": { "x": 0, "y": 0, "z": 0 },
+          "parts": [
+            {
+              "id": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1401",
+              "parentId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1301",
+              "category": "structural",
+              "type": "side_panel",
+              "size": { "width": 720, "height": 560, "thickness": 15 },
+              "position": { "x": 0, "y": 0, "z": 360 },
+              "rotation": { "x": 0, "y": 0, "z": 0 },
+              "materialId": "MDF-BRANCO-15",
+              "edgeBanding": {
+                "top": { "applied": true, "materialId": "FITA-BRANCA-1" },
+                "bottom": { "applied": false },
+                "left": { "applied": false },
+                "right": { "applied": false },
+                "front": { "applied": true, "materialId": "FITA-BRANCA-1" },
+                "back": { "applied": false }
+              },
+              "grainDirection": "lengthwise"
+            },
+            {
+              "id": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1402",
+              "parentId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1301",
+              "category": "structural",
+              "type": "shelf",
+              "size": { "width": 900, "height": 540, "thickness": 15 },
+              "position": { "x": 450, "y": 0, "z": 350 },
+              "rotation": { "x": 0, "y": 0, "z": 0 },
+              "materialId": "MDF-BRANCO-15",
+              "edgeBanding": {
+                "top": { "applied": false },
+                "bottom": { "applied": false },
+                "left": { "applied": true, "materialId": "FITA-BRANCA-1" },
+                "right": { "applied": true, "materialId": "FITA-BRANCA-1" },
+                "front": { "applied": true, "materialId": "FITA-BRANCA-1" },
+                "back": { "applied": false }
+              },
+              "grainDirection": "crosswise"
+            },
+            {
+              "id": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1403",
+              "parentId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1301",
+              "category": "front",
+              "type": "door",
+              "size": { "width": 450, "height": 700, "thickness": 18 },
+              "position": { "x": 225, "y": -20, "z": 370 },
+              "rotation": { "x": 0, "y": 0, "z": 0 },
+              "materialId": "MDF-CINZA-18",
+              "edgeBanding": {
+                "top": { "applied": true, "materialId": "FITA-CINZA-1" },
+                "bottom": { "applied": true, "materialId": "FITA-CINZA-1" },
+                "left": { "applied": true, "materialId": "FITA-CINZA-1" },
+                "right": { "applied": true, "materialId": "FITA-CINZA-1" },
+                "front": { "applied": false },
+                "back": { "applied": false }
+              },
+              "grainDirection": "lengthwise"
+            }
+          ],
+          "hardwares": [
+            {
+              "id": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1501",
+              "parentId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1301",
+              "hostId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1403",
+              "category": "hinge",
+              "type": "soft-close",
+              "catalogId": "DOB-35-SC",
+              "position": { "x": 30, "y": -25, "z": 590 },
+              "rotation": { "x": 0, "y": 0, "z": 0 }
+            },
+            {
+              "id": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1502",
+              "parentId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1301",
+              "hostId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1401",
+              "category": "connector",
+              "type": "dowel",
+              "catalogId": "CAVILHA-8X30",
+              "position": { "x": 30, "y": 30, "z": 30 },
+              "rotation": { "x": 0, "y": 0, "z": 0 }
+            }
+          ]
+        },
+        {
+          "id": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1302",
+          "parentId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1001",
+          "code": "MOD-AER-001",
+          "displayName": "Módulo Aéreo Referência",
+          "type": "wall",
+          "status": "validated",
+          "position": { "x": 700, "y": 150, "z": 1450 },
+          "rotation": { "x": 0, "y": 0, "z": 0 },
+          "parts": [
+            {
+              "id": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1404",
+              "parentId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1302",
+              "category": "structural",
+              "type": "side_panel",
+              "size": { "width": 700, "height": 320, "thickness": 15 },
+              "position": { "x": 0, "y": 0, "z": 350 },
+              "rotation": { "x": 0, "y": 0, "z": 0 },
+              "materialId": "MDF-BRANCO-15",
+              "edgeBanding": {
+                "top": { "applied": true, "materialId": "FITA-BRANCA-1" },
+                "bottom": { "applied": true, "materialId": "FITA-BRANCA-1" },
+                "left": { "applied": false },
+                "right": { "applied": false },
+                "front": { "applied": true, "materialId": "FITA-BRANCA-1" },
+                "back": { "applied": false }
+              },
+              "grainDirection": "lengthwise"
+            },
+            {
+              "id": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1405",
+              "parentId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1302",
+              "category": "front",
+              "type": "door",
+              "size": { "width": 600, "height": 690, "thickness": 18 },
+              "position": { "x": 300, "y": -20, "z": 345 },
+              "rotation": { "x": 0, "y": 0, "z": 0 },
+              "materialId": "MDF-CINZA-18",
+              "edgeBanding": {
+                "top": { "applied": true, "materialId": "FITA-CINZA-1" },
+                "bottom": { "applied": true, "materialId": "FITA-CINZA-1" },
+                "left": { "applied": true, "materialId": "FITA-CINZA-1" },
+                "right": { "applied": true, "materialId": "FITA-CINZA-1" },
+                "front": { "applied": false },
+                "back": { "applied": false }
+              },
+              "grainDirection": "lengthwise"
+            }
+          ],
+          "hardwares": [
+            {
+              "id": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1503",
+              "parentId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1302",
+              "hostId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1405",
+              "category": "hinge",
+              "type": "soft-close",
+              "catalogId": "DOB-35-SC",
+              "position": { "x": 40, "y": -25, "z": 520 },
+              "rotation": { "x": 0, "y": 0, "z": 0 }
+            }
+          ]
+        },
+        {
+          "id": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1303",
+          "parentId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1001",
+          "code": "MOD-TOR-001",
+          "displayName": "Torre Referência",
+          "type": "tower",
+          "status": "validated",
+          "position": { "x": 2400, "y": 150, "z": 0 },
+          "rotation": { "x": 0, "y": 0, "z": 0 },
+          "parts": [
+            {
+              "id": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1406",
+              "parentId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1303",
+              "category": "structural",
+              "type": "side_panel",
+              "size": { "width": 1400, "height": 560, "thickness": 15 },
+              "position": { "x": 0, "y": 0, "z": 1050 },
+              "rotation": { "x": 0, "y": 0, "z": 0 },
+              "materialId": "MDF-BRANCO-15",
+              "edgeBanding": {
+                "top": { "applied": true, "materialId": "FITA-BRANCA-1" },
+                "bottom": { "applied": false },
+                "left": { "applied": false },
+                "right": { "applied": false },
+                "front": { "applied": true, "materialId": "FITA-BRANCA-1" },
+                "back": { "applied": false }
+              },
+              "grainDirection": "lengthwise"
+            },
+            {
+              "id": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1407",
+              "parentId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1303",
+              "category": "internal",
+              "type": "shelf",
+              "size": { "width": 600, "height": 540, "thickness": 15 },
+              "position": { "x": 300, "y": 0, "z": 1200 },
+              "rotation": { "x": 0, "y": 0, "z": 0 },
+              "materialId": "MDF-BRANCO-15",
+              "edgeBanding": {
+                "top": { "applied": false },
+                "bottom": { "applied": false },
+                "left": { "applied": true, "materialId": "FITA-BRANCA-1" },
+                "right": { "applied": true, "materialId": "FITA-BRANCA-1" },
+                "front": { "applied": true, "materialId": "FITA-BRANCA-1" },
+                "back": { "applied": false }
+              },
+              "grainDirection": "crosswise"
+            }
+          ],
+          "hardwares": [
+            {
+              "id": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1504",
+              "parentId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1303",
+              "hostId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1407",
+              "category": "support",
+              "type": "shelf-pin",
+              "catalogId": "SUP-PINO-5",
+              "position": { "x": 40, "y": 20, "z": 1200 },
+              "rotation": { "x": 0, "y": 0, "z": 0 }
+            }
+          ]
+        },
+        {
+          "id": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1304",
+          "parentId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1001",
+          "code": "MOD-TAM-001",
+          "displayName": "Tampo Referência",
+          "type": "panel",
+          "status": "validated",
+          "position": { "x": 600, "y": 120, "z": 730 },
+          "rotation": { "x": 0, "y": 0, "z": 0 },
+          "parts": [
+            {
+              "id": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1408",
+              "parentId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1304",
+              "category": "finish",
+              "type": "decorative",
+              "size": { "width": 1400, "height": 600, "thickness": 30 },
+              "position": { "x": 800, "y": 0, "z": 15 },
+              "rotation": { "x": 0, "y": 0, "z": 0 },
+              "materialId": "TAMPO-QUARTZO-30",
+              "edgeBanding": {
+                "top": { "applied": false },
+                "bottom": { "applied": false },
+                "left": { "applied": false },
+                "right": { "applied": false },
+                "front": { "applied": false },
+                "back": { "applied": false }
+              },
+              "grainDirection": "none"
+            }
+          ],
+          "hardwares": [
+            {
+              "id": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1505",
+              "parentId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1304",
+              "hostId": "8f5d3e5c-7c1a-4a2f-9a11-02d3b75f1408",
+              "category": "fastener",
+              "type": "countertop-bracket",
+              "catalogId": "SUP-TAMPO-001",
+              "position": { "x": 200, "y": 40, "z": 0 },
+              "rotation": { "x": 0, "y": 0, "z": 0 }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -16,6 +16,7 @@ export default defineConfig({
       "presentation/tests/**/*.test.ts",
       "viewer/tests/**/*.test.ts",
       "platform-extensions/**/*.test.ts",
+      "reference/tests/**/*.test.ts",
       "apps/mobi-studio/tests/**/*.test.ts",
       "apps/mobi-studio-host/tests/**/*.test.ts",
       "apps/mobi-constructor/tests/**/*.test.ts",
