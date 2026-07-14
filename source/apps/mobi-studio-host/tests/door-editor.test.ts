@@ -94,6 +94,7 @@ describe("CP011 Door Editor journey", () => {
       draft,
       wallEditor: walls,
       doorEditor: commands.addDoor(walls, { wallId: "wall-1" }),
+      technicalDocumentation: null,
       execution: null,
       message: null,
     });

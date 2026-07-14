@@ -50,6 +50,7 @@ describe("CP011 responsive host layout fix", () => {
       draft: normalizeDraft({ projectName: "Layout", clientName: "Cliente", environmentName: "Cozinha", projectCode: "LAYOUT" }),
       wallEditor: defaultFourWallState(),
       doorEditor: emptyDoorEditorState(),
+      technicalDocumentation: null,
       execution: null,
       message: null,
     });

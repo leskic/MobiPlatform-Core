@@ -4,6 +4,7 @@ import { normalizeDraft, type NewProjectDraft } from "./NewProjectDraft";
 import { ProjectFileLoader } from "./ProjectFileLoader";
 import { SimpleKitchenProjectFactory } from "./SimpleKitchenProjectFactory";
 import { StudioShellView } from "./ui/StudioShellView";
+import { TechnicalDocumentationFactory } from "./TechnicalDocumentationViewModel";
 import { WallCommands } from "./walls/WallCommands";
 import { defaultFourWallState, type WallDraft } from "./walls/WallModel";
 import { DoorCommands } from "./doors/DoorCommands";
@@ -19,6 +20,7 @@ export class App {
     private readonly loader = new ProjectFileLoader(),
     private readonly controller = new ExecutionController(),
     private readonly projectFactory = new SimpleKitchenProjectFactory(),
+    private readonly technicalDocumentationFactory = new TechnicalDocumentationFactory(),
     private readonly view = new StudioShellView(),
   ) {}
 
@@ -40,6 +42,7 @@ export class App {
         wallEditor: this.state.wallEditor,
         doorEditor: this.state.doorEditor,
         execution: null,
+        technicalDocumentation: null,
         message: `${loaded.code}: ${loaded.message}`,
       });
       this.render();
@@ -53,6 +56,7 @@ export class App {
       wallEditor: this.state.wallEditor,
       doorEditor: this.state.doorEditor,
       execution: null,
+      technicalDocumentation: this.technicalDocumentationFactory.create(loaded.project.project),
       message: "Projeto.mobi carregado e validado.",
     });
     this.render();
@@ -65,6 +69,7 @@ export class App {
       wallEditor: this.state.wallEditor.walls.length > 0 ? this.state.wallEditor : defaultFourWallState(),
       doorEditor: this.state.doorEditor,
       execution: null,
+      technicalDocumentation: this.state.technicalDocumentation,
       message: "Preencha os dados e gere uma Cozinha simples.",
     });
     this.render();
@@ -82,6 +87,7 @@ export class App {
         wallEditor: this.state.wallEditor,
         doorEditor: this.state.doorEditor,
         execution: null,
+        technicalDocumentation: null,
         message: `${loaded.code}: ${loaded.message}`,
       });
       this.render();
@@ -95,6 +101,7 @@ export class App {
       wallEditor: this.state.wallEditor,
       doorEditor: this.state.doorEditor,
       execution: null,
+      technicalDocumentation: this.technicalDocumentationFactory.create(loaded.project.project),
       message: "Projeto.mobi criado visualmente e validado.",
     });
     this.render();
@@ -119,6 +126,7 @@ export class App {
       wallEditor: this.state.wallEditor,
       doorEditor: this.state.doorEditor,
       execution: result.viewModel,
+      technicalDocumentation: this.state.technicalDocumentation,
       message: result.error ?? (result.success ? "Fluxo aprovado." : "Fluxo rejeitado."),
     });
     this.render();
@@ -157,6 +165,7 @@ export class App {
       wallEditor,
       doorEditor,
       execution: null,
+      technicalDocumentation: this.state.project ? this.technicalDocumentationFactory.create(this.state.project.project) : this.state.technicalDocumentation,
       message: "Parede atualizada. Salve para regenerar o Projeto.mobi.",
     });
     this.render();
@@ -167,6 +176,7 @@ export class App {
       ...this.state,
       doorEditor,
       execution: null,
+      technicalDocumentation: this.state.project ? this.technicalDocumentationFactory.create(this.state.project.project) : this.state.technicalDocumentation,
       message: "Porta atualizada. Salve para regenerar o Projeto.mobi.",
     });
     this.render();

@@ -130,6 +130,7 @@ describe("CP007 Executable Mobi Studio", () => {
       },
       wallEditor: defaultFourWallState(),
       doorEditor: emptyDoorEditorState(),
+      technicalDocumentation: null,
       execution: null,
       message: "Criando projeto.",
     });
@@ -259,6 +260,7 @@ describe("CP007 Executable Mobi Studio", () => {
       draft: defaultNewProjectDraft(),
       wallEditor: defaultFourWallState(),
       doorEditor: emptyDoorEditorState(),
+      technicalDocumentation: null,
       execution,
       message: "Fluxo aprovado.",
     });
@@ -276,6 +278,7 @@ describe("CP007 Executable Mobi Studio", () => {
       draft: defaultNewProjectDraft(),
       wallEditor: defaultFourWallState(),
       doorEditor: emptyDoorEditorState(),
+      technicalDocumentation: null,
       execution,
       message: null,
     });
@@ -292,6 +295,7 @@ describe("CP007 Executable Mobi Studio", () => {
       draft: defaultNewProjectDraft(),
       wallEditor: defaultFourWallState(),
       doorEditor: emptyDoorEditorState(),
+      technicalDocumentation: null,
       execution,
       message: null,
     });
@@ -317,6 +321,7 @@ describe("CP007 Executable Mobi Studio", () => {
       draft: defaultNewProjectDraft(),
       wallEditor: defaultFourWallState(),
       doorEditor: emptyDoorEditorState(),
+      technicalDocumentation: null,
       execution,
       message: "Fluxo aprovado.",
     });

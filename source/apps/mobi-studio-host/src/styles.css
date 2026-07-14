@@ -344,6 +344,65 @@ input {
   background: #f8fafc;
 }
 
+.technical-documentation {
+  overflow-x: hidden;
+}
+
+.technical-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.technical-summary div,
+.technical-section {
+  border: 1px solid #e4e7eb;
+  border-radius: 6px;
+  padding: 10px;
+}
+
+.technical-summary span,
+.technical-head {
+  color: #52606d;
+  font-size: 12px;
+}
+
+.technical-summary strong {
+  display: block;
+  margin-top: 4px;
+}
+
+.technical-section {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.technical-section h3,
+.technical-section h4 {
+  margin: 0;
+}
+
+.technical-table {
+  display: grid;
+  gap: 4px;
+  overflow-x: auto;
+}
+
+.technical-row {
+  display: grid;
+  grid-template-columns: minmax(160px, 1.5fr) repeat(4, minmax(90px, 1fr));
+  gap: 8px;
+  min-width: 620px;
+  padding: 6px 0;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.technical-future {
+  margin-top: 12px;
+}
+
 @media (max-width: 1100px) {
   .studio-main {
     grid-template-columns: minmax(0, 1fr);

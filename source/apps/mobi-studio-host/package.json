@@ -1,6 +1,6 @@
 {
   "name": "@mobi-platform/mobi-studio-host",
-  "version": "0.0.0-cp011",
+  "version": "0.0.0-cp012",
   "private": true,
   "type": "module",
   "scripts": {

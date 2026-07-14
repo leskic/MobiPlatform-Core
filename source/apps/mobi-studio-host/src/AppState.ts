@@ -1,4 +1,5 @@
 import type { ExecutionViewModel } from "./ExecutionViewModel";
+import type { TechnicalDocumentationViewModel } from "./TechnicalDocumentationViewModel";
 import { defaultNewProjectDraft, type NewProjectDraft } from "./NewProjectDraft";
 import type { LoadedProject } from "./ProjectFileLoader";
 import { defaultFourWallState, type WallEditorState } from "./walls/WallModel";
@@ -13,6 +14,7 @@ export interface AppState {
   readonly wallEditor: WallEditorState;
   readonly doorEditor: DoorEditorState;
   readonly execution: ExecutionViewModel | null;
+  readonly technicalDocumentation: TechnicalDocumentationViewModel | null;
   readonly message: string | null;
 }
 
@@ -24,6 +26,7 @@ export function initialAppState(): AppState {
     wallEditor: defaultFourWallState(),
     doorEditor: emptyDoorEditorState(),
     execution: null,
+    technicalDocumentation: null,
     message: null,
   });
 }

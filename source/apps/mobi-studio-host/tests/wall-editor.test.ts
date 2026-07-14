@@ -85,6 +85,7 @@ describe("CP010 Wall Editor journey", () => {
       draft,
       wallEditor: defaultFourWallState(),
       doorEditor: emptyDoorEditorState(),
+      technicalDocumentation: null,
       execution: null,
       message: null,
     });
