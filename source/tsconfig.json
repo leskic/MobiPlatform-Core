@@ -11,5 +11,5 @@
     "skipLibCheck": true,
     "types": ["node", "vitest/globals"]
   },
-  "include": ["validator/**/*.ts", "builder/**/*.ts", "codec/**/*.ts", "origin/**/*.ts", "studio/**/*.ts", "copilot/**/*.ts", "bridge/**/*.ts", "sync/**/*.ts", "orchestrator/**/*.ts", "transaction/**/*.ts", "presentation/**/*.ts", "viewer/**/*.ts", "platform-extensions/**/*.ts", "apps/mobi-studio/**/*.ts", "apps/mobi-constructor/**/*.ts", "apps/mobi-sketchup-adapter/**/*.ts", "apps/mobi-dinabox-adapter/**/*.ts", "apps/mobidina/**/*.ts", "apps/mobi-detalhamento/**/*.ts", "apps/mobi-manufacturing/**/*.ts", "apps/mobi-cam/**/*.ts", "apps/mobi-gcode/**/*.ts", "vitest.config.ts"]
+  "include": ["validator/**/*.ts", "builder/**/*.ts", "codec/**/*.ts", "origin/**/*.ts", "studio/**/*.ts", "copilot/**/*.ts", "bridge/**/*.ts", "sync/**/*.ts", "orchestrator/**/*.ts", "transaction/**/*.ts", "presentation/**/*.ts", "viewer/**/*.ts", "platform-extensions/**/*.ts", "apps/mobi-studio/**/*.ts", "apps/mobi-studio-host/**/*.ts", "apps/mobi-constructor/**/*.ts", "apps/mobi-sketchup-adapter/**/*.ts", "apps/mobi-dinabox-adapter/**/*.ts", "apps/mobidina/**/*.ts", "apps/mobi-detalhamento/**/*.ts", "apps/mobi-manufacturing/**/*.ts", "apps/mobi-cam/**/*.ts", "apps/mobi-gcode/**/*.ts", "vitest.config.ts"]
 }

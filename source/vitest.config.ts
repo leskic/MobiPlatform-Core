@@ -17,6 +17,7 @@ export default defineConfig({
       "viewer/tests/**/*.test.ts",
       "platform-extensions/**/*.test.ts",
       "apps/mobi-studio/tests/**/*.test.ts",
+      "apps/mobi-studio-host/tests/**/*.test.ts",
       "apps/mobi-constructor/tests/**/*.test.ts",
       "apps/mobi-sketchup-adapter/tests/**/*.test.ts",
       "apps/mobi-dinabox-adapter/tests/**/*.test.ts",
