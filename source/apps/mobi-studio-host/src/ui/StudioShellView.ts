@@ -34,6 +34,9 @@ export interface StudioShellHandlers {
   readonly onDeleteDoor: () => void;
   readonly onUndoDoor: () => void;
   readonly onRedoDoor: () => void;
+  readonly onSelectPart: (id: string | null) => void;
+  readonly onPreviousPart: () => void;
+  readonly onNextPart: () => void;
   readonly onExecute: () => void;
 }
 
@@ -115,6 +118,11 @@ export class StudioShellView {
         height: Number(data.get("doorHeight")),
       });
     });
+    root.querySelectorAll<HTMLElement>("[data-part-id]").forEach((part) => {
+      part.addEventListener("click", () => handlers.onSelectPart(part.dataset.partId ?? null));
+    });
+    root.querySelector<HTMLButtonElement>("[data-previous-part]")?.addEventListener("click", handlers.onPreviousPart);
+    root.querySelector<HTMLButtonElement>("[data-next-part]")?.addEventListener("click", handlers.onNextPart);
     root.querySelector<HTMLButtonElement>("[data-execute-flow]")?.addEventListener("click", handlers.onExecute);
   }
 

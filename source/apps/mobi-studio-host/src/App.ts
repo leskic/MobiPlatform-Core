@@ -163,6 +163,9 @@ export class App {
       onDeleteDoor: () => this.updateDoors(this.doorCommands.deleteSelected()),
       onUndoDoor: () => this.updateDoors(this.doorCommands.undo()),
       onRedoDoor: () => this.updateDoors(this.doorCommands.redo()),
+      onSelectPart: (id) => this.selectPart(id),
+      onPreviousPart: () => this.movePartSelection(-1),
+      onNextPart: () => this.movePartSelection(1),
       onExecute: () => this.executeFlow(),
     });
   }
@@ -190,5 +193,22 @@ export class App {
       message: "Porta atualizada. Salve para regenerar o Projeto.mobi.",
     });
     this.render();
+  }
+
+  private selectPart(partId: string | null): void {
+    if (!this.state.project) return;
+    this.state = Object.freeze({
+      ...this.state,
+      partsFoundation: this.partsFoundationFactory.create(this.state.project.project, partId),
+    });
+    this.render();
+  }
+
+  private movePartSelection(direction: -1 | 1): void {
+    const parts = this.state.partsFoundation?.parts ?? [];
+    if (!this.state.project || parts.length === 0) return;
+    const current = parts.findIndex((part) => part.id === this.state.partsFoundation?.selectedPartId);
+    const next = Math.min(parts.length - 1, Math.max(0, (current === -1 ? 0 : current) + direction));
+    this.selectPart(parts[next]?.id ?? null);
   }
 }

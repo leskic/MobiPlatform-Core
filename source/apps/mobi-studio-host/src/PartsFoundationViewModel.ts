@@ -17,21 +17,26 @@ export interface PartsFoundationViewModel {
   readonly projectName: string;
   readonly totalParts: number;
   readonly parts: readonly PartFoundationItem[];
+  readonly selectedPartId: string | null;
+  readonly selectedPart: PartFoundationItem | null;
 }
 
 export class PartsFoundationFactory {
-  create(project: Project): PartsFoundationViewModel {
+  create(project: Project, selectedPartId: string | null = null): PartsFoundationViewModel {
     const parts = project.environments.flatMap((environment) =>
       environment.modules.flatMap((module) =>
         module.parts.map((part) => this.part(part, module.id, module.displayName))
       )
     );
+    const selectedPart = parts.find((part) => part.id === selectedPartId) ?? parts[0] ?? null;
 
     return Object.freeze({
       projectId: project.id,
       projectName: project.displayName,
       totalParts: parts.length,
       parts: Object.freeze(parts),
+      selectedPartId: selectedPart?.id ?? null,
+      selectedPart,
     });
   }
 
@@ -49,4 +54,3 @@ export class PartsFoundationFactory {
     });
   }
 }
-

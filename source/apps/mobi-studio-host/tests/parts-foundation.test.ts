@@ -33,6 +33,16 @@ describe("CP013 Parts Foundation", () => {
       category: expect.any(String),
       materialId: expect.any(String),
     });
+    expect(parts.selectedPartId).toBe(parts.parts[0]?.id);
+    expect(parts.selectedPart).toEqual(parts.parts[0]);
+  });
+
+  it("selects a part for direct inspection", () => {
+    const base = new PartsFoundationFactory().create(loadedProject());
+    const selected = new PartsFoundationFactory().create(loadedProject(), base.parts[2]?.id ?? null);
+
+    expect(selected.selectedPartId).toBe(base.parts[2]?.id);
+    expect(selected.selectedPart?.moduleId).toBe(base.parts[2]?.moduleId);
   });
 
   it("keeps the association between part and module", () => {
@@ -65,6 +75,16 @@ describe("CP013 Parts Foundation", () => {
     expect(html).toContain("Material");
   });
 
+  it("renders a dedicated parts inspector with navigation", () => {
+    const html = new PartsFoundationView().render(new PartsFoundationFactory().create(loadedProject()));
+
+    expect(html).toContain("Parts Inspector");
+    expect(html).toContain("Anterior");
+    expect(html).toContain("Proxima");
+    expect(html).toContain("data-part-id=");
+    expect(html).toContain("parts-row-button selected");
+  });
+
   it("does not render out-of-scope industrial outputs", () => {
     const html = new PartsFoundationView().render(new PartsFoundationFactory().create(loadedProject()));
 
@@ -80,4 +100,3 @@ describe("CP013 Parts Foundation", () => {
     expect(html).toContain("Crie ou abra um Projeto.mobi");
   });
 });
-
