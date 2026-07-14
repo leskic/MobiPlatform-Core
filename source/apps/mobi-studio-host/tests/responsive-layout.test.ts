@@ -51,6 +51,7 @@ describe("CP011 responsive host layout fix", () => {
       wallEditor: defaultFourWallState(),
       doorEditor: emptyDoorEditorState(),
       technicalDocumentation: null,
+      partsFoundation: null,
       execution: null,
       message: null,
     });

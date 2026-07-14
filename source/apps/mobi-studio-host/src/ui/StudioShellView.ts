@@ -12,6 +12,7 @@ import { ExecutionStatusView } from "./ExecutionStatusView";
 import { escapeHtml, ProjectOpenView } from "./ProjectOpenView";
 import { ViewerPanel } from "./ViewerPanel";
 import { DoorInspector } from "./DoorInspector";
+import { PartsFoundationView } from "./PartsFoundationView";
 import { TechnicalDocumentationView } from "./TechnicalDocumentationView";
 import { WallInspector } from "./WallInspector";
 
@@ -50,6 +51,7 @@ export class StudioShellView {
     private readonly doorSelection = new DoorSelection(),
     private readonly doorInspector = new DoorInspector(),
     private readonly technicalDocumentation = new TechnicalDocumentationView(),
+    private readonly partsFoundation = new PartsFoundationView(),
   ) {}
 
   mount(root: HTMLElement, state: AppState, handlers: StudioShellHandlers): void {
@@ -139,6 +141,7 @@ export class StudioShellView {
           <section class="stack">
             ${this.renderWallEditor(state)}
             ${this.technicalDocumentation.render(state.technicalDocumentation)}
+            ${this.partsFoundation.render(state.partsFoundation)}
             ${this.viewer.render(state)}
             ${this.evidence.render(state)}
             ${this.diagnostics.render(state)}
