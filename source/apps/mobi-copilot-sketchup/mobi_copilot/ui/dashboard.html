@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root {
+        color: #1f2933;
+        font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #f5f7fa;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: #f5f7fa;
+      }
+
+      .shell {
+        display: grid;
+        gap: 12px;
+        min-height: 100vh;
+        padding: 14px;
+      }
+
+      .hero {
+        border-radius: 8px;
+        padding: 14px;
+        background: #1f2933;
+        color: #ffffff;
+      }
+
+      .hero h1 {
+        margin: 0 0 4px;
+        font-size: 20px;
+      }
+
+      .hero p {
+        margin: 0;
+        color: #d9e2ec;
+      }
+
+      .button-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .nav-button {
+        min-height: 64px;
+        border: 0;
+        border-radius: 8px;
+        background: #ffffff;
+        color: #1f2933;
+        box-shadow: 0 1px 2px rgba(16, 24, 40, 0.08);
+        cursor: pointer;
+        font-weight: 700;
+      }
+
+      .nav-button span {
+        display: block;
+        font-size: 22px;
+        line-height: 1;
+      }
+
+      .card {
+        border: 1px solid #d9e2ec;
+        border-radius: 8px;
+        padding: 12px;
+        background: #ffffff;
+      }
+
+      .card h2 {
+        margin: 0 0 10px;
+        font-size: 15px;
+      }
+
+      .data-row {
+        display: grid;
+        grid-template-columns: minmax(86px, 0.8fr) minmax(0, 1.2fr);
+        gap: 8px;
+        padding: 5px 0;
+        border-top: 1px solid #eef2f7;
+      }
+
+      .data-row:first-of-type {
+        border-top: 0;
+      }
+
+      .label {
+        color: #52606d;
+        font-size: 12px;
+      }
+
+      .value {
+        overflow-wrap: anywhere;
+        font-weight: 600;
+      }
+
+      .events {
+        display: grid;
+        gap: 8px;
+      }
+
+      .event {
+        border-left: 3px solid #627d98;
+        padding-left: 8px;
+      }
+
+      .event strong {
+        display: block;
+      }
+
+      @media (max-width: 330px) {
+        .button-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <h1>Mobi Copilot</h1>
+        <p>Assistente tecnico do projetista</p>
+      </section>
+
+      <section class="button-grid" id="actions"></section>
+
+      <section class="card">
+        <h2>Projeto</h2>
+        <div class="data-row"><span class="label">Nome</span><span class="value" data-project-name>-</span></div>
+        <div class="data-row"><span class="label">Caminho</span><span class="value" data-project-path>-</span></div>
+        <div class="data-row"><span class="label">Sessao</span><span class="value" data-session-duration>-</span></div>
+        <div class="data-row"><span class="label">Salvamento</span><span class="value" data-project-saved>-</span></div>
+      </section>
+
+      <section class="card">
+        <h2>Estatisticas</h2>
+        <div class="data-row"><span class="label">Componentes</span><span class="value" data-stat-components>-</span></div>
+        <div class="data-row"><span class="label">Grupos</span><span class="value" data-stat-groups>-</span></div>
+        <div class="data-row"><span class="label">Entidades</span><span class="value" data-stat-entities>-</span></div>
+        <div class="data-row"><span class="label">Materiais</span><span class="value" data-stat-materials>-</span></div>
+      </section>
+
+      <section class="card">
+        <h2>Selecao</h2>
+        <div class="data-row"><span class="label">Nome</span><span class="value" data-selection-name>-</span></div>
+        <div class="data-row"><span class="label">Tipo</span><span class="value" data-selection-type>-</span></div>
+        <div class="data-row"><span class="label">Layer/Tag</span><span class="value" data-selection-layer>-</span></div>
+        <div class="data-row"><span class="label">Material</span><span class="value" data-selection-material>-</span></div>
+        <div class="data-row"><span class="label">Dimensoes</span><span class="value" data-selection-dimensions>-</span></div>
+      </section>
+
+      <section class="card">
+        <h2>Ultimos Eventos</h2>
+        <div class="events" data-events></div>
+      </section>
+    </main>
+
+    <script>
+      const buttons = [
+        ["Projeto", "📋"], ["Ambientes", "🏠"], ["Componentes", "📦"],
+        ["Pecas", "🪵"], ["Estatisticas", "📊"], ["Relatorio", "📝"],
+        ["Snapshot", "📸"], ["Alertas", "⚠"], ["Diagnostico", "⚙"]
+      ];
+
+      const actions = document.querySelector("#actions");
+      actions.innerHTML = buttons.map(([label, icon]) => `<button class="nav-button" data-action="${label}"><span>${icon}</span>${label}</button>`).join("");
+      actions.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-action]");
+        if (!button) return;
+        const action = button.dataset.action;
+        if (action === "Snapshot" && window.sketchup?.mobiCopilotSnapshot) {
+          window.sketchup.mobiCopilotSnapshot();
+          return;
+        }
+        window.sketchup?.mobiCopilotNavigate?.(action);
+      });
+
+      const setText = (selector, value) => {
+        const node = document.querySelector(selector);
+        if (node) node.textContent = String(value ?? "-");
+      };
+
+      window.MobiCopilot = {
+        update(data) {
+          setText("[data-project-name]", data.project?.name);
+          setText("[data-project-path]", data.project?.path);
+          setText("[data-session-duration]", `${data.session?.durationSeconds ?? 0}s`);
+          setText("[data-project-saved]", data.project?.lastSavedAt);
+          setText("[data-stat-components]", data.statistics?.components);
+          setText("[data-stat-groups]", data.statistics?.groups);
+          setText("[data-stat-entities]", data.statistics?.entities);
+          setText("[data-stat-materials]", data.statistics?.materials);
+          setText("[data-selection-name]", data.selection?.name);
+          setText("[data-selection-type]", data.selection?.type);
+          setText("[data-selection-layer]", data.selection?.layer);
+          setText("[data-selection-material]", data.selection?.material);
+          setText("[data-selection-dimensions]", data.selection?.dimensions);
+          const events = document.querySelector("[data-events]");
+          events.innerHTML = (data.events ?? []).map((event) => `<div class="event"><strong>${event.time} · ${event.type}</strong><span>${event.message}</span></div>`).join("");
+        }
+      };
+    </script>
+  </body>
+</html>
+

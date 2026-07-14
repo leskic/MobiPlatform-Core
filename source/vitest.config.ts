@@ -21,6 +21,7 @@ export default defineConfig({
       "apps/mobi-studio-host/tests/**/*.test.ts",
       "apps/mobi-constructor/tests/**/*.test.ts",
       "apps/mobi-sketchup-adapter/tests/**/*.test.ts",
+      "apps/mobi-copilot-sketchup/tests/**/*.test.ts",
       "apps/mobi-dinabox-adapter/tests/**/*.test.ts",
       "apps/mobidina/tests/**/*.test.ts",
       "apps/mobi-detalhamento/tests/**/*.test.ts",
