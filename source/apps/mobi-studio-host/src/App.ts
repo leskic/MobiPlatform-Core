@@ -8,7 +8,7 @@ import { TechnicalDocumentationFactory } from "./TechnicalDocumentationViewModel
 import { PartsFoundationFactory } from "./PartsFoundationViewModel";
 import { defaultExpanded, PartsHierarchyFactory, toggleExpanded } from "./PartsHierarchyViewModel";
 import { WallCommands } from "./walls/WallCommands";
-import { defaultFourWallState, type WallDraft } from "./walls/WallModel";
+import { emptyWallEditorState, type WallDraft } from "./walls/WallModel";
 import { DoorCommands } from "./doors/DoorCommands";
 import { emptyDoorEditorState, type DoorDraft } from "./doors/DoorModel";
 
@@ -71,15 +71,20 @@ export class App {
   }
 
   startNewProject(): void {
+    const wallEditor = emptyWallEditorState();
+    const doorEditor = emptyDoorEditorState();
+    this.wallCommands = new WallCommands(wallEditor);
+    this.doorCommands = new DoorCommands(doorEditor);
     this.state = Object.freeze({
-      ...this.state,
       status: "creating-project",
-      wallEditor: this.state.wallEditor.walls.length > 0 ? this.state.wallEditor : defaultFourWallState(),
-      doorEditor: this.state.doorEditor,
+      project: null,
+      draft: this.state.draft,
+      wallEditor,
+      doorEditor,
       execution: null,
-      technicalDocumentation: this.state.technicalDocumentation,
-      partsFoundation: this.state.partsFoundation,
-      partsHierarchy: this.state.partsHierarchy,
+      technicalDocumentation: null,
+      partsFoundation: null,
+      partsHierarchy: null,
       message: "Preencha os dados e gere uma Cozinha simples.",
     });
     this.render();

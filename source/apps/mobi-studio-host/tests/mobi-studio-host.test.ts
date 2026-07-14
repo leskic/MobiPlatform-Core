@@ -176,6 +176,35 @@ describe("CP007 Executable Mobi Studio", () => {
     expect(root.innerHTML).toContain("Baixar Projeto.mobi");
   });
 
+  it("clears the loaded project state when starting a new project", () => {
+    const root = rootElement();
+    const app = new App(root);
+    app.createProject({
+      projectName: "Projeto Referencia",
+      clientName: "Charles",
+      environmentName: "Cozinha",
+      projectCode: "PRJ-REFERENCIA",
+    });
+
+    expect(app.snapshot().project).not.toBeNull();
+    expect(app.snapshot().partsHierarchy).not.toBeNull();
+    expect(app.snapshot().partsFoundation).not.toBeNull();
+    expect(app.snapshot().technicalDocumentation).not.toBeNull();
+
+    app.startNewProject();
+
+    expect(app.snapshot().status).toBe("creating-project");
+    expect(app.snapshot().project).toBeNull();
+    expect(app.snapshot().wallEditor.walls).toHaveLength(0);
+    expect(app.snapshot().doorEditor.doors).toHaveLength(0);
+    expect(app.snapshot().execution).toBeNull();
+    expect(app.snapshot().technicalDocumentation).toBeNull();
+    expect(app.snapshot().partsHierarchy).toBeNull();
+    expect(app.snapshot().partsFoundation).toBeNull();
+    expect(root.innerHTML).toContain("Novo Projeto");
+    expect(root.innerHTML).toContain("Crie ou abra um Projeto.mobi para visualizar a arvore de pecas.");
+  });
+
   it("executes the project generated without JSON editing through the full flow", () => {
     const source = new SimpleKitchenProjectFactory().createJson({
       projectName: "Cozinha Fluxo",
