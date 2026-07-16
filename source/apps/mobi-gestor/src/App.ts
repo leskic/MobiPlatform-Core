@@ -66,6 +66,12 @@ export class App {
       .filter((o) => o.status === "ABERTO" || o.status === "NEGOCIANDO")
       .reduce((soma, o) => soma + valorLiquido(o), 0);
 
+    const clientePorId = new Map(clientes.map((c) => [c.id, c]));
+    const orcamentoPorProjeto = new Map<string, Orcamento>();
+    for (const o of orcamentos) {
+      if (!orcamentoPorProjeto.has(o.projetoId)) orcamentoPorProjeto.set(o.projetoId, o);
+    }
+
     this.root.innerHTML = `
       <div class="gestor">
         <header class="topbar">
@@ -160,9 +166,9 @@ export class App {
             <ul class="lista">
               ${projetos
                 .map((p) => {
-                  const cliente = clientes.find((c) => c.id === p.clienteId);
+                  const cliente = clientePorId.get(p.clienteId);
                   const dias = Math.max(0, Math.floor((agora - p.atualizadoEm) / 86400000));
-                  const orcamento = orcamentos.find((o) => o.projetoId === p.id) ?? null;
+                  const orcamento = orcamentoPorProjeto.get(p.id) ?? null;
                   return `<li class="card-projeto">
                     <div class="card-projeto-top">
                       <b>${escapeHtml(p.nome)}</b>
