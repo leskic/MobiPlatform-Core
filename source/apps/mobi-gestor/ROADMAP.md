@@ -17,12 +17,23 @@ uma vez sem especificação real de cada parte.
 |---|---|---|
 | CP001 | Fundação: cadastro de Cliente, cadastro de Projeto vinculado, painel "O que precisa de atenção" (atrasado / parado) | **Implementado** |
 | CP002 | Comercial: orçamento, negociação, desconto, margem, comissão, motivo de perda | **Implementado — com suposições, ver seção abaixo** |
-| CP003 | Levantamento multi-formato: começar por 1-2 formatos reais (ex.: foto + PDF), não os ~20 formatos da visão de uma vez | Não iniciado |
+| CP003 | **Iniciar a Venda + Levantamento** (definido por Charles em 16/07 como foco principal). Meta explícita: extrair dados de um PDF de planta arquitetônica automaticamente, com **90% de taxa de acerto**. Viabilidade depende de o PDF ser vetorial/texto (extração confiável, já testado nesta sessão) ou escaneado/imagem (exige OCR/visão computacional, bem mais difícil de garantir 90%). Aguardando arquivos reais de referência antes de estimar escopo. | Não iniciado — aguardando referência real |
 | CP004 | Produção: fila, etapas, responsável, prioridade | Não iniciado |
 | CP005 | Compras e estoque: itens faltantes, entrada/saída | Não iniciado |
 | CP006 | Financeiro: valor vendido, custos, fluxo de caixa | Não iniciado |
 | CP007 | Indicadores/KPIs: setor atrasando, ranking, tempo médio | Não iniciado |
 | CP008+ | Integrações externas (WhatsApp, ERP, ferramentas de corte, Power BI) e IA (perguntas em linguagem natural, sugestões) | Não iniciado — cada integração precisa de checkpoint próprio, credenciais e decisão de arquitetura separada |
+| CP00X | **Entrada de áudio + transcrição** (definido por Charles em 16/07): usuário fala sua visão do projeto ou uma atualização ("o que vai ter, o que vai sair"), sistema transcreve e pede confirmação se precisar validar dado. Depende de escolher serviço de voz→texto — decisão de arquitetura/custo, não iniciar sem definir isso primeiro. | Não iniciado |
+
+## Relação arquitetural Gestor ↔ Origin (definida por Charles em 16/07)
+
+**Mobi Gestor é a porta de entrada do Mobi Origin.** Origin é guiado pelo
+Gestor, mas é **independente** — não se funde com o Gestor, só recebe
+entrada dele. Isso substitui/esclarece uma ambiguidade anterior (o Work
+tinha classificado "Origin" como terminologia legada/interna, não produto
+ativo — Charles confirma agora que é produto real e distinto, com essa
+relação específica de dependência de entrada). Ver `STATUS_PROJETO_MOBI.md`
+e memória do Claude Code para o histórico completo dessa correção.
 
 ## Por que começar pelo CP001 assim
 
