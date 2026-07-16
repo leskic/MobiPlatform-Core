@@ -62,5 +62,21 @@ describe("Mobi Gestor CP002 comercial", () => {
       const reaberto = repo.atualizarStatus(criado.id, "NEGOCIANDO", 3000);
       expect(reaberto?.motivoPerda).toBeNull();
     });
+
+    it("allows a new budget to be created for a project whose previous budget was lost", () => {
+      // Regression test: the UI used to permanently hide the "new budget" form
+      // once ANY budget existed for a project, even a PERDIDO one, making it
+      // impossible to re-quote a lost deal. The repository itself never
+      // enforced one-budget-per-project; this confirms that still holds.
+      const repo = new OrcamentoRepository(storage);
+      const primeiro = repo.add({ projetoId: "proj-1", valor: 12000, descontoPercentual: 0, margemPercentual: 30, comissaoPercentual: 4 }, 1000);
+      repo.atualizarStatus(primeiro.id, "PERDIDO", 2000, "Preço alto");
+
+      const segundo = repo.add({ projetoId: "proj-1", valor: 9000, descontoPercentual: 0, margemPercentual: 30, comissaoPercentual: 4 }, 3000);
+
+      const lista = repo.list();
+      expect(lista).toHaveLength(2);
+      expect(repo.porProjeto("proj-1")?.id).toBe(segundo.id);
+    });
   });
 });

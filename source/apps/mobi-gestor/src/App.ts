@@ -161,7 +161,7 @@ export class App {
               ${projetos
                 .map((p) => {
                   const cliente = clientes.find((c) => c.id === p.clienteId);
-                  const dias = Math.floor((agora - p.atualizadoEm) / 86400000);
+                  const dias = Math.max(0, Math.floor((agora - p.atualizadoEm) / 86400000));
                   const orcamento = orcamentos.find((o) => o.projetoId === p.id) ?? null;
                   return `<li class="card-projeto">
                     <div class="card-projeto-top">
@@ -178,7 +178,8 @@ export class App {
                     <select data-projeto-id="${p.id}" class="status-select">
                       ${STATUS.map((s) => `<option value="${s}" ${s === p.status ? "selected" : ""}>${STATUS_LABEL[s]}</option>`).join("")}
                     </select>
-                    ${orcamento ? renderOrcamento(orcamento) : renderFormOrcamento(p.id)}
+                    ${orcamento ? renderOrcamento(orcamento) : ""}
+                    ${!orcamento || orcamento.status === "PERDIDO" ? renderFormOrcamento(p.id) : ""}
                   </li>`;
                 })
                 .join("") || '<li class="vazio">Nenhum projeto cadastrado ainda.</li>'}
@@ -196,13 +197,20 @@ export class App {
     formCliente?.addEventListener("submit", (event) => {
       event.preventDefault();
       const data = new FormData(formCliente);
+      const nome = String(data.get("nome") ?? "").trim();
+      const contato = String(data.get("contato") ?? "").trim();
+      const responsavel = String(data.get("responsavel") ?? "").trim();
+      if (!nome || !contato || !responsavel) {
+        window.alert("Preencha nome, contato e responsável.");
+        return;
+      }
       this.clientes.add(
         {
-          nome: String(data.get("nome") ?? ""),
-          contato: String(data.get("contato") ?? ""),
+          nome,
+          contato,
           origem: (data.get("origem") as OrigemLead) ?? "site",
-          interesse: String(data.get("interesse") ?? ""),
-          responsavel: String(data.get("responsavel") ?? ""),
+          interesse: String(data.get("interesse") ?? "").trim(),
+          responsavel,
         },
         Date.now(),
       );
@@ -213,13 +221,20 @@ export class App {
     formProjeto?.addEventListener("submit", (event) => {
       event.preventDefault();
       const data = new FormData(formProjeto);
+      const clienteId = String(data.get("clienteId") ?? "");
+      const nome = String(data.get("nome") ?? "").trim();
+      const responsavel = String(data.get("responsavel") ?? "").trim();
+      if (!clienteId || !nome || !responsavel) {
+        window.alert("Selecione o cliente e preencha nome e responsável.");
+        return;
+      }
       this.projetos.add(
         {
-          clienteId: String(data.get("clienteId") ?? ""),
-          nome: String(data.get("nome") ?? ""),
+          clienteId,
+          nome,
           status: (data.get("status") as StatusProjeto) ?? "NOVO",
           prioridade: (data.get("prioridade") as Prioridade) ?? "MEDIA",
-          responsavel: String(data.get("responsavel") ?? ""),
+          responsavel,
         },
         Date.now(),
       );
@@ -241,16 +256,15 @@ export class App {
         const projetoId = form.dataset["projetoId"];
         if (!projetoId) return;
         const data = new FormData(form);
-        this.orcamentos.add(
-          {
-            projetoId,
-            valor: Number(data.get("valor") ?? 0),
-            descontoPercentual: Number(data.get("desconto") ?? 0),
-            margemPercentual: Number(data.get("margem") ?? 0),
-            comissaoPercentual: Number(data.get("comissao") ?? 0),
-          },
-          Date.now(),
-        );
+        const valor = Number(data.get("valor"));
+        const descontoPercentual = clampPercentual(data.get("desconto"));
+        const margemPercentual = clampPercentual(data.get("margem"));
+        const comissaoPercentual = clampPercentual(data.get("comissao"));
+        if (!Number.isFinite(valor) || valor <= 0) {
+          window.alert("Informe um valor de orçamento maior que zero.");
+          return;
+        }
+        this.orcamentos.add({ projetoId, valor, descontoPercentual, margemPercentual, comissaoPercentual }, Date.now());
         this.render();
       });
     });
@@ -262,8 +276,8 @@ export class App {
         const novoStatus = select.value as StatusOrcamento;
         let motivo: string | null = null;
         if (novoStatus === "PERDIDO") {
-          motivo = window.prompt("Motivo da perda:", "") ?? "";
-          if (motivo.trim() === "") {
+          motivo = (window.prompt("Motivo da perda:", "") ?? "").trim();
+          if (motivo === "") {
             this.render();
             return;
           }
@@ -301,6 +315,12 @@ function renderFormOrcamento(projetoId: string): string {
       <input name="comissao" type="number" min="0" max="100" step="0.1" placeholder="Comissão %" />
       <button type="submit">+ Orçamento</button>
     </form>`;
+}
+
+function clampPercentual(raw: FormDataEntryValue | null): number {
+  const value = Number(raw);
+  if (!Number.isFinite(value)) return 0;
+  return Math.min(100, Math.max(0, value));
 }
 
 function initials(nome: string): string {
