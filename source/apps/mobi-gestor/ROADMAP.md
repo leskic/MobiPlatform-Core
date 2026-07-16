@@ -15,8 +15,8 @@ uma vez sem especificação real de cada parte.
 
 | Fase | Escopo | Status |
 |---|---|---|
-| CP001 | Fundação: cadastro de Cliente, cadastro de Projeto vinculado, painel "O que precisa de atenção" (atrasado / parado) | **Implementado nesta branch** |
-| CP002 | Comercial: orçamento, negociação, desconto, margem, motivo de perda | Não iniciado |
+| CP001 | Fundação: cadastro de Cliente, cadastro de Projeto vinculado, painel "O que precisa de atenção" (atrasado / parado) | **Implementado** |
+| CP002 | Comercial: orçamento, negociação, desconto, margem, comissão, motivo de perda | **Implementado — com suposições, ver seção abaixo** |
 | CP003 | Levantamento multi-formato: começar por 1-2 formatos reais (ex.: foto + PDF), não os ~20 formatos da visão de uma vez | Não iniciado |
 | CP004 | Produção: fila, etapas, responsável, prioridade | Não iniciado |
 | CP005 | Compras e estoque: itens faltantes, entrada/saída | Não iniciado |
@@ -45,3 +45,26 @@ apoiar.
   necessidade aparecer.
 - Nenhuma integração externa, nenhuma IA, nenhum upload de arquivo neste
   checkpoint — fora de escopo deliberadamente.
+
+## Suposições assumidas no CP002 (implementado durante a madrugada, sem
+## confirmação do Charles — revisar e corrigir o que estiver errado)
+
+- **Um orçamento por projeto.** Não modelei múltiplas propostas/versões de
+  orçamento por projeto (renegociação vira só uma edição de status/valor
+  do mesmo orçamento, não um histórico de versões). Se o real é "cada
+  negociação gera um novo orçamento e o cliente compara", isso precisa
+  de outro modelo (lista de orçamentos por projeto, não um só).
+- **Margem e comissão são só capturadas, não usadas em nenhum cálculo
+  ainda.** Não existe dado de custo (material, mão de obra) no sistema
+  pra calcular margem de verdade — o campo é só um número que o
+  responsável digita. Cálculo real de margem fica para quando existir
+  módulo de custo/produção.
+- **"Motivo da perda" usa `window.prompt()`** — uma caixa de diálogo
+  nativa do navegador, não um formulário desenhado. Foi a forma mais
+  rápida de capturar o dado sem inventar um modal novo às pressas de
+  madrugada. Deve ser substituído por um formulário de verdade quando
+  o design geral do Gestor for revisado.
+- **Conversão/funil não foi implementado** (ex.: relatório de "quantos
+  orçamentos viram projeto aprovado"). Só o estado atual é mostrado, sem
+  histórico agregado.
+- **Moeda fixa em BRL**, sem qualquer configuração.

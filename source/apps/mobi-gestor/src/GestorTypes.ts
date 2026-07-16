@@ -47,3 +47,24 @@ export interface ItemAtencao {
 }
 
 export const DIAS_PARADO_LIMITE = 7;
+
+export type StatusOrcamento = "ABERTO" | "NEGOCIANDO" | "APROVADO" | "PERDIDO";
+
+export interface Orcamento {
+  id: string;
+  projetoId: string;
+  valor: number;
+  descontoPercentual: number;
+  margemPercentual: number;
+  comissaoPercentual: number;
+  status: StatusOrcamento;
+  motivoPerda: string | null;
+  criadoEm: number;
+  atualizadoEm: number;
+}
+
+export type NovoOrcamento = Omit<Orcamento, "id" | "status" | "motivoPerda" | "criadoEm" | "atualizadoEm">;
+
+export function valorLiquido(orcamento: Pick<Orcamento, "valor" | "descontoPercentual">): number {
+  return orcamento.valor * (1 - orcamento.descontoPercentual / 100);
+}

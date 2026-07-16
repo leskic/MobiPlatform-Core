@@ -1,6 +1,8 @@
 import { computeAtencao } from "./AtencaoEngine";
 import { ClienteRepository } from "./ClienteRepository";
-import type { OrigemLead, Prioridade, StatusProjeto } from "./GestorTypes";
+import type { Orcamento, OrigemLead, Prioridade, StatusOrcamento, StatusProjeto } from "./GestorTypes";
+import { valorLiquido } from "./GestorTypes";
+import { OrcamentoRepository } from "./OrcamentoRepository";
 import { ProjetoRepository } from "./ProjetoRepository";
 
 const ORIGENS: OrigemLead[] = ["whatsapp", "instagram", "site", "indicacao", "telefone", "visita"];
@@ -29,13 +31,24 @@ const STATUS_LABEL: Record<StatusProjeto, string> = {
 
 const PRIORIDADE_LABEL: Record<Prioridade, string> = { BAIXA: "Baixa", MEDIA: "Média", ALTA: "Alta" };
 
+const STATUS_ORCAMENTO_LABEL: Record<StatusOrcamento, string> = {
+  ABERTO: "Aberto",
+  NEGOCIANDO: "Negociando",
+  APROVADO: "Aprovado",
+  PERDIDO: "Perdido",
+};
+
+const moeda = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+
 export class App {
   private readonly clientes: ClienteRepository;
   private readonly projetos: ProjetoRepository;
+  private readonly orcamentos: OrcamentoRepository;
 
   constructor(private readonly root: HTMLElement) {
     this.clientes = new ClienteRepository(window.localStorage);
     this.projetos = new ProjetoRepository(window.localStorage);
+    this.orcamentos = new OrcamentoRepository(window.localStorage);
   }
 
   mount(): void {
@@ -45,8 +58,13 @@ export class App {
   private render(): void {
     const clientes = this.clientes.list();
     const projetos = this.projetos.list();
+    const orcamentos = this.orcamentos.list();
     const atencao = computeAtencao(projetos, Date.now());
     const agora = Date.now();
+
+    const emNegociacao = orcamentos
+      .filter((o) => o.status === "ABERTO" || o.status === "NEGOCIANDO")
+      .reduce((soma, o) => soma + valorLiquido(o), 0);
 
     this.root.innerHTML = `
       <div class="gestor">
@@ -55,13 +73,14 @@ export class App {
             <span class="brand-mark">MG</span>
             <div>
               <h1>Mobi Gestor</h1>
-              <p class="eyebrow">Painel do dia — CP001</p>
+              <p class="eyebrow">Painel do dia — CP002</p>
             </div>
           </div>
           <div class="topbar-stats">
             <div class="stat"><span class="stat-value">${clientes.length}</span><span class="stat-label">clientes</span></div>
             <div class="stat"><span class="stat-value">${projetos.length}</span><span class="stat-label">projetos</span></div>
             <div class="stat stat-${atencao.length > 0 ? "alert" : "ok"}"><span class="stat-value">${atencao.length}</span><span class="stat-label">precisam de atenção</span></div>
+            <div class="stat"><span class="stat-value stat-money">${moeda.format(emNegociacao)}</span><span class="stat-label">em negociação</span></div>
           </div>
         </header>
 
@@ -143,6 +162,7 @@ export class App {
                 .map((p) => {
                   const cliente = clientes.find((c) => c.id === p.clienteId);
                   const dias = Math.floor((agora - p.atualizadoEm) / 86400000);
+                  const orcamento = orcamentos.find((o) => o.projetoId === p.id) ?? null;
                   return `<li class="card-projeto">
                     <div class="card-projeto-top">
                       <b>${escapeHtml(p.nome)}</b>
@@ -158,6 +178,7 @@ export class App {
                     <select data-projeto-id="${p.id}" class="status-select">
                       ${STATUS.map((s) => `<option value="${s}" ${s === p.status ? "selected" : ""}>${STATUS_LABEL[s]}</option>`).join("")}
                     </select>
+                    ${orcamento ? renderOrcamento(orcamento) : renderFormOrcamento(p.id)}
                   </li>`;
                 })
                 .join("") || '<li class="vazio">Nenhum projeto cadastrado ainda.</li>'}
@@ -213,7 +234,73 @@ export class App {
         this.render();
       });
     });
+
+    this.root.querySelectorAll<HTMLFormElement>(".form-orcamento").forEach((form) => {
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const projetoId = form.dataset["projetoId"];
+        if (!projetoId) return;
+        const data = new FormData(form);
+        this.orcamentos.add(
+          {
+            projetoId,
+            valor: Number(data.get("valor") ?? 0),
+            descontoPercentual: Number(data.get("desconto") ?? 0),
+            margemPercentual: Number(data.get("margem") ?? 0),
+            comissaoPercentual: Number(data.get("comissao") ?? 0),
+          },
+          Date.now(),
+        );
+        this.render();
+      });
+    });
+
+    this.root.querySelectorAll<HTMLSelectElement>(".status-orcamento-select").forEach((select) => {
+      select.addEventListener("change", () => {
+        const orcamentoId = select.dataset["orcamentoId"];
+        if (!orcamentoId) return;
+        const novoStatus = select.value as StatusOrcamento;
+        let motivo: string | null = null;
+        if (novoStatus === "PERDIDO") {
+          motivo = window.prompt("Motivo da perda:", "") ?? "";
+          if (motivo.trim() === "") {
+            this.render();
+            return;
+          }
+        }
+        this.orcamentos.atualizarStatus(orcamentoId, novoStatus, Date.now(), motivo);
+        this.render();
+      });
+    });
   }
+}
+
+function renderOrcamento(orcamento: Orcamento): string {
+  const liquido = valorLiquido(orcamento);
+  return `
+    <div class="orcamento orcamento-${orcamento.status}">
+      <div class="orcamento-valor">
+        <span>${moeda.format(liquido)}</span>
+        ${orcamento.descontoPercentual > 0 ? `<span class="muted orcamento-desconto">(−${orcamento.descontoPercentual}%)</span>` : ""}
+      </div>
+      <select data-orcamento-id="${orcamento.id}" class="status-orcamento-select">
+        ${(Object.keys(STATUS_ORCAMENTO_LABEL) as StatusOrcamento[])
+          .map((s) => `<option value="${s}" ${s === orcamento.status ? "selected" : ""}>${STATUS_ORCAMENTO_LABEL[s]}</option>`)
+          .join("")}
+      </select>
+      ${orcamento.status === "PERDIDO" && orcamento.motivoPerda ? `<p class="orcamento-motivo">Motivo: ${escapeHtml(orcamento.motivoPerda)}</p>` : ""}
+    </div>`;
+}
+
+function renderFormOrcamento(projetoId: string): string {
+  return `
+    <form class="form-orcamento" data-projeto-id="${projetoId}">
+      <input name="valor" type="number" min="0" step="0.01" placeholder="Valor (R$)" required />
+      <input name="desconto" type="number" min="0" max="100" step="0.1" placeholder="Desconto %" />
+      <input name="margem" type="number" min="0" max="100" step="0.1" placeholder="Margem %" />
+      <input name="comissao" type="number" min="0" max="100" step="0.1" placeholder="Comissão %" />
+      <button type="submit">+ Orçamento</button>
+    </form>`;
 }
 
 function initials(nome: string): string {

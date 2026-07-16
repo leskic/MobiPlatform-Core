@@ -169,3 +169,34 @@ body {
 .badge-CONCLUIDO { background: var(--ok-bg); color: var(--ok); }
 .badge-ATRASADO { background: var(--bad-bg); color: var(--bad); }
 .badge-PARADO { background: var(--warn-bg); color: var(--warn); }
+
+.stat-money { font-size: 15px; }
+
+/* ---- comercial / orcamento ---- */
+.form-orcamento {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px;
+  padding-top: 8px; border-top: 1px dashed var(--line);
+}
+.form-orcamento input {
+  padding: 6px 8px; border: 1px solid var(--line); border-radius: 4px;
+  font-size: 12px; background: var(--paper); color: var(--ink); font-family: var(--sans);
+}
+.form-orcamento button {
+  grid-column: span 2; padding: 7px; border: 1px dashed var(--accent); border-radius: 4px;
+  background: transparent; color: var(--accent); font-size: 12px; font-weight: 700; cursor: pointer;
+}
+.form-orcamento button:hover { background: var(--void-bg); }
+
+.orcamento {
+  margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--line);
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+}
+.orcamento-valor { font-family: var(--mono); font-weight: 700; font-size: 13px; display: flex; gap: 6px; align-items: baseline; }
+.orcamento-desconto { font-family: var(--sans); font-weight: 400; font-size: 11px; }
+.status-orcamento-select {
+  margin-left: auto; font-size: 11px; padding: 4px 6px; border-radius: 4px;
+  border: 1px solid var(--line); background: var(--paper); color: var(--ink);
+}
+.orcamento-APROVADO .orcamento-valor { color: var(--ok); }
+.orcamento-PERDIDO .orcamento-valor { color: var(--bad); }
+.orcamento-motivo { flex-basis: 100%; margin: 0; font-size: 11.5px; color: var(--ink-dim); font-style: italic; }
