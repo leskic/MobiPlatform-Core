@@ -1,6 +1,6 @@
 # Status das Branches de Checkpoint
 
-Atualizado em: 2026-07-16
+Atualizado em: 2026-07-16 (tarde)
 
 Formato: cada linha é uma branch de checkpoint. `Autor` é quem implementou
 (Work ou Claude Code), não quem decidiu o escopo. `Status` usa um vocabulário
@@ -18,7 +18,7 @@ catalogado aqui para não gerar trabalho sem valor real.
 | `checkpoint/cp017-dinabox-adapter-preflight` | Claude Code | CP017-001: Dinabox preflight readiness (DinaboxPreflight, reaproveita ExtractionPipeline) | READY_FOR_TECHNICAL_REVIEW | `824acde` |
 | `checkpoint/coordenacao-workflow-setup` | Claude Code | Cria COORDENACAO/ (este protocolo) | FROZEN | `b2652bf` |
 | `checkpoint/cp-gestor-001-foundation` | Claude Code | CP001 Mobi Gestor: cadastro de Cliente, cadastro de Projeto vinculado, painel de Atenção (atrasado/parado), layout com craft real. Ver `apps/mobi-gestor/ROADMAP.md` para fases futuras. | READY_FOR_TECHNICAL_REVIEW | `3ef33fa` |
-| `checkpoint/cp-gestor-002-comercial` | Claude Code | CP002 Mobi Gestor: Orçamento por projeto (valor, desconto, margem, comissão), status Aberto/Negociando/Aprovado/Perdido com motivo, KPI "em negociação" no topbar. Auto-revisado (ver `COORDENACAO/CLAUDE_CODE/CP-GESTOR-SELF_REVIEW.md`) e suposições registradas em `apps/mobi-gestor/ROADMAP.md` — revisar antes de aprovar. | READY_FOR_TECHNICAL_REVIEW | `e9d9b8a` |
+| `checkpoint/cp-gestor-002-comercial` | Claude Code | CP002 Mobi Gestor: Orçamento por projeto (valor, desconto, margem, comissão), status Aberto/Negociando/Aprovado/Perdido com motivo, KPI "em negociação" no topbar. Auto-revisado (ver `COORDENACAO/CLAUDE_CODE/CP-GESTOR-SELF_REVIEW.md`, todos os achados endereçados) e suposições registradas em `apps/mobi-gestor/ROADMAP.md` — revisar antes de aprovar. | READY_FOR_TECHNICAL_REVIEW | `f6599a5` |
 
 ## Como adicionar uma linha
 

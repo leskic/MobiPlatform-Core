@@ -21,29 +21,34 @@ Achados reais, corrigidos nesta branch:
 6. "há Xd" não mostra mais número negativo se o relógio do sistema andar
    pra trás.
 
+## Encontrado, corrigido depois (com calma, fora do horário de madrugada)
+
+- **Sem índice O(1)** para achar cliente/orçamento de um projeto — trocado por
+  `Map` em `App.render()`. Commit `3390b73`.
+- **Card de projeto renderizado inline** dentro de `.map()`/template literal —
+  extraído para `renderProjetoCard()`. Commit `3a11aa7`.
+- **Duplicação entre `ClienteRepository`/`ProjetoRepository`/`OrcamentoRepository`**
+  — movido para `LocalStore.append()`/`LocalStore.update()` genéricos, com
+  teste próprio (`local-store.test.ts`, 6 casos incluindo JSON corrompido e
+  valor não-array). Commit `f6599a5`. Nenhum comportamento mudou — todos os
+  testes antigos dos três repositórios continuam passando sem alteração.
+
 ## Encontrado mas NÃO corrigido (deliberado — ver justificativa)
 
-- **Duplicação entre `ClienteRepository`/`ProjetoRepository`/`OrcamentoRepository`**
-  (`add`/`atualizarStatus` seguem o mesmo padrão nos três). Um `LocalStore`
-  genérico com `add`/`update` reduziria a duplicação. Não fiz porque é
-  refactor, não bugfix, e prefiro não mexer em três arquivos que já
-  passaram em teste/uso ao vivo às 3h da manhã sem alguém revisando.
 - **Sem lock/concorrência entre abas do navegador** (dois `localStorage.setItem`
   concorrentes podem se sobrescrever). Não é um problema real hoje — é
   aplicação local de uma pessoa só. Vira problema quando/se o Gestor virar
   multiusuário, que já está registrado como decisão de arquitetura pendente
   no `ROADMAP.md`.
-- **Sem índice O(1)** para achar cliente/orçamento de um projeto (usa `.find()`
-  linear). Escala mal com milhares de registros, mas hoje são dezenas. Otimização
-  prematura pro estágio atual.
 - **`window.prompt()` pro motivo da perda** — já estava documentado como
   simplificação temporária no ROADMAP.md antes da revisão; mantido.
 
 ## Validação após as correções
 
-- Testes: 18/18 no módulo (era 17, +1 de regressão pro bug do re-orçamento).
-- Regressão da raiz: 455/455 (49 arquivos).
-- Testado ao vivo: criei orçamento, marquei Perdido, confirmei que o
-  formulário de novo orçamento reaparece, criei um segundo orçamento de
-  valor diferente, confirmei que o valor exibido atualizou. Testei submissão
-  com valor vazio — bloqueada. Dados de teste limpos do localStorage.
+- Testes: 24/24 no módulo (era 17 antes da revisão, +1 regressão do bug de
+  re-orçamento, +6 do LocalStore genérico).
+- Regressão da raiz: 461/461 (50 arquivos, era 447 antes do CP002 inteiro).
+- Testado ao vivo em cada etapa: orçamento perdido → novo orçamento
+  reaparece; submissão com valor vazio → bloqueada; status de projeto
+  atualizado após o refactor do LocalStore → persiste corretamente. Dados
+  de teste sempre limpos do localStorage antes de encerrar.
