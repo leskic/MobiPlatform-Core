@@ -1,6 +1,6 @@
 import { computeAtencao } from "./AtencaoEngine";
 import { ClienteRepository } from "./ClienteRepository";
-import type { Orcamento, OrigemLead, Prioridade, StatusOrcamento, StatusProjeto } from "./GestorTypes";
+import type { Cliente, Orcamento, OrigemLead, Prioridade, Projeto, StatusOrcamento, StatusProjeto } from "./GestorTypes";
 import { valorLiquido } from "./GestorTypes";
 import { OrcamentoRepository } from "./OrcamentoRepository";
 import { ProjetoRepository } from "./ProjetoRepository";
@@ -164,31 +164,11 @@ export class App {
               ${clientes.length === 0 ? '<p class="hint">Cadastre um cliente primeiro.</p>' : ""}
             </form>
             <ul class="lista">
-              ${projetos
-                .map((p) => {
-                  const cliente = clientePorId.get(p.clienteId);
-                  const dias = Math.max(0, Math.floor((agora - p.atualizadoEm) / 86400000));
-                  const orcamento = orcamentoPorProjeto.get(p.id) ?? null;
-                  return `<li class="card-projeto">
-                    <div class="card-projeto-top">
-                      <b>${escapeHtml(p.nome)}</b>
-                      <span class="badge badge-${p.status}">${STATUS_LABEL[p.status]}</span>
-                    </div>
-                    <div class="card-projeto-meta">
-                      <span class="muted">${cliente ? escapeHtml(cliente.nome) : "cliente removido"}</span>
-                      <span class="dot-sep">·</span>
-                      <span class="muted prioridade-${p.prioridade}">${PRIORIDADE_LABEL[p.prioridade]}</span>
-                      <span class="dot-sep">·</span>
-                      <span class="muted">${dias === 0 ? "atualizado hoje" : `há ${dias}d`}</span>
-                    </div>
-                    <select data-projeto-id="${p.id}" class="status-select">
-                      ${STATUS.map((s) => `<option value="${s}" ${s === p.status ? "selected" : ""}>${STATUS_LABEL[s]}</option>`).join("")}
-                    </select>
-                    ${orcamento ? renderOrcamento(orcamento) : ""}
-                    ${!orcamento || orcamento.status === "PERDIDO" ? renderFormOrcamento(p.id) : ""}
-                  </li>`;
-                })
-                .join("") || '<li class="vazio">Nenhum projeto cadastrado ainda.</li>'}
+              ${
+                projetos
+                  .map((p) => renderProjetoCard(p, clientePorId.get(p.clienteId), orcamentoPorProjeto.get(p.id) ?? null, agora))
+                  .join("") || '<li class="vazio">Nenhum projeto cadastrado ainda.</li>'
+              }
             </ul>
           </section>
         </div>
@@ -293,6 +273,28 @@ export class App {
       });
     });
   }
+}
+
+function renderProjetoCard(p: Projeto, cliente: Cliente | undefined, orcamento: Orcamento | null, agora: number): string {
+  const dias = Math.max(0, Math.floor((agora - p.atualizadoEm) / 86400000));
+  return `<li class="card-projeto">
+    <div class="card-projeto-top">
+      <b>${escapeHtml(p.nome)}</b>
+      <span class="badge badge-${p.status}">${STATUS_LABEL[p.status]}</span>
+    </div>
+    <div class="card-projeto-meta">
+      <span class="muted">${cliente ? escapeHtml(cliente.nome) : "cliente removido"}</span>
+      <span class="dot-sep">·</span>
+      <span class="muted prioridade-${p.prioridade}">${PRIORIDADE_LABEL[p.prioridade]}</span>
+      <span class="dot-sep">·</span>
+      <span class="muted">${dias === 0 ? "atualizado hoje" : `há ${dias}d`}</span>
+    </div>
+    <select data-projeto-id="${p.id}" class="status-select">
+      ${STATUS.map((s) => `<option value="${s}" ${s === p.status ? "selected" : ""}>${STATUS_LABEL[s]}</option>`).join("")}
+    </select>
+    ${orcamento ? renderOrcamento(orcamento) : ""}
+    ${!orcamento || orcamento.status === "PERDIDO" ? renderFormOrcamento(p.id) : ""}
+  </li>`;
 }
 
 function renderOrcamento(orcamento: Orcamento): string {
