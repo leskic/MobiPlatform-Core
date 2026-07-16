@@ -16,7 +16,8 @@ catalogado aqui para não gerar trabalho sem valor real.
 | Branch | Autor | Escopo | Status | Commit |
 |---|---|---|---|---|
 | `checkpoint/cp017-dinabox-adapter-preflight` | Claude Code | CP017-001: Dinabox preflight readiness (DinaboxPreflight, reaproveita ExtractionPipeline) | READY_FOR_TECHNICAL_REVIEW | `824acde` |
-| `checkpoint/coordenacao-workflow-setup` | Claude Code | Cria COORDENACAO/ (este protocolo) | EM_PROGRESSO | (este commit) |
+| `checkpoint/coordenacao-workflow-setup` | Claude Code | Cria COORDENACAO/ (este protocolo) | FROZEN | `b2652bf` |
+| `checkpoint/cp-gestor-001-foundation` | Claude Code | CP001 Mobi Gestor: cadastro de Cliente, cadastro de Projeto vinculado, painel de Atenção (atrasado/parado). Ver `apps/mobi-gestor/ROADMAP.md` para fases futuras. | READY_FOR_TECHNICAL_REVIEW | (este commit) |
 
 ## Como adicionar uma linha
 

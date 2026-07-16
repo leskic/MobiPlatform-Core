@@ -28,6 +28,7 @@ export default defineConfig({
       "apps/mobi-manufacturing/tests/**/*.test.ts",
       "apps/mobi-cam/tests/**/*.test.ts",
       "apps/mobi-gcode/tests/**/*.test.ts",
+      "apps/mobi-gestor/tests/**/*.test.ts",
       "copilot/tests/**/*.test.ts",
       "copilot/rulebook/packages/tests/**/*.test.ts"
     ]
