@@ -1,7 +1,18 @@
 import { computeAtencao } from "./AtencaoEngine";
 import { ClienteRepository } from "./ClienteRepository";
-import type { Cliente, Orcamento, OrigemLead, Prioridade, Projeto, StatusOrcamento, StatusProjeto } from "./GestorTypes";
+import type {
+  Cliente,
+  ItemLevantamento,
+  Orcamento,
+  OrigemLead,
+  Prioridade,
+  Projeto,
+  StatusOrcamento,
+  StatusProjeto,
+} from "./GestorTypes";
 import { valorLiquido } from "./GestorTypes";
+import type { ItemCandidato } from "./ItemCandidateHeuristic";
+import { ItemLevantamentoRepository } from "./ItemLevantamentoRepository";
 import { OrcamentoRepository } from "./OrcamentoRepository";
 import { ProjetoRepository } from "./ProjetoRepository";
 
@@ -44,11 +55,17 @@ export class App {
   private readonly clientes: ClienteRepository;
   private readonly projetos: ProjetoRepository;
   private readonly orcamentos: OrcamentoRepository;
+  private readonly itensLevantamento: ItemLevantamentoRepository;
+  // Candidatos extraidos de um PDF, aguardando confirmacao do usuario.
+  // Transiente de proposito - nao persiste, some se a pagina recarregar.
+  private readonly candidatosPendentes = new Map<string, ItemCandidato[]>();
+  private importandoProjetoId: string | null = null;
 
   constructor(private readonly root: HTMLElement) {
     this.clientes = new ClienteRepository(window.localStorage);
     this.projetos = new ProjetoRepository(window.localStorage);
     this.orcamentos = new OrcamentoRepository(window.localStorage);
+    this.itensLevantamento = new ItemLevantamentoRepository(window.localStorage);
   }
 
   mount(): void {
@@ -59,6 +76,7 @@ export class App {
     const clientes = this.clientes.list();
     const projetos = this.projetos.list();
     const orcamentos = this.orcamentos.list();
+    const itensLevantamento = this.itensLevantamento.list();
     const atencao = computeAtencao(projetos, Date.now());
     const agora = Date.now();
 
@@ -166,7 +184,17 @@ export class App {
             <ul class="lista">
               ${
                 projetos
-                  .map((p) => renderProjetoCard(p, clientePorId.get(p.clienteId), orcamentoPorProjeto.get(p.id) ?? null, agora))
+                  .map((p) =>
+                    renderProjetoCard(
+                      p,
+                      clientePorId.get(p.clienteId),
+                      orcamentoPorProjeto.get(p.id) ?? null,
+                      agora,
+                      itensLevantamento.filter((item) => item.projetoId === p.id),
+                      this.candidatosPendentes.get(p.id) ?? null,
+                      this.importandoProjetoId === p.id,
+                    ),
+                  )
                   .join("") || '<li class="vazio">Nenhum projeto cadastrado ainda.</li>'
               }
             </ul>
@@ -272,10 +300,80 @@ export class App {
         this.render();
       });
     });
+
+    this.root.querySelectorAll<HTMLInputElement>(".importar-pdf-input").forEach((input) => {
+      input.addEventListener("change", () => {
+        const projetoId = input.dataset["projetoId"];
+        const file = input.files?.[0];
+        if (!projetoId || !file) return;
+        void this.importarPdf(projetoId, file);
+      });
+    });
+
+    this.root.querySelectorAll<HTMLButtonElement>(".confirmar-levantamento").forEach((button) => {
+      button.addEventListener("click", () => {
+        const projetoId = button.dataset["projetoId"];
+        if (!projetoId) return;
+        const candidatos = this.candidatosPendentes.get(projetoId);
+        if (!candidatos) return;
+        const container = this.root.querySelector(`.levantamento-revisao[data-projeto-id="${projetoId}"]`);
+        const marcados = new Set(
+          [...(container?.querySelectorAll<HTMLInputElement>("input[type=checkbox]:checked") ?? [])].map((input) =>
+            Number(input.dataset["index"]),
+          ),
+        );
+        const selecionados = candidatos.filter((_, index) => marcados.has(index));
+        if (selecionados.length > 0) {
+          this.itensLevantamento.addMuitos(
+            selecionados.map((c) => ({ projetoId, nome: c.texto, origem: "pdf" as const, paginaPdf: c.pagina })),
+            Date.now(),
+          );
+        }
+        this.candidatosPendentes.delete(projetoId);
+        this.render();
+      });
+    });
+
+    this.root.querySelectorAll<HTMLButtonElement>(".cancelar-levantamento").forEach((button) => {
+      button.addEventListener("click", () => {
+        const projetoId = button.dataset["projetoId"];
+        if (!projetoId) return;
+        this.candidatosPendentes.delete(projetoId);
+        this.render();
+      });
+    });
+  }
+
+  private async importarPdf(projetoId: string, file: File): Promise<void> {
+    this.importandoProjetoId = projetoId;
+    this.render();
+    try {
+      const { extrairLinhas, candidatosDeItens } = await import("./PdfImporter");
+      const buffer = await file.arrayBuffer();
+      const linhas = await extrairLinhas(buffer);
+      const candidatos = candidatosDeItens(linhas);
+      this.candidatosPendentes.set(projetoId, candidatos);
+      if (candidatos.length === 0) {
+        window.alert("Nenhum texto reconhecível encontrado nesse PDF.");
+      }
+    } catch (error) {
+      window.alert(`Não consegui ler esse PDF: ${error instanceof Error ? error.message : "erro desconhecido"}`);
+    } finally {
+      this.importandoProjetoId = null;
+      this.render();
+    }
   }
 }
 
-function renderProjetoCard(p: Projeto, cliente: Cliente | undefined, orcamento: Orcamento | null, agora: number): string {
+function renderProjetoCard(
+  p: Projeto,
+  cliente: Cliente | undefined,
+  orcamento: Orcamento | null,
+  agora: number,
+  itensLevantamento: ItemLevantamento[],
+  candidatos: ItemCandidato[] | null,
+  importando: boolean,
+): string {
   const dias = Math.max(0, Math.floor((agora - p.atualizadoEm) / 86400000));
   return `<li class="card-projeto">
     <div class="card-projeto-top">
@@ -294,7 +392,55 @@ function renderProjetoCard(p: Projeto, cliente: Cliente | undefined, orcamento: 
     </select>
     ${orcamento ? renderOrcamento(orcamento) : ""}
     ${!orcamento || orcamento.status === "PERDIDO" ? renderFormOrcamento(p.id) : ""}
+    ${renderLevantamento(p.id, itensLevantamento, candidatos, importando)}
   </li>`;
+}
+
+function renderLevantamento(
+  projetoId: string,
+  itens: ItemLevantamento[],
+  candidatos: ItemCandidato[] | null,
+  importando: boolean,
+): string {
+  const listaItens = itens.length
+    ? `<ul class="levantamento-lista">${itens
+        .map(
+          (item) =>
+            `<li>${escapeHtml(item.nome)} <span class="tag-origem-item">${item.origem === "pdf" ? "PDF" : "manual"}</span></li>`,
+        )
+        .join("")}</ul>`
+    : '<p class="muted">Nenhum item de levantamento ainda.</p>';
+
+  const revisao = candidatos
+    ? `<div class="levantamento-revisao" data-projeto-id="${projetoId}">
+        <p class="label">Encontrado no PDF — desmarque o que não for item real:</p>
+        <div class="levantamento-candidatos">
+          ${candidatos
+            .map(
+              (c, index) =>
+                `<label class="levantamento-candidato"><input type="checkbox" data-index="${index}" ${c.provavelItem ? "checked" : ""} />${escapeHtml(c.texto)} <span class="muted">(pág. ${c.pagina})</span></label>`,
+            )
+            .join("")}
+        </div>
+        <div class="levantamento-revisao-acoes">
+          <button type="button" class="btn-primary confirmar-levantamento" data-projeto-id="${projetoId}">Confirmar itens marcados</button>
+          <button type="button" class="secondary-action cancelar-levantamento" data-projeto-id="${projetoId}">Cancelar</button>
+        </div>
+      </div>`
+    : "";
+
+  return `
+    <div class="levantamento">
+      <div class="levantamento-head">
+        <span class="label">Levantamento</span>
+        <label class="importar-pdf-label">
+          ${importando ? "Lendo PDF..." : "+ Importar de PDF"}
+          <input type="file" accept="application/pdf" class="importar-pdf-input" data-projeto-id="${projetoId}" ${importando ? "disabled" : ""} />
+        </label>
+      </div>
+      ${listaItens}
+      ${revisao}
+    </div>`;
 }
 
 function renderOrcamento(orcamento: Orcamento): string {

@@ -68,3 +68,16 @@ export type NovoOrcamento = Omit<Orcamento, "id" | "status" | "motivoPerda" | "c
 export function valorLiquido(orcamento: Pick<Orcamento, "valor" | "descontoPercentual">): number {
   return orcamento.valor * (1 - orcamento.descontoPercentual / 100);
 }
+
+export type OrigemItemLevantamento = "pdf" | "manual";
+
+export interface ItemLevantamento {
+  id: string;
+  projetoId: string;
+  nome: string;
+  origem: OrigemItemLevantamento;
+  paginaPdf: number | null;
+  criadoEm: number;
+}
+
+export type NovoItemLevantamento = Omit<ItemLevantamento, "id" | "criadoEm">;

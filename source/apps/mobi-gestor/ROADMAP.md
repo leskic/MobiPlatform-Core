@@ -17,7 +17,8 @@ uma vez sem especificação real de cada parte.
 |---|---|---|
 | CP001 | Fundação: cadastro de Cliente, cadastro de Projeto vinculado, painel "O que precisa de atenção" (atrasado / parado) | **Implementado** |
 | CP002 | Comercial: orçamento, negociação, desconto, margem, comissão, motivo de perda | **Implementado — com suposições, ver seção abaixo** |
-| CP003 | **Iniciar a Venda + Levantamento** (definido por Charles em 16/07 como foco principal). Meta explícita: extrair dados de um PDF de planta arquitetônica automaticamente, com **90% de taxa de acerto**. Viabilidade depende de o PDF ser vetorial/texto (extração confiável, já testado nesta sessão) ou escaneado/imagem (exige OCR/visão computacional, bem mais difícil de garantir 90%). Aguardando arquivos reais de referência antes de estimar escopo. | Não iniciado — aguardando referência real |
+| CP003a | **Importar itens de PDF** (extração de lista de itens/módulos de uma planta vetorial, com revisão humana antes de confirmar). **Implementado — ver seção abaixo.** | **Implementado** |
+| CP003b | Motor de precificação real (custo fixo + matéria-prima + mão de obra por pessoa/etapa + markup, baseado nas planilhas reais da empresa) | Não iniciado — aguardando Charles confirmar se replica exatamente o modelo real |
 | CP004 | Produção: fila, etapas, responsável, prioridade | Não iniciado |
 | CP005 | Compras e estoque: itens faltantes, entrada/saída | Não iniciado |
 | CP006 | Financeiro: valor vendido, custos, fluxo de caixa | Não iniciado |
@@ -79,3 +80,36 @@ apoiar.
   orçamentos viram projeto aprovado"). Só o estado atual é mostrado, sem
   histórico agregado.
 - **Moeda fixa em BRL**, sem qualquer configuração.
+
+## CP003a — Importar itens de PDF (implementado 2026-07-16)
+
+Usa `pdfjs-dist` (roda no navegador, carregado sob demanda — não pesa no
+carregamento inicial) para extrair texto do PDF **com posição (x,y)**, o
+que permite reconstruir linhas corretamente em vez de texto solto sem
+ordem (limitação que eu tinha registrado nas notas do PDF da Ana e Bruno,
+usando extração sem posição). Um filtro heurístico (maiúsculas, tamanho,
+lista de palavras de timbre conhecidas) sinaliza candidatos prováveis, mas
+**o usuário sempre revisa e confirma antes de salvar** — nada é criado
+automaticamente sem esse passo, seguindo o mesmo padrão de "revisão
+humana" já usado no Copilot.
+
+**Resultado real testado** (PDF real da Ana e Bruno, 17 páginas): 195
+candidatos, 102 pré-marcados como prováveis. Nomes reais de item saíram
+corretos (CRISTALEIRA, BUFFET, RACK, ILHA, ARMÁRIO COZINHA, GAVETEIRO,
+SAPATEIRA, CABIDEIRO, QUARTO HELENA, ARMÁRIOS LAVANDERIA...). Ruído
+aparece principalmente de texto **rotacionado** no timbre da prancha (meu
+agrupamento de linha assume texto horizontal) — visualmente óbvio de
+descartar na revisão, mas não é 100% automático.
+
+**Sobre a meta de "90% de taxa de acerto"**: não implementei nenhuma
+métrica de precisão automática (exigiria um dataset de verdade rotulado
+pra comparar). O que existe é uma ferramenta de extração assistida que
+reduziu ~all o trabalho de digitar itens à mão para uma revisão rápida de
+checkboxes — não é "automático a 90%", é "muito mais rápido que digitar,
+com revisão humana obrigatória". Se a meta original era 100% automático
+sem revisão, isso não foi alcançado nem é recomendado (risco de erro
+silencioso é alto demais pra pular a revisão).
+
+**Fora de escopo desta fase**: extração de cotas/dimensões associadas a
+cada item (só nomes por enquanto), suporte a PDF escaneado/imagem (só
+vetorial/texto), motor de precificação (CP003b).

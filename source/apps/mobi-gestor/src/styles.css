@@ -200,3 +200,30 @@ body {
 .orcamento-APROVADO .orcamento-valor { color: var(--ok); }
 .orcamento-PERDIDO .orcamento-valor { color: var(--bad); }
 .orcamento-motivo { flex-basis: 100%; margin: 0; font-size: 11.5px; color: var(--ink-dim); font-style: italic; }
+
+/* ---- levantamento (importar de PDF) ---- */
+.levantamento { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--line); }
+.levantamento-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.importar-pdf-label {
+  position: relative; font-size: 11px; font-weight: 700; color: var(--accent);
+  cursor: pointer; text-decoration: underline dotted;
+}
+.importar-pdf-input {
+  position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer;
+}
+.levantamento-lista { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; }
+.levantamento-lista li {
+  font-size: 12px; display: flex; align-items: center; gap: 6px; padding: 3px 0;
+}
+.tag-origem-item {
+  font-size: 9px; text-transform: uppercase; padding: 1px 6px; border-radius: 10px;
+  background: var(--void-bg); color: var(--ink-dim); font-weight: 700;
+}
+.levantamento-revisao {
+  margin-top: 8px; padding: 10px; border: 1px dashed var(--accent); border-radius: 5px;
+  background: var(--void-bg);
+}
+.levantamento-candidatos { display: flex; flex-direction: column; gap: 3px; max-height: 220px; overflow-y: auto; margin: 6px 0; }
+.levantamento-candidato { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+.levantamento-revisao-acoes { display: flex; gap: 8px; margin-top: 6px; }
+.levantamento-revisao-acoes button { font-size: 11px; padding: 6px 10px; }
