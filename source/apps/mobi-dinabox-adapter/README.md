@@ -11,3 +11,7 @@ npm run build
 npm test
 npm run coverage
 ```
+
+## CP017-001
+
+`DinaboxPreflight` inspeciona um projeto Dinabox antes da adaptação e retorna um relatório de prontidão sem executar Constructor, Origin ou transações.

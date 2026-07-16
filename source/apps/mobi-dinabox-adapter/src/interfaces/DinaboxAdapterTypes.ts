@@ -26,3 +26,8 @@ export type AdapterEventType = "ADAPTER_STARTED" | "STAGE_COMPLETED" | "ADAPTER_
 export interface AdapterEventSnapshot { type: AdapterEventType; sessionId: string; logicalTimestamp: number; stage?: AdapterStage }
 export type AdapterListener = (event: AdapterEventSnapshot) => void;
 export interface AdapterSessionSnapshot { id: string; active: boolean }
+export type DinaboxPreflightStatus = "READY" | "READY_WITH_WARNINGS" | "BLOCKED";
+export type DinaboxPreflightSeverity = "info" | "warning" | "error";
+export interface DinaboxPreflightItem { code: string; message: string; element: string; severity: DinaboxPreflightSeverity }
+export interface DinaboxPreflightSummary { modules: number; cabinets: number; parts: number; hardware: number; materials: number; parameters: number; metadataKeys: number; warnings: number; errors: number }
+export interface DinaboxPreflightReport { checkpoint: "CP017-001"; status: DinaboxPreflightStatus; projectId: string; projectName: string; items: DinaboxPreflightItem[]; summary: DinaboxPreflightSummary }
