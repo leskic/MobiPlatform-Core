@@ -1,0 +1,28 @@
+# Status das Branches de Checkpoint
+
+Atualizado em: 2026-07-16
+
+Formato: cada linha é uma branch de checkpoint. `Autor` é quem implementou
+(Work ou Claude Code), não quem decidiu o escopo. `Status` usa um vocabulário
+fixo: `EM_PROGRESSO`, `READY_FOR_TECHNICAL_REVIEW`, `READY_FOR_HUMAN_TEST`,
+`FROZEN`, `BLOCKED`.
+
+Este arquivo cobre branches a partir da criação deste protocolo
+(2026-07-16). O histórico anterior (CP001-CP016 Platform, CP001-CP007
+Copilot, Adapter Lab CP001, etc.) já está documentado em
+`PROJETO_MOBI/docs/` fora do repositório e não foi retroativamente
+catalogado aqui para não gerar trabalho sem valor real.
+
+| Branch | Autor | Escopo | Status | Commit |
+|---|---|---|---|---|
+| `checkpoint/cp017-dinabox-adapter-preflight` | Claude Code | CP017-001: Dinabox preflight readiness (DinaboxPreflight, reaproveita ExtractionPipeline) | READY_FOR_TECHNICAL_REVIEW | `824acde` |
+| `checkpoint/coordenacao-workflow-setup` | Claude Code | Cria COORDENACAO/ (este protocolo) | EM_PROGRESSO | (este commit) |
+
+## Como adicionar uma linha
+
+1. Crie sua branch a partir da branch-base correta (confira `06_ARCHITECTURAL_RULES.md` / a branch mais atual conhecida).
+2. Implemente o escopo do checkpoint.
+3. Antes de commitar, adicione uma linha nesta tabela.
+4. Commit único com o escopo + a atualização deste arquivo juntos.
+5. Se o status mudar depois (ex.: revisão aprovou, virou FROZEN), edite a
+   linha existente em vez de criar uma nova.
