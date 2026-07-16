@@ -7,6 +7,28 @@ const ORIGENS: OrigemLead[] = ["whatsapp", "instagram", "site", "indicacao", "te
 const STATUS: StatusProjeto[] = ["NOVO", "LEVANTAMENTO", "ORCAMENTO", "PRODUCAO", "MONTAGEM", "CONCLUIDO", "ATRASADO", "PARADO"];
 const PRIORIDADES: Prioridade[] = ["BAIXA", "MEDIA", "ALTA"];
 
+const ORIGEM_LABEL: Record<OrigemLead, string> = {
+  whatsapp: "WhatsApp",
+  instagram: "Instagram",
+  site: "Site",
+  indicacao: "Indicação",
+  telefone: "Telefone",
+  visita: "Visita",
+};
+
+const STATUS_LABEL: Record<StatusProjeto, string> = {
+  NOVO: "Novo",
+  LEVANTAMENTO: "Levantamento",
+  ORCAMENTO: "Orçamento",
+  PRODUCAO: "Produção",
+  MONTAGEM: "Montagem",
+  CONCLUIDO: "Concluído",
+  ATRASADO: "Atrasado",
+  PARADO: "Parado",
+};
+
+const PRIORIDADE_LABEL: Record<Prioridade, string> = { BAIXA: "Baixa", MEDIA: "Média", ALTA: "Alta" };
+
 export class App {
   private readonly clientes: ClienteRepository;
   private readonly projetos: ProjetoRepository;
@@ -24,78 +46,121 @@ export class App {
     const clientes = this.clientes.list();
     const projetos = this.projetos.list();
     const atencao = computeAtencao(projetos, Date.now());
+    const agora = Date.now();
 
     this.root.innerHTML = `
       <div class="gestor">
-        <header class="gestor-header">
-          <h1>Mobi Gestor</h1>
-          <p class="subtitle">O que precisa da sua atenção agora</p>
+        <header class="topbar">
+          <div class="brand">
+            <span class="brand-mark">MG</span>
+            <div>
+              <h1>Mobi Gestor</h1>
+              <p class="eyebrow">Painel do dia — CP001</p>
+            </div>
+          </div>
+          <div class="topbar-stats">
+            <div class="stat"><span class="stat-value">${clientes.length}</span><span class="stat-label">clientes</span></div>
+            <div class="stat"><span class="stat-value">${projetos.length}</span><span class="stat-label">projetos</span></div>
+            <div class="stat stat-${atencao.length > 0 ? "alert" : "ok"}"><span class="stat-value">${atencao.length}</span><span class="stat-label">precisam de atenção</span></div>
+          </div>
         </header>
 
-        <section class="atencao-panel" id="atencao-panel">
-          ${
-            atencao.length === 0
-              ? '<p class="atencao-vazia">Nenhum projeto atrasado ou parado.</p>'
-              : atencao
-                  .map(
-                    (item) => `
-                <div class="atencao-item atencao-${item.severidade}">
-                  <span class="atencao-nome">${escapeHtml(item.projetoNome)}</span>
-                  <span class="atencao-motivo">${escapeHtml(item.motivo)}</span>
-                </div>`,
-                  )
-                  .join("")
-          }
+        <section class="atencao-panel">
+          <h2 class="section-title">O que precisa da sua atenção</h2>
+          <div class="atencao-list" id="atencao-panel">
+            ${
+              atencao.length === 0
+                ? '<p class="atencao-vazia">Tudo em dia — nenhum projeto atrasado ou parado.</p>'
+                : atencao
+                    .map(
+                      (item) => `
+                  <div class="atencao-item atencao-${item.severidade}">
+                    <span class="atencao-dot"></span>
+                    <span class="atencao-nome">${escapeHtml(item.projetoNome)}</span>
+                    <span class="atencao-motivo">${escapeHtml(item.motivo)}</span>
+                  </div>`,
+                    )
+                    .join("")
+            }
+          </div>
         </section>
 
         <div class="columns">
           <section class="painel" id="painel-clientes">
-            <h2>Clientes <span class="contagem">${clientes.length}</span></h2>
+            <div class="painel-head">
+              <h2 class="section-title">Clientes</h2>
+              <span class="contagem">${clientes.length}</span>
+            </div>
             <form id="form-cliente" class="form">
-              <input name="nome" placeholder="Nome" required />
-              <input name="contato" placeholder="Contato (telefone/e-mail)" required />
-              <select name="origem">${ORIGENS.map((o) => `<option value="${o}">${o}</option>`).join("")}</select>
-              <input name="interesse" placeholder="Interesse (ex: cozinha planejada)" />
-              <input name="responsavel" placeholder="Responsável" required />
-              <button type="submit">Adicionar cliente</button>
+              <label class="field"><span>Nome</span><input name="nome" placeholder="Nome do cliente" required /></label>
+              <label class="field"><span>Contato</span><input name="contato" placeholder="Telefone ou e-mail" required /></label>
+              <div class="field-row">
+                <label class="field"><span>Origem</span><select name="origem">${ORIGENS.map((o) => `<option value="${o}">${ORIGEM_LABEL[o]}</option>`).join("")}</select></label>
+                <label class="field"><span>Responsável</span><input name="responsavel" placeholder="Quem atende" required /></label>
+              </div>
+              <label class="field"><span>Interesse</span><input name="interesse" placeholder="Ex.: cozinha planejada" /></label>
+              <button type="submit" class="btn-primary">+ Adicionar cliente</button>
             </form>
             <ul class="lista">
               ${clientes
                 .map(
-                  (c) => `<li><b>${escapeHtml(c.nome)}</b> — ${escapeHtml(c.contato)} <span class="tag">${c.origem}</span></li>`,
+                  (c) => `<li class="card-cliente">
+                    <span class="avatar">${initials(c.nome)}</span>
+                    <div class="card-info">
+                      <b>${escapeHtml(c.nome)}</b>
+                      <span class="muted">${escapeHtml(c.contato)}${c.interesse ? " · " + escapeHtml(c.interesse) : ""}</span>
+                    </div>
+                    <span class="tag tag-origem">${ORIGEM_LABEL[c.origem]}</span>
+                  </li>`,
                 )
-                .join("") || '<li class="vazio">Nenhum cliente cadastrado.</li>'}
+                .join("") || '<li class="vazio">Nenhum cliente cadastrado ainda.</li>'}
             </ul>
           </section>
 
           <section class="painel" id="painel-projetos">
-            <h2>Projetos <span class="contagem">${projetos.length}</span></h2>
+            <div class="painel-head">
+              <h2 class="section-title">Projetos</h2>
+              <span class="contagem">${projetos.length}</span>
+            </div>
             <form id="form-projeto" class="form">
-              <select name="clienteId" required>
-                <option value="" disabled selected>Cliente</option>
-                ${clientes.map((c) => `<option value="${c.id}">${escapeHtml(c.nome)}</option>`).join("")}
-              </select>
-              <input name="nome" placeholder="Nome do projeto" required />
-              <select name="status">${STATUS.map((s) => `<option value="${s}">${s}</option>`).join("")}</select>
-              <select name="prioridade">${PRIORIDADES.map((p) => `<option value="${p}">${p}</option>`).join("")}</select>
-              <input name="responsavel" placeholder="Responsável" required />
-              <button type="submit" ${clientes.length === 0 ? "disabled" : ""}>Adicionar projeto</button>
+              <label class="field"><span>Cliente</span>
+                <select name="clienteId" required>
+                  <option value="" disabled selected>Selecione o cliente</option>
+                  ${clientes.map((c) => `<option value="${c.id}">${escapeHtml(c.nome)}</option>`).join("")}
+                </select>
+              </label>
+              <label class="field"><span>Nome do projeto</span><input name="nome" placeholder="Ex.: Cozinha Torres" required /></label>
+              <div class="field-row">
+                <label class="field"><span>Status inicial</span><select name="status">${STATUS.map((s) => `<option value="${s}">${STATUS_LABEL[s]}</option>`).join("")}</select></label>
+                <label class="field"><span>Prioridade</span><select name="prioridade">${PRIORIDADES.map((p) => `<option value="${p}">${PRIORIDADE_LABEL[p]}</option>`).join("")}</select></label>
+              </div>
+              <label class="field"><span>Responsável</span><input name="responsavel" placeholder="Quem conduz" required /></label>
+              <button type="submit" class="btn-primary" ${clientes.length === 0 ? "disabled" : ""}>+ Adicionar projeto</button>
+              ${clientes.length === 0 ? '<p class="hint">Cadastre um cliente primeiro.</p>' : ""}
             </form>
             <ul class="lista">
               ${projetos
                 .map((p) => {
                   const cliente = clientes.find((c) => c.id === p.clienteId);
-                  return `<li>
-                    <b>${escapeHtml(p.nome)}</b>
-                    <span class="tag status-${p.status}">${p.status}</span>
-                    <span class="tag prioridade-${p.prioridade}">${p.prioridade}</span>
-                    <span class="cliente-ref">${cliente ? escapeHtml(cliente.nome) : "cliente removido"}</span>
+                  const dias = Math.floor((agora - p.atualizadoEm) / 86400000);
+                  return `<li class="card-projeto">
+                    <div class="card-projeto-top">
+                      <b>${escapeHtml(p.nome)}</b>
+                      <span class="badge badge-${p.status}">${STATUS_LABEL[p.status]}</span>
+                    </div>
+                    <div class="card-projeto-meta">
+                      <span class="muted">${cliente ? escapeHtml(cliente.nome) : "cliente removido"}</span>
+                      <span class="dot-sep">·</span>
+                      <span class="muted prioridade-${p.prioridade}">${PRIORIDADE_LABEL[p.prioridade]}</span>
+                      <span class="dot-sep">·</span>
+                      <span class="muted">${dias === 0 ? "atualizado hoje" : `há ${dias}d`}</span>
+                    </div>
                     <select data-projeto-id="${p.id}" class="status-select">
-                      ${STATUS.map((s) => `<option value="${s}" ${s === p.status ? "selected" : ""}>${s}</option>`).join("")}
+                      ${STATUS.map((s) => `<option value="${s}" ${s === p.status ? "selected" : ""}>${STATUS_LABEL[s]}</option>`).join("")}
                     </select>
                   </li>`;
                 })
-                .join("") || '<li class="vazio">Nenhum projeto cadastrado.</li>'}
+                .join("") || '<li class="vazio">Nenhum projeto cadastrado ainda.</li>'}
             </ul>
           </section>
         </div>
@@ -149,6 +214,12 @@ export class App {
       });
     });
   }
+}
+
+function initials(nome: string): string {
+  const partes = nome.trim().split(/\s+/).filter(Boolean);
+  const primeiras = partes.slice(0, 2).map((p) => p[0]?.toUpperCase() ?? "");
+  return primeiras.join("") || "?";
 }
 
 function escapeHtml(value: string): string {
