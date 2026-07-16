@@ -18,18 +18,14 @@ export class ProjetoRepository {
 
   add(novo: NovoProjeto, agora: number): Projeto {
     const projeto: Projeto = { ...novo, id: newId("proj"), criadoEm: agora, atualizadoEm: agora };
-    this.store.save([...this.store.list(), projeto]);
+    this.store.append(projeto);
     return projeto;
   }
 
   atualizarStatus(id: string, status: StatusProjeto, agora: number): Projeto | null {
-    const projetos = this.store.list();
-    const index = projetos.findIndex((projeto) => projeto.id === id);
-    if (index === -1) return null;
-    const atual = projetos[index]!;
-    const atualizado: Projeto = { ...atual, status, atualizadoEm: agora };
-    projetos[index] = atualizado;
-    this.store.save(projetos);
-    return atualizado;
+    return this.store.update(
+      (projeto) => projeto.id === id,
+      (projeto) => ({ ...projeto, status, atualizadoEm: agora }),
+    );
   }
 }

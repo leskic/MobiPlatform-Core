@@ -14,7 +14,7 @@ export class ClienteRepository {
 
   add(novo: NovoCliente, agora: number): Cliente {
     const cliente: Cliente = { ...novo, id: newId("cli"), criadoEm: agora };
-    this.store.save([...this.store.list(), cliente]);
+    this.store.append(cliente);
     return cliente;
   }
 }

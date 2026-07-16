@@ -28,4 +28,18 @@ export class LocalStore<T> {
   save(items: readonly T[]): void {
     this.storage.setItem(this.key, JSON.stringify(items));
   }
+
+  append(item: T): void {
+    this.save([...this.list(), item]);
+  }
+
+  update(matches: (item: T) => boolean, updater: (item: T) => T): T | null {
+    const items = this.list();
+    const index = items.findIndex(matches);
+    if (index === -1) return null;
+    const atualizado = updater(items[index]!);
+    items[index] = atualizado;
+    this.save(items);
+    return atualizado;
+  }
 }
