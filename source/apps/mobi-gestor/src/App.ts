@@ -10,7 +10,7 @@ import type {
   StatusOrcamento,
   StatusProjeto,
 } from "./GestorTypes";
-import { valorLiquido } from "./GestorTypes";
+import { precoVendaSugerido, valorLiquido } from "./GestorTypes";
 import type { ItemCandidato } from "./ItemCandidateHeuristic";
 import { ItemLevantamentoRepository } from "./ItemLevantamentoRepository";
 import { OrcamentoRepository } from "./OrcamentoRepository";
@@ -278,8 +278,39 @@ export class App {
           window.alert("Informe um valor de orçamento maior que zero.");
           return;
         }
-        this.orcamentos.add({ projetoId, valor, descontoPercentual, margemPercentual, comissaoPercentual }, Date.now());
+        this.orcamentos.add(
+          {
+            projetoId,
+            valor,
+            descontoPercentual,
+            margemPercentual,
+            comissaoPercentual,
+            custoMateriaPrima: parseCustoOpcional(data.get("custoMp")),
+            custoMaoDeObra: parseCustoOpcional(data.get("custoMo")),
+            custoFixoRateado: parseCustoOpcional(data.get("custoFixo")),
+            markupPercentual: parseCustoOpcional(data.get("markup")),
+          },
+          Date.now(),
+        );
         this.render();
+      });
+    });
+
+    this.root.querySelectorAll<HTMLButtonElement>(".calcular-preco-sugerido").forEach((button) => {
+      button.addEventListener("click", () => {
+        const form = button.closest("form");
+        if (!form) return;
+        const custoMateriaPrima = parseCustoOpcional(form.querySelector<HTMLInputElement>("[name=custoMp]")?.value ?? null) ?? 0;
+        const custoMaoDeObra = parseCustoOpcional(form.querySelector<HTMLInputElement>("[name=custoMo]")?.value ?? null) ?? 0;
+        const custoFixoRateado = parseCustoOpcional(form.querySelector<HTMLInputElement>("[name=custoFixo]")?.value ?? null) ?? 0;
+        const markupPercentual = parseCustoOpcional(form.querySelector<HTMLInputElement>("[name=markup]")?.value ?? null) ?? 0;
+        if (custoMateriaPrima === 0 && custoMaoDeObra === 0 && custoFixoRateado === 0) {
+          window.alert("Preencha ao menos matéria-prima, mão de obra ou custo fixo pra calcular.");
+          return;
+        }
+        const sugestao = precoVendaSugerido({ custoMateriaPrima, custoMaoDeObra, custoFixoRateado, markupPercentual });
+        const campoValor = form.querySelector<HTMLInputElement>("[name=valor]");
+        if (campoValor) campoValor.value = sugestao.toFixed(2);
       });
     });
 
@@ -445,6 +476,7 @@ function renderLevantamento(
 
 function renderOrcamento(orcamento: Orcamento): string {
   const liquido = valorLiquido(orcamento);
+  const temCusto = orcamento.custoMateriaPrima !== null || orcamento.custoMaoDeObra !== null || orcamento.custoFixoRateado !== null;
   return `
     <div class="orcamento orcamento-${orcamento.status}">
       <div class="orcamento-valor">
@@ -456,6 +488,11 @@ function renderOrcamento(orcamento: Orcamento): string {
           .map((s) => `<option value="${s}" ${s === orcamento.status ? "selected" : ""}>${STATUS_ORCAMENTO_LABEL[s]}</option>`)
           .join("")}
       </select>
+      ${
+        temCusto
+          ? `<p class="orcamento-custo muted">Custo: MP ${moeda.format(orcamento.custoMateriaPrima ?? 0)} + MO ${moeda.format(orcamento.custoMaoDeObra ?? 0)} + Fixo ${moeda.format(orcamento.custoFixoRateado ?? 0)} · Markup ${orcamento.markupPercentual ?? 0}%</p>`
+          : ""
+      }
       ${orcamento.status === "PERDIDO" && orcamento.motivoPerda ? `<p class="orcamento-motivo">Motivo: ${escapeHtml(orcamento.motivoPerda)}</p>` : ""}
     </div>`;
 }
@@ -467,6 +504,14 @@ function renderFormOrcamento(projetoId: string): string {
       <input name="desconto" type="number" min="0" max="100" step="0.1" placeholder="Desconto %" />
       <input name="margem" type="number" min="0" max="100" step="0.1" placeholder="Margem %" />
       <input name="comissao" type="number" min="0" max="100" step="0.1" placeholder="Comissão %" />
+      <details class="calculadora-custo">
+        <summary>Calcular a partir do custo real (opcional)</summary>
+        <input name="custoMp" type="number" min="0" step="0.01" placeholder="Matéria-prima (R$)" />
+        <input name="custoMo" type="number" min="0" step="0.01" placeholder="Mão de obra (R$)" />
+        <input name="custoFixo" type="number" min="0" step="0.01" placeholder="Custo fixo rateado (R$)" />
+        <input name="markup" type="number" min="0" step="0.1" placeholder="Markup %" />
+        <button type="button" class="secondary-action calcular-preco-sugerido" data-projeto-id="${projetoId}">Calcular sugestão de venda</button>
+      </details>
       <button type="submit">+ Orçamento</button>
     </form>`;
 }
@@ -475,6 +520,12 @@ function clampPercentual(raw: FormDataEntryValue | null): number {
   const value = Number(raw);
   if (!Number.isFinite(value)) return 0;
   return Math.min(100, Math.max(0, value));
+}
+
+function parseCustoOpcional(raw: FormDataEntryValue | string | null): number | null {
+  if (raw === null || raw === "") return null;
+  const value = Number(raw);
+  return Number.isFinite(value) && value >= 0 ? value : null;
 }
 
 function initials(nome: string): string {

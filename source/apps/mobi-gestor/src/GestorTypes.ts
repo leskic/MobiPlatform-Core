@@ -57,6 +57,13 @@ export interface Orcamento {
   descontoPercentual: number;
   margemPercentual: number;
   comissaoPercentual: number;
+  // Calculadora de custo real (CP003b) - opcional. Quando preenchida,
+  // "valor" acima e o preco de venda SUGERIDO por ela, mas o usuario
+  // ainda pode digitar um valor direto sem usar a calculadora.
+  custoMateriaPrima: number | null;
+  custoMaoDeObra: number | null;
+  custoFixoRateado: number | null;
+  markupPercentual: number | null;
   status: StatusOrcamento;
   motivoPerda: string | null;
   criadoEm: number;
@@ -67,6 +74,26 @@ export type NovoOrcamento = Omit<Orcamento, "id" | "status" | "motivoPerda" | "c
 
 export function valorLiquido(orcamento: Pick<Orcamento, "valor" | "descontoPercentual">): number {
   return orcamento.valor * (1 - orcamento.descontoPercentual / 100);
+}
+
+export interface CustosOrcamento {
+  custoMateriaPrima: number;
+  custoMaoDeObra: number;
+  custoFixoRateado: number;
+  markupPercentual: number;
+}
+
+export function custoTotalOrcamento(custos: CustosOrcamento): number {
+  return custos.custoMateriaPrima + custos.custoMaoDeObra + custos.custoFixoRateado;
+}
+
+// Espelha a logica real da planilha de precificacao da empresa (aba
+// RESULTADO): preco de venda = custo de fabricacao + despesas (markup %
+// sobre o custo). Simplificado - nao rateia mao de obra por
+// pessoa/etapa como a planilha real, so um total.
+export function precoVendaSugerido(custos: CustosOrcamento): number {
+  const custoTotal = custoTotalOrcamento(custos);
+  return custoTotal * (1 + custos.markupPercentual / 100);
 }
 
 export type OrigemItemLevantamento = "pdf" | "manual";
