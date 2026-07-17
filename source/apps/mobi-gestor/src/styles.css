@@ -228,6 +228,25 @@ body {
 .orcamento-PERDIDO .orcamento-valor { color: var(--bad); }
 .orcamento-motivo { flex-basis: 100%; margin: 0; font-size: 11.5px; color: var(--ink-dim); font-style: italic; }
 
+/* ---- fechamento do projeto (CP005) ---- */
+.fechamento { flex-basis: 100%; margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--line); }
+.fechamento .label { margin: 6px 0 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; color: var(--ink-dim); }
+.form-fechamento, .form-mudanca-escopo { display: flex; gap: 6px; margin-bottom: 6px; }
+.form-fechamento input, .form-mudanca-escopo input, .form-mudanca-escopo select {
+  flex: 1; padding: 6px 8px; border: 1px solid var(--line); border-radius: 4px;
+  font-size: 12px; background: var(--paper); color: var(--ink); font-family: var(--sans);
+}
+.form-fechamento button, .form-mudanca-escopo button { font-size: 11px; padding: 6px 10px; white-space: nowrap; }
+.mudancas-lista { list-style: none; margin: 0 0 6px; padding: 0; display: flex; flex-direction: column; gap: 3px; }
+.mudancas-lista li { font-size: 12px; }
+.tag-categoria-mudanca {
+  font-size: 9px; text-transform: uppercase; padding: 1px 6px; border-radius: 10px;
+  background: var(--void-bg); color: var(--ink-dim); font-weight: 700; margin-right: 4px;
+}
+.fechamento-comparativo { font-size: 12px; font-family: var(--mono); }
+.diferenca-positiva { color: var(--ok); font-weight: 700; }
+.diferenca-negativa { color: var(--bad); font-weight: 700; }
+
 /* ---- levantamento (importar de PDF) ---- */
 .levantamento { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--line); }
 .levantamento-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }

@@ -1,6 +1,7 @@
 import { describe, expect, it, beforeEach } from "vitest";
 import { OrcamentoRepository } from "../src/OrcamentoRepository";
-import { custoTotalOrcamento, precoVendaSugerido, valorLiquido, type NovoOrcamento } from "../src/GestorTypes";
+import { MudancaEscopoRepository } from "../src/MudancaEscopoRepository";
+import { compararFechamento, custoTotalOrcamento, precoVendaSugerido, valorLiquido, type NovoOrcamento } from "../src/GestorTypes";
 
 class MemoryStorage {
   private data = new Map<string, string>();
@@ -121,6 +122,70 @@ describe("Mobi Gestor CP002 comercial", () => {
     it("suggests exactly the cost total when markup is zero", () => {
       const sugestao = precoVendaSugerido({ custoMateriaPrima: 100, custoMaoDeObra: 200, custoFixoRateado: 50, markupPercentual: 0 });
       expect(sugestao).toBe(350);
+    });
+  });
+
+  describe("CP005 — fechamento do projeto (estimado x real)", () => {
+    let storage: MemoryStorage;
+    beforeEach(() => { storage = new MemoryStorage(); });
+
+    it("does not allow registering fechamento before the orcamento is APROVADO", () => {
+      const repo = new OrcamentoRepository(storage);
+      const criado = repo.add(novoOrcamento(), 1000);
+      expect(repo.registrarFechamento(criado.id, 15000, 2000)).toBeNull();
+    });
+
+    it("registers fechamento once the orcamento is APROVADO", () => {
+      const repo = new OrcamentoRepository(storage);
+      const criado = repo.add(novoOrcamento(), 1000);
+      repo.atualizarStatus(criado.id, "APROVADO", 2000);
+      const fechado = repo.registrarFechamento(criado.id, 15000, 3000);
+      expect(fechado?.custoRealTotal).toBe(15000);
+      expect(fechado?.fechadoEm).toBe(3000);
+    });
+
+    it("does not allow registering fechamento twice - the real cost is frozen", () => {
+      const repo = new OrcamentoRepository(storage);
+      const criado = repo.add(novoOrcamento(), 1000);
+      repo.atualizarStatus(criado.id, "APROVADO", 2000);
+      repo.registrarFechamento(criado.id, 15000, 3000);
+      expect(repo.registrarFechamento(criado.id, 99999, 4000)).toBeNull();
+    });
+
+    it("compararFechamento returns null before fechamento is registered", () => {
+      const orcamento = { custoRealTotal: null, custoMateriaPrima: 390, custoMaoDeObra: 2588, custoFixoRateado: 120, valor: 4000 };
+      expect(compararFechamento(orcamento)).toBeNull();
+    });
+
+    it("compararFechamento compares against summed real costs when the calculator was used", () => {
+      const orcamento = { custoRealTotal: 3500, custoMateriaPrima: 390, custoMaoDeObra: 2588, custoFixoRateado: 120, valor: 4000 };
+      expect(compararFechamento(orcamento)).toEqual({ custoEstimado: 3098, custoReal: 3500, diferenca: 402 });
+    });
+
+    it("compararFechamento falls back to the flat orcamento value when no cost breakdown exists", () => {
+      const orcamento = { custoRealTotal: 13000, custoMateriaPrima: null, custoMaoDeObra: null, custoFixoRateado: null, valor: 12000 };
+      expect(compararFechamento(orcamento)).toEqual({ custoEstimado: 12000, custoReal: 13000, diferenca: 1000 });
+    });
+  });
+
+  describe("MudancaEscopoRepository (CP005)", () => {
+    let escopoStorage: MemoryStorage;
+    beforeEach(() => { escopoStorage = new MemoryStorage(); });
+
+    it("registers a scope change tied to a project", () => {
+      const repo = new MudancaEscopoRepository(escopoStorage);
+      const criada = repo.add({ projetoId: "proj-1", categoria: "CLIENTE_ADICIONOU", descricao: "Nicho air fryer" }, 1000);
+      expect(criada.categoria).toBe("CLIENTE_ADICIONOU");
+      expect(repo.listPorProjeto("proj-1")).toHaveLength(1);
+    });
+
+    it("lists newest first and filters by project", () => {
+      const repo = new MudancaEscopoRepository(escopoStorage);
+      repo.add({ projetoId: "proj-1", categoria: "MEDIDA_DIVERGENTE", descricao: "" }, 1000);
+      repo.add({ projetoId: "proj-2", categoria: "OUTRO", descricao: "" }, 2000);
+      repo.add({ projetoId: "proj-1", categoria: "CLIENTE_TROCOU_MATERIAL", descricao: "" }, 3000);
+      const doProjeto1 = repo.listPorProjeto("proj-1");
+      expect(doProjeto1.map((m) => m.categoria)).toEqual(["CLIENTE_TROCOU_MATERIAL", "MEDIDA_DIVERGENTE"]);
     });
   });
 });

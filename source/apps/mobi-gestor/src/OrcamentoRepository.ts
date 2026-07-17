@@ -22,6 +22,8 @@ export class OrcamentoRepository {
       id: newId("orc"),
       status: "ABERTO",
       motivoPerda: null,
+      custoRealTotal: null,
+      fechadoEm: null,
       criadoEm: agora,
       atualizadoEm: agora,
     };
@@ -38,6 +40,16 @@ export class OrcamentoRepository {
         motivoPerda: status === "PERDIDO" ? motivoPerda : null,
         atualizadoEm: agora,
       }),
+    );
+  }
+
+  // So permite registrar uma vez (fechadoEm null) e so num orcamento
+  // APROVADO - o dado real e congelado assim que gravado, nunca editado
+  // depois (ver comentario em GestorTypes.Orcamento).
+  registrarFechamento(id: string, custoRealTotal: number, agora: number): Orcamento | null {
+    return this.store.update(
+      (orcamento) => orcamento.id === id && orcamento.status === "APROVADO" && orcamento.fechadoEm === null,
+      (orcamento) => ({ ...orcamento, custoRealTotal, fechadoEm: agora, atualizadoEm: agora }),
     );
   }
 }

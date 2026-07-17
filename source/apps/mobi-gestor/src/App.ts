@@ -1,9 +1,11 @@
 import { computeAtencao } from "./AtencaoEngine";
 import { ClienteRepository } from "./ClienteRepository";
 import type {
+  CategoriaMudancaEscopo,
   Cliente,
   EtapaProducao,
   ItemLevantamento,
+  MudancaEscopo,
   Orcamento,
   OrigemLead,
   Prioridade,
@@ -11,9 +13,10 @@ import type {
   StatusOrcamento,
   StatusProjeto,
 } from "./GestorTypes";
-import { ETAPAS_PRODUCAO, precoVendaSugerido, valorLiquido } from "./GestorTypes";
+import { compararFechamento, ETAPAS_PRODUCAO, precoVendaSugerido, valorLiquido } from "./GestorTypes";
 import type { ItemCandidato } from "./ItemCandidateHeuristic";
 import { ItemLevantamentoRepository } from "./ItemLevantamentoRepository";
+import { MudancaEscopoRepository } from "./MudancaEscopoRepository";
 import { OrcamentoRepository } from "./OrcamentoRepository";
 import { ProjetoRepository } from "./ProjetoRepository";
 
@@ -21,6 +24,13 @@ const ORIGENS: OrigemLead[] = ["whatsapp", "instagram", "site", "indicacao", "te
 const STATUS: StatusProjeto[] = ["NOVO", "LEVANTAMENTO", "ORCAMENTO", "PRODUCAO", "MONTAGEM", "CONCLUIDO", "ATRASADO", "PARADO"];
 const PRIORIDADES: Prioridade[] = ["BAIXA", "MEDIA", "ALTA"];
 const PRIORIDADE_ORDEM: Record<Prioridade, number> = { ALTA: 0, MEDIA: 1, BAIXA: 2 };
+const CATEGORIAS_MUDANCA_ESCOPO: CategoriaMudancaEscopo[] = [
+  "CLIENTE_ADICIONOU",
+  "CLIENTE_REMOVEU",
+  "CLIENTE_TROCOU_MATERIAL",
+  "MEDIDA_DIVERGENTE",
+  "OUTRO",
+];
 
 const ORIGEM_LABEL: Record<OrigemLead, string> = {
   whatsapp: "WhatsApp",
@@ -59,6 +69,14 @@ const STATUS_ORCAMENTO_LABEL: Record<StatusOrcamento, string> = {
   PERDIDO: "Perdido",
 };
 
+const CATEGORIA_MUDANCA_LABEL: Record<CategoriaMudancaEscopo, string> = {
+  CLIENTE_ADICIONOU: "Cliente adicionou",
+  CLIENTE_REMOVEU: "Cliente removeu",
+  CLIENTE_TROCOU_MATERIAL: "Cliente trocou material",
+  MEDIDA_DIVERGENTE: "Medida divergente do levantamento",
+  OUTRO: "Outro",
+};
+
 const moeda = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 
 export class App {
@@ -66,6 +84,7 @@ export class App {
   private readonly projetos: ProjetoRepository;
   private readonly orcamentos: OrcamentoRepository;
   private readonly itensLevantamento: ItemLevantamentoRepository;
+  private readonly mudancasEscopo: MudancaEscopoRepository;
   // Candidatos extraidos de um PDF, aguardando confirmacao do usuario.
   // Transiente de proposito - nao persiste, some se a pagina recarregar.
   private readonly candidatosPendentes = new Map<string, ItemCandidato[]>();
@@ -76,6 +95,7 @@ export class App {
     this.projetos = new ProjetoRepository(window.localStorage);
     this.orcamentos = new OrcamentoRepository(window.localStorage);
     this.itensLevantamento = new ItemLevantamentoRepository(window.localStorage);
+    this.mudancasEscopo = new MudancaEscopoRepository(window.localStorage);
   }
 
   mount(): void {
@@ -87,6 +107,7 @@ export class App {
     const projetos = this.projetos.list();
     const orcamentos = this.orcamentos.list();
     const itensLevantamento = this.itensLevantamento.list();
+    const mudancasEscopo = this.mudancasEscopo.list();
     const atencao = computeAtencao(projetos, Date.now());
     const agora = Date.now();
 
@@ -107,7 +128,7 @@ export class App {
             <span class="brand-mark">MG</span>
             <div>
               <h1>Mobi Gestor</h1>
-              <p class="eyebrow">Painel do dia — CP004</p>
+              <p class="eyebrow">Painel do dia — CP005</p>
             </div>
           </div>
           <div class="topbar-stats">
@@ -205,6 +226,7 @@ export class App {
                       itensLevantamento.filter((item) => item.projetoId === p.id),
                       this.candidatosPendentes.get(p.id) ?? null,
                       this.importandoProjetoId === p.id,
+                      mudancasEscopo.filter((m) => m.projetoId === p.id),
                     ),
                   )
                   .join("") || '<li class="vazio">Nenhum projeto cadastrado ainda.</li>'
@@ -353,6 +375,40 @@ export class App {
       });
     });
 
+    this.root.querySelectorAll<HTMLFormElement>(".form-fechamento").forEach((form) => {
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const orcamentoId = form.dataset["orcamentoId"];
+        if (!orcamentoId) return;
+        const data = new FormData(form);
+        const custoReal = Number(data.get("custoReal"));
+        if (!Number.isFinite(custoReal) || custoReal < 0) {
+          window.alert("Informe um custo real válido.");
+          return;
+        }
+        this.orcamentos.registrarFechamento(orcamentoId, custoReal, Date.now());
+        this.render();
+      });
+    });
+
+    this.root.querySelectorAll<HTMLFormElement>(".form-mudanca-escopo").forEach((form) => {
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const projetoId = form.dataset["projetoId"];
+        if (!projetoId) return;
+        const data = new FormData(form);
+        this.mudancasEscopo.add(
+          {
+            projetoId,
+            categoria: (data.get("categoria") as CategoriaMudancaEscopo) ?? "OUTRO",
+            descricao: String(data.get("descricao") ?? "").trim(),
+          },
+          Date.now(),
+        );
+        this.render();
+      });
+    });
+
     this.root.querySelectorAll<HTMLInputElement>(".importar-pdf-input").forEach((input) => {
       input.addEventListener("change", () => {
         const projetoId = input.dataset["projetoId"];
@@ -486,6 +542,7 @@ function renderProjetoCard(
   itensLevantamento: ItemLevantamento[],
   candidatos: ItemCandidato[] | null,
   importando: boolean,
+  mudancasEscopo: MudancaEscopo[],
 ): string {
   const dias = Math.max(0, Math.floor((agora - p.atualizadoEm) / 86400000));
   return `<li class="card-projeto">
@@ -503,7 +560,7 @@ function renderProjetoCard(
     <select data-projeto-id="${p.id}" class="status-select">
       ${STATUS.map((s) => `<option value="${s}" ${s === p.status ? "selected" : ""}>${STATUS_LABEL[s]}</option>`).join("")}
     </select>
-    ${orcamento ? renderOrcamento(orcamento) : ""}
+    ${orcamento ? renderOrcamento(orcamento, mudancasEscopo) : ""}
     ${!orcamento || orcamento.status === "PERDIDO" ? renderFormOrcamento(p.id) : ""}
     ${renderLevantamento(p.id, itensLevantamento, candidatos, importando)}
   </li>`;
@@ -556,7 +613,7 @@ function renderLevantamento(
     </div>`;
 }
 
-function renderOrcamento(orcamento: Orcamento): string {
+function renderOrcamento(orcamento: Orcamento, mudancasEscopo: MudancaEscopo[]): string {
   const liquido = valorLiquido(orcamento);
   const temCusto = orcamento.custoMateriaPrima !== null || orcamento.custoMaoDeObra !== null || orcamento.custoFixoRateado !== null;
   return `
@@ -576,6 +633,56 @@ function renderOrcamento(orcamento: Orcamento): string {
           : ""
       }
       ${orcamento.status === "PERDIDO" && orcamento.motivoPerda ? `<p class="orcamento-motivo">Motivo: ${escapeHtml(orcamento.motivoPerda)}</p>` : ""}
+      ${orcamento.status === "APROVADO" ? renderFechamento(orcamento, mudancasEscopo) : ""}
+    </div>`;
+}
+
+// CP005 - fechamento do projeto: custo real x estimado, e log de mudanca
+// de escopo. So aparece com orcamento APROVADO. Uma vez fechado
+// (fechadoEm preenchido), vira so leitura - o dado real nao e editavel.
+function renderFechamento(orcamento: Orcamento, mudancasEscopo: MudancaEscopo[]): string {
+  const listaMudancas = mudancasEscopo.length
+    ? `<ul class="mudancas-lista">${mudancasEscopo
+        .map(
+          (m) =>
+            `<li><span class="tag-categoria-mudanca">${CATEGORIA_MUDANCA_LABEL[m.categoria]}</span>${m.descricao ? " — " + escapeHtml(m.descricao) : ""}</li>`,
+        )
+        .join("")}</ul>`
+    : '<p class="muted">Nenhuma mudança de escopo registrada.</p>';
+
+  const formMudanca = `
+    <form class="form-mudanca-escopo" data-projeto-id="${orcamento.projetoId}">
+      <select name="categoria">
+        ${CATEGORIAS_MUDANCA_ESCOPO.map((c) => `<option value="${c}">${CATEGORIA_MUDANCA_LABEL[c]}</option>`).join("")}
+      </select>
+      <input name="descricao" placeholder="Descrição (opcional)" />
+      <button type="submit" class="secondary-action">+ Mudança</button>
+    </form>`;
+
+  if (orcamento.fechadoEm === null) {
+    return `
+      <div class="fechamento">
+        <p class="label">Fechamento do projeto</p>
+        <form class="form-fechamento" data-orcamento-id="${orcamento.id}">
+          <input name="custoReal" type="number" min="0" step="0.01" placeholder="Custo real total (R$)" required />
+          <button type="submit" class="btn-primary">Registrar fechamento</button>
+        </form>
+        <p class="label">Mudanças de escopo durante o projeto</p>
+        ${listaMudancas}
+        ${formMudanca}
+      </div>`;
+  }
+
+  const comparativo = compararFechamento(orcamento);
+  return `
+    <div class="fechamento fechamento-concluido">
+      <p class="label">Fechamento do projeto — encerrado</p>
+      ${
+        comparativo
+          ? `<p class="fechamento-comparativo">Estimado: ${moeda.format(comparativo.custoEstimado)} · Real: ${moeda.format(comparativo.custoReal)} · Diferença: <span class="${comparativo.diferenca > 0 ? "diferenca-negativa" : "diferenca-positiva"}">${comparativo.diferenca > 0 ? "+" : ""}${moeda.format(comparativo.diferenca)}</span> (${mudancasEscopo.length} mudança${mudancasEscopo.length === 1 ? "" : "s"} de escopo)</p>`
+          : ""
+      }
+      ${listaMudancas}
     </div>`;
 }
 

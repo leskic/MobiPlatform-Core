@@ -20,10 +20,11 @@ uma vez sem especificação real de cada parte.
 | CP003a | **Importar itens de PDF** (extração de lista de itens/módulos de uma planta vetorial, com revisão humana antes de confirmar). **Implementado — ver seção abaixo.** | **Implementado** |
 | CP003b | Calculadora de preço a partir do custo real (matéria-prima + mão de obra + custo fixo + markup → sugestão de valor). **Implementado — versão simplificada, ver seção abaixo.** | **Implementado** |
 | CP004 | Produção: fila, etapas, responsável, prioridade | **Implementado — ver seção abaixo** |
-| CP005 | Compras e estoque: itens faltantes, entrada/saída | Não iniciado |
-| CP006 | Financeiro: valor vendido, custos, fluxo de caixa | Não iniciado |
-| CP007 | Indicadores/KPIs: setor atrasando, ranking, tempo médio | Não iniciado |
-| CP008+ | Integrações externas (WhatsApp, ERP, ferramentas de corte, Power BI) e IA (perguntas em linguagem natural, sugestões) | Não iniciado — cada integração precisa de checkpoint próprio, credenciais e decisão de arquitetura separada |
+| CP005 | Fechamento do projeto: custo estimado x real, log de mudança de escopo | **Implementado — ver seção abaixo** |
+| CP006 | Compras e estoque: itens faltantes, entrada/saída | Não iniciado |
+| CP007 | Financeiro: valor vendido, custos, fluxo de caixa | Não iniciado |
+| CP008 | Indicadores/KPIs: setor atrasando, ranking, tempo médio | Não iniciado |
+| CP009+ | Integrações externas (WhatsApp, ERP, ferramentas de corte, Power BI) e IA (perguntas em linguagem natural, sugestões) | Não iniciado — cada integração precisa de checkpoint próprio, credenciais e decisão de arquitetura separada |
 | CP00X | **Entrada de áudio + transcrição** (definido por Charles em 16/07): usuário fala sua visão do projeto ou uma atualização ("o que vai ter, o que vai sair"), sistema transcreve e pede confirmação se precisar validar dado. Depende de escolher serviço de voz→texto — decisão de arquitetura/custo, não iniciar sem definir isso primeiro. | Não iniciado |
 
 ## Relação arquitetural Gestor ↔ Origin (definida por Charles em 16/07)
@@ -149,5 +150,43 @@ sem atualização" que já existia, sem lógica nova de atraso.
 **Fora de escopo deliberadamente**: reordenar manualmente dentro da mesma
 etapa (a ordem é só por prioridade + tempo parado, não é arrastável), e
 qualquer noção de capacidade/carga de trabalho por responsável — isso seria
-CP005 ou além, precisa de dado que não existe ainda (quanto tempo cada
+CP006 ou além, precisa de dado que não existe ainda (quanto tempo cada
 etapa realmente leva).
+
+## CP005 — Fechamento do projeto: custo estimado x real (implementado 2026-07-17)
+
+Nasceu de uma conversa com Charles sobre a visão de longo prazo da
+plataforma (ver `docs/VISAO_FUTURA_PLATAFORMA_MOBI.md`): um sistema que
+aprende de dado real, não de estimativa. Pra isso, precisava de um jeito
+formal de comparar o que foi vendido/estimado contra o que realmente
+aconteceu, e de registrar por que a diferença existiu.
+
+Dois conceitos novos:
+
+- **`Orcamento.custoRealTotal` + `Orcamento.fechadoEm`** — só preenchido
+  uma vez, quando o orçamento está `APROVADO`, via
+  `OrcamentoRepository.registrarFechamento`. É **imutável** depois de
+  registrado (o repositório recusa um segundo `registrarFechamento` no
+  mesmo orçamento) — é o "dado real congelado" que a visão futura pede.
+  `compararFechamento()` calcula a diferença contra o custo estimado
+  (soma MP+MO+Fixo quando a calculadora do CP003b foi usada, ou o `valor`
+  direto quando não foi).
+- **`MudancaEscopo`** — log de eventos durante a execução do projeto, com
+  **categoria fixa** (`CLIENTE_ADICIONOU`, `CLIENTE_REMOVEU`,
+  `CLIENTE_TROCOU_MATERIAL`, `MEDIDA_DIVERGENTE`, `OUTRO`) em vez de texto
+  livre — mesma disciplina de "poucos tipos reutilizáveis" da Biblioteca
+  Oficial do Origin, necessária pra dar pra agregar estatisticamente mais
+  tarde.
+
+Na tela: com o orçamento `APROVADO` e ainda não fechado, aparece um
+formulário de fechamento (custo real) e um log de mudança de escopo
+editável. Depois de fechado, vira um resumo só-leitura: "Estimado: X ·
+Real: Y · Diferença: +Z (N mudanças de escopo)".
+
+**Fora de escopo deliberadamente**: nenhuma lógica de "aprendizado" em
+cima desses dados ainda — isso exigiria dezenas de projetos fechados
+nesse formato antes de fazer sentido (ver seção de sugestões do documento
+de visão futura). Este checkpoint só cria a estrutura de dado; a análise
+vem depois, quando existir volume. Também não existe ainda comparação de
+**prazo** (só custo) — `Projeto` não tem campo de prazo planejado, seria
+extensão de um checkpoint futuro.
