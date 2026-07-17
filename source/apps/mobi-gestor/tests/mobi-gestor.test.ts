@@ -22,6 +22,7 @@ function projeto(overrides: Partial<Projeto>): Projeto {
     status: "PRODUCAO",
     prioridade: "MEDIA",
     responsavel: "Charles",
+    etapaProducao: null,
     criadoEm: 0,
     atualizadoEm: 0,
     ...overrides,
@@ -113,6 +114,58 @@ describe("Mobi Gestor CP001 foundation", () => {
     it("returns null when updating a project that does not exist", () => {
       const repo = new ProjetoRepository(storage);
       expect(repo.atualizarStatus("nao-existe", "PRODUCAO", 5000)).toBeNull();
+    });
+  });
+
+  describe("ProjetoRepository — CP004 producao", () => {
+    let storage: MemoryStorage;
+    beforeEach(() => { storage = new MemoryStorage(); });
+
+    it("starts a new project outside PRODUCAO with no etapa", () => {
+      const repo = new ProjetoRepository(storage);
+      const criado = repo.add({ clienteId: "cli-1", nome: "Cozinha", status: "NOVO", prioridade: "ALTA", responsavel: "Charles" }, 1000);
+      expect(criado.etapaProducao).toBeNull();
+    });
+
+    it("moving status to PRODUCAO starts the project at FILA", () => {
+      const repo = new ProjetoRepository(storage);
+      const criado = repo.add({ clienteId: "cli-1", nome: "Cozinha", status: "NOVO", prioridade: "ALTA", responsavel: "Charles" }, 1000);
+      const emProducao = repo.atualizarStatus(criado.id, "PRODUCAO", 2000);
+      expect(emProducao?.etapaProducao).toBe("FILA");
+    });
+
+    it("moving status away from PRODUCAO clears the etapa", () => {
+      const repo = new ProjetoRepository(storage);
+      const criado = repo.add({ clienteId: "cli-1", nome: "Cozinha", status: "PRODUCAO", prioridade: "ALTA", responsavel: "Charles" }, 1000);
+      repo.avancarEtapaProducao(criado.id, "CORTE", 2000);
+      const concluido = repo.atualizarStatus(criado.id, "MONTAGEM", 3000);
+      expect(concluido?.etapaProducao).toBeNull();
+    });
+
+    it("advances the etapa and bumps atualizadoEm", () => {
+      const repo = new ProjetoRepository(storage);
+      const criado = repo.add({ clienteId: "cli-1", nome: "Cozinha", status: "PRODUCAO", prioridade: "ALTA", responsavel: "Charles" }, 1000);
+      const avancado = repo.avancarEtapaProducao(criado.id, "ACABAMENTO", 4000);
+      expect(avancado?.etapaProducao).toBe("ACABAMENTO");
+      expect(avancado?.atualizadoEm).toBe(4000);
+    });
+
+    it("does not advance the etapa of a project that is not in PRODUCAO", () => {
+      const repo = new ProjetoRepository(storage);
+      const criado = repo.add({ clienteId: "cli-1", nome: "Cozinha", status: "NOVO", prioridade: "ALTA", responsavel: "Charles" }, 1000);
+      expect(repo.avancarEtapaProducao(criado.id, "CORTE", 2000)).toBeNull();
+    });
+  });
+
+  describe("AtencaoEngine — CP004 producao", () => {
+    it("mentions the etapa when a stalled project is in PRODUCAO", () => {
+      const agora = Date.UTC(2026, 6, 16);
+      const oitoDiasAtras = agora - 8 * 24 * 60 * 60 * 1000;
+      const itens = computeAtencao(
+        [projeto({ status: "PRODUCAO", etapaProducao: "CORTE", atualizadoEm: oitoDiasAtras })],
+        agora,
+      );
+      expect(itens[0]?.motivo).toContain("etapa CORTE");
     });
   });
 });

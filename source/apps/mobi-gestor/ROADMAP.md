@@ -19,7 +19,7 @@ uma vez sem especificação real de cada parte.
 | CP002 | Comercial: orçamento, negociação, desconto, margem, comissão, motivo de perda | **Implementado — com suposições, ver seção abaixo** |
 | CP003a | **Importar itens de PDF** (extração de lista de itens/módulos de uma planta vetorial, com revisão humana antes de confirmar). **Implementado — ver seção abaixo.** | **Implementado** |
 | CP003b | Calculadora de preço a partir do custo real (matéria-prima + mão de obra + custo fixo + markup → sugestão de valor). **Implementado — versão simplificada, ver seção abaixo.** | **Implementado** |
-| CP004 | Produção: fila, etapas, responsável, prioridade | Não iniciado |
+| CP004 | Produção: fila, etapas, responsável, prioridade | **Implementado — ver seção abaixo** |
 | CP005 | Compras e estoque: itens faltantes, entrada/saída | Não iniciado |
 | CP006 | Financeiro: valor vendido, custos, fluxo de caixa | Não iniciado |
 | CP007 | Indicadores/KPIs: setor atrasando, ranking, tempo médio | Não iniciado |
@@ -131,3 +131,23 @@ custo total) — o preço de venda calculado por lá pra um custo de 2978 foi
 Registrado explicitamente no código e no teste — não é engano, é
 simplificação deliberada. Se precisar da fórmula exata depois, é um
 próximo checkpoint (CP003c), não uma correção deste.
+
+## CP004 — Produção: fila, etapas, responsável, prioridade (implementado 2026-07-17)
+
+`responsavel` e `prioridade` já existiam no `Projeto` desde o CP001 — o que
+faltava era a granularidade de **etapa** dentro do status `PRODUCAO` e uma
+visão de fila. Adicionado `etapaProducao` (`FILA` → `CORTE` →
+`MONTAGEM_ESTRUTURA` → `ACABAMENTO` → `ENTREGA`), só tem sentido enquanto
+`status === "PRODUCAO"`: entrar em produção sempre reinicia em `FILA`; sair
+de produção limpa a etapa. Um quadro Kanban (`Produção — fila de trabalho`)
+mostra os projetos em produção agrupados por etapa, ordenados por
+prioridade (ALTA primeiro), com um seletor pra avançar a etapa direto do
+card. O painel de atenção (`AtencaoEngine`) agora menciona a etapa quando
+um projeto parado está em produção — reaproveita a mesma regra de "7+ dias
+sem atualização" que já existia, sem lógica nova de atraso.
+
+**Fora de escopo deliberadamente**: reordenar manualmente dentro da mesma
+etapa (a ordem é só por prioridade + tempo parado, não é arrastável), e
+qualquer noção de capacidade/carga de trabalho por responsável — isso seria
+CP005 ou além, precisa de dado que não existe ainda (quanto tempo cada
+etapa realmente leva).

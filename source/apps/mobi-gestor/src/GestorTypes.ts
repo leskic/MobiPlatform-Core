@@ -24,6 +24,13 @@ export type StatusProjeto =
 
 export type Prioridade = "BAIXA" | "MEDIA" | "ALTA";
 
+// Etapas dentro do status PRODUCAO (CP004) - granularidade da fila de
+// producao. So tem sentido enquanto status === "PRODUCAO"; nula em
+// qualquer outro status.
+export type EtapaProducao = "FILA" | "CORTE" | "MONTAGEM_ESTRUTURA" | "ACABAMENTO" | "ENTREGA";
+
+export const ETAPAS_PRODUCAO: EtapaProducao[] = ["FILA", "CORTE", "MONTAGEM_ESTRUTURA", "ACABAMENTO", "ENTREGA"];
+
 export interface Projeto {
   id: string;
   clienteId: string;
@@ -31,11 +38,12 @@ export interface Projeto {
   status: StatusProjeto;
   prioridade: Prioridade;
   responsavel: string;
+  etapaProducao: EtapaProducao | null;
   criadoEm: number;
   atualizadoEm: number;
 }
 
-export type NovoProjeto = Omit<Projeto, "id" | "criadoEm" | "atualizadoEm">;
+export type NovoProjeto = Omit<Projeto, "id" | "criadoEm" | "atualizadoEm" | "etapaProducao">;
 
 export type SeveridadeAtencao = "warning" | "error";
 

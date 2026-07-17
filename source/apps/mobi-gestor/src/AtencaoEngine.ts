@@ -20,10 +20,11 @@ export function computeAtencao(projetos: readonly Projeto[], agora: number): Ite
 
     const diasSemAtualizacao = Math.floor((agora - projeto.atualizadoEm) / UM_DIA_MS);
     if (diasSemAtualizacao >= DIAS_PARADO_LIMITE) {
+      const etapa = projeto.status === "PRODUCAO" && projeto.etapaProducao ? ` (etapa ${projeto.etapaProducao})` : "";
       itens.push({
         projetoId: projeto.id,
         projetoNome: projeto.nome,
-        motivo: `Sem atualização há ${diasSemAtualizacao} dias`,
+        motivo: `Sem atualização há ${diasSemAtualizacao} dias${etapa}`,
         severidade: "warning",
       });
     }

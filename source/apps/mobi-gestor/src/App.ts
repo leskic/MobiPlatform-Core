@@ -2,6 +2,7 @@ import { computeAtencao } from "./AtencaoEngine";
 import { ClienteRepository } from "./ClienteRepository";
 import type {
   Cliente,
+  EtapaProducao,
   ItemLevantamento,
   Orcamento,
   OrigemLead,
@@ -10,7 +11,7 @@ import type {
   StatusOrcamento,
   StatusProjeto,
 } from "./GestorTypes";
-import { precoVendaSugerido, valorLiquido } from "./GestorTypes";
+import { ETAPAS_PRODUCAO, precoVendaSugerido, valorLiquido } from "./GestorTypes";
 import type { ItemCandidato } from "./ItemCandidateHeuristic";
 import { ItemLevantamentoRepository } from "./ItemLevantamentoRepository";
 import { OrcamentoRepository } from "./OrcamentoRepository";
@@ -19,6 +20,7 @@ import { ProjetoRepository } from "./ProjetoRepository";
 const ORIGENS: OrigemLead[] = ["whatsapp", "instagram", "site", "indicacao", "telefone", "visita"];
 const STATUS: StatusProjeto[] = ["NOVO", "LEVANTAMENTO", "ORCAMENTO", "PRODUCAO", "MONTAGEM", "CONCLUIDO", "ATRASADO", "PARADO"];
 const PRIORIDADES: Prioridade[] = ["BAIXA", "MEDIA", "ALTA"];
+const PRIORIDADE_ORDEM: Record<Prioridade, number> = { ALTA: 0, MEDIA: 1, BAIXA: 2 };
 
 const ORIGEM_LABEL: Record<OrigemLead, string> = {
   whatsapp: "WhatsApp",
@@ -41,6 +43,14 @@ const STATUS_LABEL: Record<StatusProjeto, string> = {
 };
 
 const PRIORIDADE_LABEL: Record<Prioridade, string> = { BAIXA: "Baixa", MEDIA: "Média", ALTA: "Alta" };
+
+const ETAPA_LABEL: Record<EtapaProducao, string> = {
+  FILA: "Fila",
+  CORTE: "Corte",
+  MONTAGEM_ESTRUTURA: "Montagem estrutura",
+  ACABAMENTO: "Acabamento",
+  ENTREGA: "Embalagem/Entrega",
+};
 
 const STATUS_ORCAMENTO_LABEL: Record<StatusOrcamento, string> = {
   ABERTO: "Aberto",
@@ -97,7 +107,7 @@ export class App {
             <span class="brand-mark">MG</span>
             <div>
               <h1>Mobi Gestor</h1>
-              <p class="eyebrow">Painel do dia — CP002</p>
+              <p class="eyebrow">Painel do dia — CP004</p>
             </div>
           </div>
           <div class="topbar-stats">
@@ -127,6 +137,8 @@ export class App {
             }
           </div>
         </section>
+
+        ${renderProducao(projetos, clientePorId, agora)}
 
         <div class="columns">
           <section class="painel" id="painel-clientes">
@@ -264,6 +276,15 @@ export class App {
       });
     });
 
+    this.root.querySelectorAll<HTMLSelectElement>(".etapa-select").forEach((select) => {
+      select.addEventListener("change", () => {
+        const projetoId = select.dataset["projetoId"];
+        if (!projetoId) return;
+        this.projetos.avancarEtapaProducao(projetoId, select.value as EtapaProducao, Date.now());
+        this.render();
+      });
+    });
+
     this.root.querySelectorAll<HTMLFormElement>(".form-orcamento").forEach((form) => {
       form.addEventListener("submit", (event) => {
         event.preventDefault();
@@ -394,6 +415,67 @@ export class App {
       this.render();
     }
   }
+}
+
+function renderProducao(projetos: Projeto[], clientePorId: Map<string, Cliente>, agora: number): string {
+  const emProducao = projetos.filter((p) => p.status === "PRODUCAO");
+
+  return `
+    <section class="painel producao-board" id="painel-producao">
+      <div class="painel-head">
+        <h2 class="section-title">Produção — fila de trabalho</h2>
+        <span class="contagem">${emProducao.length}</span>
+      </div>
+      ${
+        emProducao.length === 0
+          ? '<p class="vazio">Nenhum projeto em produção agora — mude o status de um projeto para "Produção" pra ele entrar na fila.</p>'
+          : `<div class="producao-colunas">
+              ${ETAPAS_PRODUCAO.map((etapa) => renderColunaProducao(etapa, emProducao, clientePorId, agora)).join("")}
+            </div>`
+      }
+    </section>`;
+}
+
+function renderColunaProducao(
+  etapa: EtapaProducao,
+  projetos: Projeto[],
+  clientePorId: Map<string, Cliente>,
+  agora: number,
+): string {
+  const itens = projetos
+    .filter((p) => (p.etapaProducao ?? "FILA") === etapa)
+    .sort((a, b) => PRIORIDADE_ORDEM[a.prioridade] - PRIORIDADE_ORDEM[b.prioridade] || a.atualizadoEm - b.atualizadoEm);
+
+  return `
+    <div class="producao-coluna">
+      <div class="producao-coluna-head">
+        <span>${ETAPA_LABEL[etapa]}</span>
+        <span class="contagem">${itens.length}</span>
+      </div>
+      <div class="producao-coluna-itens">
+        ${
+          itens
+            .map((p) => {
+              const cliente = clientePorId.get(p.clienteId);
+              const dias = Math.max(0, Math.floor((agora - p.atualizadoEm) / 86400000));
+              return `<div class="card-producao">
+                <div class="card-producao-top">
+                  <b>${escapeHtml(p.nome)}</b>
+                  <span class="muted prioridade-${p.prioridade}">${PRIORIDADE_LABEL[p.prioridade]}</span>
+                </div>
+                <div class="card-producao-meta muted">
+                  ${cliente ? escapeHtml(cliente.nome) : "cliente removido"} · ${escapeHtml(p.responsavel)}
+                </div>
+                <div class="card-producao-meta muted">${dias === 0 ? "atualizado hoje" : `parado há ${dias}d`}</div>
+                <select data-projeto-id="${p.id}" class="etapa-select">
+                  ${ETAPAS_PRODUCAO.map((e) => `<option value="${e}" ${e === etapa ? "selected" : ""}>${ETAPA_LABEL[e]}</option>`).join("")}
+                </select>
+              </div>`;
+            })
+            .join("") || '<p class="vazio-coluna muted">Vazio</p>'
+        }
+      </div>
+    </div>`;
 }
 
 function renderProjetoCard(
