@@ -18,7 +18,7 @@ uma vez sem especificação real de cada parte.
 | CP001 | Fundação: cadastro de Cliente, cadastro de Projeto vinculado, painel "O que precisa de atenção" (atrasado / parado) | **Implementado** |
 | CP002 | Comercial: orçamento, negociação, desconto, margem, comissão, motivo de perda | **Implementado — com suposições, ver seção abaixo** |
 | CP003a | **Importar itens de PDF** (extração de lista de itens/módulos de uma planta vetorial, com revisão humana antes de confirmar). **Implementado — ver seção abaixo.** | **Implementado** |
-| CP003b | Motor de precificação real (custo fixo + matéria-prima + mão de obra por pessoa/etapa + markup, baseado nas planilhas reais da empresa) | Não iniciado — aguardando Charles confirmar se replica exatamente o modelo real |
+| CP003b | Calculadora de preço a partir do custo real (matéria-prima + mão de obra + custo fixo + markup → sugestão de valor). **Implementado — versão simplificada, ver seção abaixo.** | **Implementado** |
 | CP004 | Produção: fila, etapas, responsável, prioridade | Não iniciado |
 | CP005 | Compras e estoque: itens faltantes, entrada/saída | Não iniciado |
 | CP006 | Financeiro: valor vendido, custos, fluxo de caixa | Não iniciado |
@@ -112,4 +112,22 @@ silencioso é alto demais pra pular a revisão).
 
 **Fora de escopo desta fase**: extração de cotas/dimensões associadas a
 cada item (só nomes por enquanto), suporte a PDF escaneado/imagem (só
-vetorial/texto), motor de precificação (CP003b).
+vetorial/texto).
+
+## CP003b — Calculadora de custo real (implementado 2026-07-16, decisão delegada por Charles)
+
+Charles pediu pra eu escolher o melhor caminho. Decidi **não** replicar a
+planilha real inteira (ela rateia mão de obra por pessoa e etapa — exigiria
+um módulo de funcionários/horas separado, escopo bem maior que um
+checkpoint). Em vez disso, uma calculadora simplificada dentro do
+Orçamento já existente: `preço = (matéria-prima + mão de obra + custo
+fixo) × (1 + markup%)`. É opcional — quem quiser digitar o valor direto
+continua podendo, sem usar a calculadora.
+
+**Diferença real vs. planilha da empresa**: a aba `RESULTADO` da planilha
+tem um cálculo de despesas mais elaborado (não é só markup linear sobre o
+custo total) — o preço de venda calculado por lá pra um custo de 2978 foi
+6816,31, não os ~4020 que a minha fórmula simplificada dá pro mesmo custo.
+Registrado explicitamente no código e no teste — não é engano, é
+simplificação deliberada. Se precisar da fórmula exata depois, é um
+próximo checkpoint (CP003c), não uma correção deste.
