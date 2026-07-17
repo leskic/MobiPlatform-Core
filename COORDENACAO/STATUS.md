@@ -19,6 +19,7 @@ catalogado aqui para não gerar trabalho sem valor real.
 | `checkpoint/coordenacao-workflow-setup` | Claude Code | Cria COORDENACAO/ (este protocolo) | FROZEN | `b2652bf` |
 | `checkpoint/cp-gestor-001-foundation` | Claude Code | CP001 Mobi Gestor: cadastro de Cliente, cadastro de Projeto vinculado, painel de Atenção (atrasado/parado), layout com craft real. Ver `apps/mobi-gestor/ROADMAP.md` para fases futuras. | READY_FOR_TECHNICAL_REVIEW | `3ef33fa` |
 | `checkpoint/cp-gestor-002-comercial` | Claude Code | CP002 Mobi Gestor: Orçamento por projeto (valor, desconto, margem, comissão), status Aberto/Negociando/Aprovado/Perdido com motivo, KPI "em negociação" no topbar. Auto-revisado (ver `COORDENACAO/CLAUDE_CODE/CP-GESTOR-SELF_REVIEW.md`, todos os achados endereçados) e suposições registradas em `apps/mobi-gestor/ROADMAP.md` — revisar antes de aprovar. | READY_FOR_TECHNICAL_REVIEW | `f6599a5` |
+| `checkpoint/coordenacao-testes-resultados` | Claude Code | Cria `COORDENACAO/TESTES_RESULTADOS/` — central de registro de teste humano real (SketchUp/navegador), complementar aos handoffs de implementação. Primeiro registro: saga completa do bug CP004 "Undo operation already open" (HOTFIX001-006, Mobi Origin). | EM_PROGRESSO | (este commit) |
 
 ## Como adicionar uma linha
 
