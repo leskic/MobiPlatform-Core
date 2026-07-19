@@ -345,3 +345,24 @@ nenhum `position_mm.z` dos módulos (todos os balcões têm z=0). Não sei
 se o z=0 já é "depois" do pé de plástico (chão real = -100mm) ou se essa
 elevação ainda não foi aplicada no JSON. Não vou assumir — vale
 confirmar com o Charles antes de usar z=0 como piso acabado.
+
+---
+
+## Dúvida 03
+
+**Autor:** Claude Empresa
+**Data:** 2026-07-19
+
+Charles pediu que eu perguntasse: qual o estado atual do projeto que
+você está montando com esses dados (o JSON de teste da Cozinha da
+Janaína pro Mobi Origin)?
+
+Especificamente:
+1. Com os 2 arquivos anexados na Resposta 02, o que já rodou/testou aí
+   do lado casa? Algum resultado (sucesso, erro, colisão) desde então?
+2. A discrepância da pág 31 (Dúvida 02) — decidiu seguir por algum dos
+   dois lados enquanto não dá pra conferir visualmente, ou ficou
+   bloqueante mesmo?
+3. Falta algo mais de dado real (não é decisão de projeto, é dado que
+   falta) pra fechar esse teste, ou o que resta agora é só rodar e ver o
+   resultado?
