@@ -4,6 +4,125 @@ Obra: Rua Tarao Iriguti 1052, Jardim Eldorado. Clientes: Janaína e Felipe.
 
 ---
 
+## Histórico (backfill — dúvidas de Claude Empresa já respondidas por Charles, anteriores à Dúvida 01)
+
+Registradas aqui em 2026-07-19 a partir de `ORIGIN_PROJECT_FILE_V1_RECONCILED_DRAFT.json`
+(campos `pending_decisions`, `history`, `notes`). Aconteceram antes da
+Dúvida 01 do Claude Code — ficam primeiro na ordem cronológica, mas
+mantidas com numeração própria pra não renumerar o que o Claude Code já
+referenciou.
+
+### H1 — Profundidade da bancada com pia (MODULO_003)
+
+**Dúvida (Claude Empresa):** a bancada de pedra da pia tinha leituras
+ambíguas na fonte técnica — não ficou claro se a profundidade bruta era
+750mm ou outro valor próximo.
+
+**Resposta (Charles):** "750, LEI, sempre pegar a menor medida" — regra
+geral de ambiguidade de medida aplicada aqui. Fórmula final:
+`750 - 22 - 15 = 713mm` (profundidade líquida do módulo).
+
+**Status:** CONFIRMED, aplicado no MODULO_003.
+
+---
+
+### H2 — Quina/Parede C perto da geladeira (MODULO_010)
+
+**Dúvida (Claude Empresa):** o layout técnico do WORK marcava uma
+"Parede C" separada perto da geladeira — havia quina real ali, ou é
+suposição do arquiteto?
+
+**Resposta (Charles):** "se ao [não] tem nada no levantamento, considere
+erro do arquiteto" — se o levantamento de campo não mostra quina, não
+existe parede separada; a torre/aéreo da geladeira fica na mesma parede
+contínua (cadeia 950+2786+965+1474mm).
+
+**Status:** RESOLVIDO. Parede C descartada.
+
+---
+
+### H3 — Nicho da churrasqueira
+
+**Dúvida (Claude Empresa):** o nicho da churrasqueira entra no escopo de
+marcenaria/DinaBox?
+
+**Resposta (Charles):** "desconsidere" — se não tem móvel/marcenaria
+ali, não precisa detalhe; o nicho é de pedra, mesma lógica da
+serralheria da Taciana (fora do escopo DinaBox).
+
+**Status:** CONFIRMED_OUT_OF_DINABOX_SCOPE.
+
+---
+
+### H4 — Janela da cozinha
+
+**Dúvida (Claude Empresa):** existe uma janela que bloqueia o layout dos
+módulos superiores (Aéreos 007-009, marcados como posição aproximada
+"sobre a janela")?
+
+**Resposta (Charles):** "se não foi cotado [no levantamento], não
+interfere" — sem cota de janela confirmada, ela não bloqueia o layout.
+
+**Status:** CONFIRMED_NOT_APPLICABLE (mas os módulos 007-009 continuam
+`PENDING_HUMAN_VALIDATION` por causa da posição aproximada, não da
+janela em si).
+
+---
+
+### H5 — Tanque da lavanderia
+
+**Dúvida (Claude Empresa):** a bancada de 1200x610mm do layout técnico é
+a mesma do tanque visto em foto real?
+
+**Resposta (Charles):** confirmado direto na Vista Superior Lavanderia
+(`Cozinha.pdf`) — largura 1200mm, profundidade **698mm** (corrige a
+leitura anterior de 610mm).
+
+**Status:** RESOLVED.
+
+---
+
+### H6 — Dimensão da lixeira de embutir
+
+**Dúvida (Claude Empresa):** a lixeira de embutir tinha valor verbal
+(1200x840x698mm) já sinalizado como suspeito — qual a dimensão real?
+
+**Resposta:** ficha técnica real do produto (print da página) —
+**490x360x500mm** (comprimento x largura x altura). Substitui
+completamente o valor verbal anterior.
+
+**Status:** CONFIRMED, fonte SRC005 (ficha real), não mais resposta
+verbal.
+
+---
+
+### H7 — Gap de 86mm no fim da Parede A (MODULO_004)
+
+**Dúvida (Claude Empresa):** MODULO_001+002+003+004 somam 2700mm de
+largura contra wall_a=2786mm — sobram 86mm não explicados. (Primeira
+tentativa de pergunta não ficou clara pro Charles — precisou ser
+refeita citando arquivo+página exatos.)
+
+**Resposta (Charles):** "deixar pro usuário decidir quando o 3D estiver
+no SketchUp — mais fácil ver visualmente do que resolver em abstrato
+agora."
+
+**Status:** DEFERRED_TO_3D_REVIEW. Não bloqueante.
+
+---
+
+### H8 — Puxador (modelo/cor)
+
+**Dúvida (Claude Empresa):** qual puxador usar nos módulos de balcão —
+Cielo RM378 ou Cava?
+
+**Resposta (Charles):** "deixe pro humano, sempre confirmado depois" —
+decisão normal de ficar pra depois no projeto, não bloqueante.
+
+**Status:** DEFERRED_NORMAL (`HANDLE_DECISION_001`).
+
+---
+
 ## Dúvida 01
 
 **Autor:** Claude Code (casa)
