@@ -1,0 +1,88 @@
+{
+  "schema": "mobi-origin-input-v0",
+
+  "sources": [
+    { "id": "SRC001", "type": "LEVANTAMENTO", "file": "Cozinha.pdf" },
+    { "id": "SRC006", "type": "LAYOUT_TECNICO_WORK", "file": "LAYOUT_WORK_MODULO_001_010_PLACEHOLDER_001.json" }
+  ],
+
+  "room_measurements_mm": {
+    "wall_a": 2786,
+    "ceiling_height": 2700
+  },
+
+  "dinabox_limits": {
+    "BALCAO": { "max_width_mm": 2740, "max_height_mm": 900, "max_depth_mm": 900 },
+    "AEREO": { "max_width_mm": 1200, "max_height_mm": 720, "max_depth_mm": 350 }
+  },
+
+  "modules": [
+    {
+      "id": "MODULO_001", "type": "BALCAO", "instance_name": "Balcão Cooktop 01",
+      "width_mm": 900, "height_mm": 900, "depth_mm": 578,
+      "raw_dimensions_mm": { "width_mm": 900, "height_mm": 900, "depth_mm": 600 },
+      "applied_discounts_mm": { "depth_mm": 22 },
+      "anchor": "BACK_LEFT_BOTTOM",
+      "position": { "x_mm": 0, "y_mm": 0, "z_mm": 0 },
+      "position_reference": "Parede A (local), x=0. Sob o cooktop. Ja testado com sucesso no HOTFIX008.",
+      "source_refs": ["SRC001", "SRC006"]
+    },
+    {
+      "id": "MODULO_002", "type": "BALCAO", "instance_name": "Balcão Gaveteiro 01",
+      "width_mm": 450, "height_mm": 900, "depth_mm": 578,
+      "raw_dimensions_mm": { "width_mm": 450, "height_mm": 900, "depth_mm": 600 },
+      "applied_discounts_mm": { "depth_mm": 22 },
+      "anchor": "BACK_LEFT_BOTTOM",
+      "position": { "x_mm": 900, "y_mm": 0, "z_mm": 0 },
+      "position_reference": "Parede A (local), x=900. Ja testado com sucesso no HOTFIX008.",
+      "source_refs": ["SRC001", "SRC006"]
+    },
+    {
+      "id": "MODULO_003", "type": "BALCAO", "instance_name": "Balcão Pia 01",
+      "width_mm": 900, "height_mm": 900, "depth_mm": 713,
+      "raw_dimensions_mm": { "width_mm": 900, "height_mm": 900, "depth_mm": 750 },
+      "applied_discounts_mm": { "depth_mm": 37 },
+      "anchor": "BACK_LEFT_BOTTOM",
+      "position": { "x_mm": 1350, "y_mm": 0, "z_mm": 0 },
+      "position_reference": "Parede A (local), x=1350, preenche o vao entre MODULO_002 e MODULO_004. NOVO nesta rodada: profundidade da bancada de pedra confirmada em 750mm por Charles (regra da menor medida), formula 750-22-15=713mm.",
+      "source_refs": ["SRC001", "SRC006"]
+    },
+    {
+      "id": "MODULO_004", "type": "BALCAO", "instance_name": "Balcão Inf 01",
+      "width_mm": 450, "height_mm": 900, "depth_mm": 578,
+      "raw_dimensions_mm": { "width_mm": 450, "height_mm": 900, "depth_mm": 600 },
+      "applied_discounts_mm": { "depth_mm": 22 },
+      "anchor": "BACK_LEFT_BOTTOM",
+      "position": { "x_mm": 2250, "y_mm": 0, "z_mm": 0 },
+      "position_reference": "Parede A (local), x=2250. Ja testado com sucesso no HOTFIX008.",
+      "source_refs": ["SRC001", "SRC006"]
+    },
+    {
+      "id": "MODULO_005", "type": "AEREO", "instance_name": "Aéreo Esq 01",
+      "width_mm": 520, "height_mm": 720, "depth_mm": 328,
+      "raw_dimensions_mm": { "width_mm": 520, "height_mm": 720, "depth_mm": 350 },
+      "applied_discounts_mm": { "depth_mm": 22 },
+      "anchor": "BACK_LEFT_BOTTOM",
+      "position": { "x_mm": 0, "y_mm": 0, "z_mm": 1500 },
+      "position_reference": "Acima do MODULO_001. Ja testado com sucesso no HOTFIX008.",
+      "source_refs": ["SRC001", "SRC006"]
+    },
+    {
+      "id": "MODULO_006", "type": "AEREO", "instance_name": "Aéreo Esq 02",
+      "width_mm": 520, "height_mm": 720, "depth_mm": 328,
+      "raw_dimensions_mm": { "width_mm": 520, "height_mm": 720, "depth_mm": 350 },
+      "applied_discounts_mm": { "depth_mm": 22 },
+      "anchor": "BACK_LEFT_BOTTOM",
+      "position": { "x_mm": 520, "y_mm": 0, "z_mm": 1500 },
+      "position_reference": "Acima do MODULO_002. Ja testado com sucesso no HOTFIX008.",
+      "source_refs": ["SRC001", "SRC006"]
+    }
+  ],
+
+  "non_dinabox_placeholders": [],
+
+  "excluded_this_round": {
+    "modules": ["MODULO_007", "MODULO_008", "MODULO_009", "MODULO_010", "PLACEHOLDER_001"],
+    "reason": "Aereos da janela (007-009): janela nao cotada, sem posicao real. Torre geladeira (010) e nicho airfryer (PLACEHOLDER_001): confirmado que nao ha quina (erro do arquiteto descartado), mas ainda falta saber a que distancia ao longo da cadeia global (950+2786+965+1474) a geladeira realmente fica -- nao vou inventar essa posicao."
+  }
+}

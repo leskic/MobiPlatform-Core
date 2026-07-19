@@ -1,0 +1,895 @@
+{
+  "schema": "mobi-origin-project-file-v1",
+  "file_role": "ORIGIN_PROJECT_FILE",
+  "can_compile_to_execution": false,
+  "project": {
+    "project_code": "PROJETO_2026_001",
+    "client": "Janaína Martinez",
+    "environment": "Cozinha (Gourmet)",
+    "version": "0.3.0-partial-homologated",
+    "build_id": "ORIGIN_PROJECT_FILE_V1_RECONCILED_20260717",
+    "status": "DRAFT_PENDING_REVIEW",
+    "created_by": "CLAUDE_JANAINA_AUDITOR",
+    "created_at": "2026-07-17",
+    "note": "Reconciliação entre ORIGIN_PROJECT_FILE_V1_DRAFT.json (leitura direta dos PDFs reais) e LAYOUT_WORK_MODULO_001_010_PLACEHOLDER_001.json (arquivo técnico de teste do WORK, fonte: COZINHA_REALISTA_SKETCHUP_COMPLETA/LISTA_DE_PECAS.csv, que eu não tenho acesso direto)."
+  },
+  "sources": [
+    {
+      "id": "SRC001",
+      "type": "LEVANTAMENTO",
+      "file": "Cozinha.pdf",
+      "priority": 1
+    },
+    {
+      "id": "SRC002",
+      "type": "ARQUITETO",
+      "file": "PROJETO FINAL CORRIGIDO - RESIDÊNCIA J.F.pdf",
+      "priority": 2
+    },
+    {
+      "id": "SRC003",
+      "type": "FOTOS",
+      "file": "Imagens Levantamento.pdf, seção Gourmet, págs. 13-23",
+      "priority": 3
+    },
+    {
+      "id": "SRC004",
+      "type": "ELETRODOMESTICOS",
+      "file": "specs de fabricante (Brastemp, Philips Walita)",
+      "priority": 2
+    },
+    {
+      "id": "SRC005",
+      "type": "NOTAS_CLIENTE",
+      "file": "Cozinha.txt / Eletros.txt",
+      "priority": 3
+    },
+    {
+      "id": "SRC006",
+      "type": "LAYOUT_TECNICO_WORK",
+      "file": "LAYOUT_WORK_MODULO_001_010_PLACEHOLDER_001.json",
+      "priority": 4,
+      "note": "Layout técnico de teste, não é levantamento real. Fonte original citada dentro dele: COZINHA_REALISTA_SKETCHUP_COMPLETA/LISTA_DE_PECAS.csv — arquivo que eu não vi diretamente."
+    }
+  ],
+  "construction_rules_mm": {
+    "wall_side": 38,
+    "vista": 20,
+    "tamponamento": 18,
+    "front": 22,
+    "helper_side": 15,
+    "stone_drip": 15
+  },
+  "cross_check_summary": {
+    "wall_a_corroborated": {
+      "value_mm": 2786,
+      "found_in": [
+        "SRC001 (soma dos segmentos da planta geral)",
+        "SRC006 (room_measurements_mm.wall_a)"
+      ],
+      "confidence": "MEDIA-ALTA — dois documentos independentes citam o mesmo número, mas nenhum confirma fisicamente qual parede real do ambiente é essa, nem o canto de origem (x=0)."
+    },
+    "ceiling_height_corroborated": {
+      "value_mm": 2700,
+      "found_in": [
+        "SRC002 (pé-direito padrão do gesso)",
+        "SRC006 (ceiling_height)"
+      ],
+      "confidence": "MEDIA-ALTA — mesma ressalva: nenhum dos dois é medição direta de campo específica da cozinha que eu tenha visto com certeza."
+    },
+    "cooktop_reserve_matches_real_spec": {
+      "detail": "MODULO_001 reserva vão de 770x510mm pro cooktop — bate exatamente com a ficha técnica real do fabricante (EQ_COOKTOP).",
+      "confidence": "ALTA para essa medida específica."
+    },
+    "geladeira_dimension_discrepancy": {
+      "layout_work_mm": {
+        "width_mm": 829,
+        "depth_mm": 750,
+        "height_mm": 1860
+      },
+      "real_spec_mm": {
+        "width_mm": 820,
+        "depth_mm": 770,
+        "height_mm": 1860
+      },
+      "detail": "Altura bate exato. Largura e profundidade têm diferença pequena (9mm e 20mm). Não é grave, mas o Execution File deve usar a ficha real (EQ_GELADEIRA), não o valor do layout técnico antigo.",
+      "confidence": "usar SRC004 (ficha de fabricante) como fonte de verdade, não SRC006."
+    },
+    "wall_a_width_budget_gap": {
+      "detail": "MODULO_001+002+003+004 somam 900+450+900+450=2700mm de largura usada, contra wall_a=2786mm e max_width_mm citado de 2740mm em cada módulo. Sobra 86mm (contra a parede) ou 40mm (contra o max_width_mm) não explicada — pode ser folga normal ou desconto de parede (wall_side=38mm de cada lado ainda não aplicado).",
+      "status": "PENDING_HUMAN_VALIDATION"
+    }
+  },
+  "rooms": [
+    {
+      "room_id": "COZ001",
+      "name": "Cozinha Janaína (Gourmet)",
+      "room_measurements_mm": {
+        "wall_a_mm": 2786,
+        "wall_b_mm": 965,
+        "wall_c_mm": 1474,
+        "wall_extra_segment_mm": 950,
+        "wall_extra_segment_note": "RESOLVIDO: nao e parede separada, e o primeiro segmento da cadeia unica (ver full_room_coordinate_model).",
+        "ceiling_height_mm": 2700,
+        "ceiling_rebaixo_mm": 2450,
+        "door": "não especificado em nenhuma fonte que eu li",
+        "window": "não especificado com segurança — ver openings[]",
+        "validation_status": "PENDING_HUMAN_VALIDATION",
+        "measurement_mode": "HYPOTHESIS_DIMENSIONS",
+        "source_refs": [
+          "SRC001",
+          "SRC002",
+          "SRC006"
+        ],
+        "full_room_coordinate_model": {
+          "x0_starts_at": "inicio do segmento de 950mm (nao no inicio do segmento de 2786mm)",
+          "chain_from_x0": [
+            {
+              "segment_mm": 950,
+              "role": "entrada/margem inicial"
+            },
+            {
+              "segment_mm": 2786,
+              "role": "bancada (parede A testada com sucesso no HOTFIX008)"
+            },
+            {
+              "segment_mm": 965,
+              "role": "largura churrasqueira"
+            },
+            {
+              "segment_mm": 1474,
+              "role": "espaco lavanderia"
+            }
+          ],
+          "total_mm": 6175,
+          "note": "Confirmado por Charles: os cortes na planta sao o levantador mostrando divisoes de zona, nao paredes separadas. Os 5 modulos ja testados (MODULO_001,002,004,005,006) usaram origem LOCAL (seu x=0 = inicio da bancada = x=950 nesse sistema global). Se juntar tudo num layout unico, somar +950mm na posicao deles.",
+          "validation_status": "CONFIRMED",
+          "source": "Charles, 2026-07-17"
+        }
+      },
+      "openings": [
+        {
+          "opening_id": "OPENING_001",
+          "type": "WINDOW",
+          "validation_status": "CONFIRMED_NOT_APPLICABLE",
+          "measurement_mode": "BLOCKED_MISSING_DATA",
+          "reason": "Charles: se nao foi cotado no levantamento, nao interfere. Nao ha janela confirmada bloqueando o layout.",
+          "source_refs": []
+        }
+      ],
+      "modules": [
+        {
+          "module_id": "MODULO_001",
+          "type": "BALCAO",
+          "instance_name": "Balcão Cooktop 01",
+          "wall_id": "WALL_A_2786",
+          "final_dimensions_mm": {
+            "width_mm": 900,
+            "height_mm": 900,
+            "depth_mm": 578
+          },
+          "raw_dimensions_mm": {
+            "width_mm": 900,
+            "height_mm": 900,
+            "depth_mm": 600
+          },
+          "applied_discounts_mm": {
+            "depth_mm": 22
+          },
+          "anchor": "BACK_LEFT_BOTTOM",
+          "position_mm": {
+            "x_mm": 0,
+            "y_mm": 0,
+            "z_mm": 0
+          },
+          "rotation_z_deg": 0,
+          "tolerance_mm": 0.5,
+          "execution_contract": {
+            "apply_dimensions_directly": false,
+            "allow_recalculation": false,
+            "requires_dinabox": true
+          },
+          "notes": "2 portas. Reserva vão pro cooktop 770x510mm — bate exato com a ficha real (EQ_COOKTOP).",
+          "measurement_mode": "FINAL_DIMENSIONS_READY",
+          "validation_status": "CONFIRMED",
+          "source_refs": [
+            "SRC001",
+            "SRC004",
+            "SRC006"
+          ],
+          "history": {
+            "reason": "Vem do layout técnico do WORK (SRC006), com wall_a corroborado por duas fontes. Promovido a CONFIRMED após homologação em teste humano real (ver campo homologacao).",
+            "applied_before_origin": true,
+            "homologacao": "Homologado em teste humano real no SketchUp (build CP004_HOTFIX008_POSITION_AREA_MATERIAL, 2026-07-17T14:19:54Z). Sem colisao, sem erro. Confirmado por Charles."
+          }
+        },
+        {
+          "module_id": "MODULO_002",
+          "type": "BALCAO",
+          "instance_name": "Balcão Gaveteiro 01",
+          "wall_id": "WALL_A_2786",
+          "final_dimensions_mm": {
+            "width_mm": 450,
+            "height_mm": 900,
+            "depth_mm": 578
+          },
+          "raw_dimensions_mm": {
+            "width_mm": 450,
+            "height_mm": 900,
+            "depth_mm": 600
+          },
+          "applied_discounts_mm": {
+            "depth_mm": 22
+          },
+          "anchor": "BACK_LEFT_BOTTOM",
+          "position_mm": {
+            "x_mm": 900,
+            "y_mm": 0,
+            "z_mm": 0
+          },
+          "rotation_z_deg": 0,
+          "tolerance_mm": 0.5,
+          "execution_contract": {
+            "apply_dimensions_directly": false,
+            "allow_recalculation": false,
+            "requires_dinabox": true
+          },
+          "notes": "Gaveteiro, 3 gavetas. Encostado em MODULO_001 (sem desconto entre módulos).",
+          "measurement_mode": "FINAL_DIMENSIONS_READY",
+          "validation_status": "CONFIRMED",
+          "source_refs": [
+            "SRC006"
+          ],
+          "history": {
+            "reason": "Mesma ressalva do MODULO_001. Promovido a CONFIRMED após homologação em teste humano real (ver campo homologacao).",
+            "applied_before_origin": true,
+            "homologacao": "Homologado em teste humano real no SketchUp (build CP004_HOTFIX008_POSITION_AREA_MATERIAL, 2026-07-17T14:19:54Z). Sem colisao, sem erro. Confirmado por Charles."
+          }
+        },
+        {
+          "module_id": "MODULO_003",
+          "type": "BALCAO",
+          "instance_name": "Balcão Pia 01",
+          "wall_id": "WALL_A_2786",
+          "final_dimensions_mm": {
+            "width_mm": 900,
+            "height_mm": 900,
+            "depth_mm": 713
+          },
+          "raw_dimensions_mm": {
+            "width_mm": 900,
+            "height_mm": 900,
+            "depth_mm": 750
+          },
+          "applied_discounts_mm": {
+            "depth_mm": 37
+          },
+          "anchor": "BACK_LEFT_BOTTOM",
+          "position_mm": {
+            "x_mm": 1350,
+            "y_mm": 0,
+            "z_mm": 0
+          },
+          "rotation_z_deg": 0,
+          "tolerance_mm": 0.5,
+          "execution_contract": {
+            "apply_dimensions_directly": false,
+            "allow_recalculation": false,
+            "requires_dinabox": true
+          },
+          "notes": "2 portas. Vão pra cuba 560x430mm. O próprio SRC006 marca: 'profundidade da pedra é estimativa, não confirmada'.",
+          "measurement_mode": "FINAL_DIMENSIONS_READY",
+          "validation_status": "CONFIRMED",
+          "source_refs": [
+            "SRC006"
+          ],
+          "history": {
+            "rule_id": "BALCAO_COM_BANCADA_PEDRA",
+            "formula": "620 - 22 - 15 = 583",
+            "reason": "Profundidade da bancada confirmada por Charles: 750mm (regra: sempre pegar a menor medida em ambiguidade). Formula: 750-22-15=713mm.",
+            "applied_before_origin": true
+          }
+        },
+        {
+          "module_id": "MODULO_004",
+          "type": "BALCAO",
+          "instance_name": "Balcão Inf 01",
+          "wall_id": "WALL_A_2786",
+          "final_dimensions_mm": {
+            "width_mm": 450,
+            "height_mm": 900,
+            "depth_mm": 578
+          },
+          "raw_dimensions_mm": {
+            "width_mm": 450,
+            "height_mm": 900,
+            "depth_mm": 600
+          },
+          "applied_discounts_mm": {
+            "depth_mm": 22
+          },
+          "anchor": "BACK_LEFT_BOTTOM",
+          "position_mm": {
+            "x_mm": 2250,
+            "y_mm": 0,
+            "z_mm": 0
+          },
+          "rotation_z_deg": 0,
+          "tolerance_mm": 0.5,
+          "execution_contract": {
+            "apply_dimensions_directly": false,
+            "allow_recalculation": false,
+            "requires_dinabox": true
+          },
+          "notes": "1 porta. 'Encostado na parede direita' — ver cross_check_summary.wall_a_width_budget_gap (sobram ~86mm não explicados até o fim da parede de 2786mm).",
+          "measurement_mode": "FINAL_DIMENSIONS_READY",
+          "validation_status": "CONFIRMED",
+          "source_refs": [
+            "SRC006"
+          ],
+          "history": {
+            "reason": "Mesma ressalva do MODULO_001, mais a lacuna de largura não explicada. Promovido a CONFIRMED após homologação em teste humano real (ver campo homologacao).",
+            "applied_before_origin": true,
+            "homologacao": "Homologado em teste humano real no SketchUp (build CP004_HOTFIX008_POSITION_AREA_MATERIAL, 2026-07-17T14:19:54Z). Sem colisao, sem erro. Confirmado por Charles."
+          }
+        },
+        {
+          "module_id": "MODULO_005",
+          "type": "AEREO",
+          "instance_name": "Aéreo Esq 01",
+          "wall_id": "WALL_A_2786",
+          "final_dimensions_mm": {
+            "width_mm": 520,
+            "height_mm": 720,
+            "depth_mm": 328
+          },
+          "raw_dimensions_mm": {
+            "width_mm": 520,
+            "height_mm": 720,
+            "depth_mm": 350
+          },
+          "applied_discounts_mm": {
+            "depth_mm": 22
+          },
+          "anchor": "BACK_LEFT_BOTTOM",
+          "position_mm": {
+            "x_mm": 0,
+            "y_mm": 0,
+            "z_mm": 1500
+          },
+          "rotation_z_deg": 0,
+          "tolerance_mm": 0.5,
+          "execution_contract": {
+            "apply_dimensions_directly": false,
+            "allow_recalculation": false,
+            "requires_dinabox": true
+          },
+          "notes": "Acima do MODULO_001.",
+          "measurement_mode": "FINAL_DIMENSIONS_READY",
+          "validation_status": "CONFIRMED",
+          "source_refs": [
+            "SRC006"
+          ],
+          "history": {
+            "reason": "Mesma ressalva de wall_id/canto de origem não confirmado fisicamente. Promovido a CONFIRMED após homologação em teste humano real (ver campo homologacao).",
+            "applied_before_origin": true,
+            "homologacao": "Homologado em teste humano real no SketchUp (build CP004_HOTFIX008_POSITION_AREA_MATERIAL, 2026-07-17T14:19:54Z). Sem colisao, sem erro. Confirmado por Charles."
+          }
+        },
+        {
+          "module_id": "MODULO_006",
+          "type": "AEREO",
+          "instance_name": "Aéreo Esq 02",
+          "wall_id": "WALL_A_2786",
+          "final_dimensions_mm": {
+            "width_mm": 520,
+            "height_mm": 720,
+            "depth_mm": 328
+          },
+          "raw_dimensions_mm": {
+            "width_mm": 520,
+            "height_mm": 720,
+            "depth_mm": 350
+          },
+          "applied_discounts_mm": {
+            "depth_mm": 22
+          },
+          "anchor": "BACK_LEFT_BOTTOM",
+          "position_mm": {
+            "x_mm": 520,
+            "y_mm": 0,
+            "z_mm": 1500
+          },
+          "rotation_z_deg": 0,
+          "tolerance_mm": 0.5,
+          "execution_contract": {
+            "apply_dimensions_directly": false,
+            "allow_recalculation": false,
+            "requires_dinabox": true
+          },
+          "notes": "Acima do MODULO_002.",
+          "measurement_mode": "FINAL_DIMENSIONS_READY",
+          "validation_status": "CONFIRMED",
+          "source_refs": [
+            "SRC006"
+          ],
+          "history": {
+            "reason": "Mesma ressalva. Promovido a CONFIRMED após homologação em teste humano real (ver campo homologacao).",
+            "applied_before_origin": true,
+            "homologacao": "Homologado em teste humano real no SketchUp (build CP004_HOTFIX008_POSITION_AREA_MATERIAL, 2026-07-17T14:19:54Z). Sem colisao, sem erro. Confirmado por Charles."
+          }
+        },
+        {
+          "module_id": "MODULO_007",
+          "type": "AEREO",
+          "instance_name": "Aéreo Janela 01",
+          "wall_id": "WALL_A_2786",
+          "final_dimensions_mm": {
+            "width_mm": 500,
+            "height_mm": 720,
+            "depth_mm": 328
+          },
+          "raw_dimensions_mm": {
+            "width_mm": 500,
+            "height_mm": 720,
+            "depth_mm": 350
+          },
+          "applied_discounts_mm": {
+            "depth_mm": 22
+          },
+          "anchor": "BACK_LEFT_BOTTOM",
+          "position_mm": {
+            "x_mm": 1040,
+            "y_mm": 0,
+            "z_mm": 1500
+          },
+          "rotation_z_deg": 0,
+          "tolerance_mm": 0.5,
+          "execution_contract": {
+            "apply_dimensions_directly": false,
+            "allow_recalculation": false,
+            "requires_dinabox": true
+          },
+          "notes": "SRC006 diz explicitamente: 'sobre a janela (posição aproximada)'. Pendência MODULE_DIMENSIONS_001 / WINDOW_CONFIRMATION_001.",
+          "measurement_mode": "HYPOTHESIS_DIMENSIONS",
+          "validation_status": "PENDING_HUMAN_VALIDATION",
+          "source_refs": [
+            "SRC006"
+          ],
+          "history": {
+            "reason": "Posição explicitamente marcada como aproximada pela própria fonte.",
+            "applied_before_origin": true
+          }
+        },
+        {
+          "module_id": "MODULO_008",
+          "type": "AEREO",
+          "instance_name": "Aéreo Janela 02",
+          "wall_id": "WALL_A_2786",
+          "final_dimensions_mm": {
+            "width_mm": 500,
+            "height_mm": 720,
+            "depth_mm": 328
+          },
+          "raw_dimensions_mm": {
+            "width_mm": 500,
+            "height_mm": 720,
+            "depth_mm": 350
+          },
+          "applied_discounts_mm": {
+            "depth_mm": 22
+          },
+          "anchor": "BACK_LEFT_BOTTOM",
+          "position_mm": {
+            "x_mm": 1540,
+            "y_mm": 0,
+            "z_mm": 1500
+          },
+          "rotation_z_deg": 0,
+          "tolerance_mm": 0.5,
+          "execution_contract": {
+            "apply_dimensions_directly": false,
+            "allow_recalculation": false,
+            "requires_dinabox": true
+          },
+          "notes": "Mesma pendência do MODULO_007.",
+          "measurement_mode": "HYPOTHESIS_DIMENSIONS",
+          "validation_status": "PENDING_HUMAN_VALIDATION",
+          "source_refs": [
+            "SRC006"
+          ],
+          "history": {
+            "reason": "Posição aproximada.",
+            "applied_before_origin": true
+          }
+        },
+        {
+          "module_id": "MODULO_009",
+          "type": "AEREO",
+          "instance_name": "Aéreo Janela 03",
+          "wall_id": "WALL_A_2786",
+          "final_dimensions_mm": {
+            "width_mm": 500,
+            "height_mm": 720,
+            "depth_mm": 328
+          },
+          "raw_dimensions_mm": {
+            "width_mm": 500,
+            "height_mm": 720,
+            "depth_mm": 350
+          },
+          "applied_discounts_mm": {
+            "depth_mm": 22
+          },
+          "anchor": "BACK_LEFT_BOTTOM",
+          "position_mm": {
+            "x_mm": 2040,
+            "y_mm": 0,
+            "z_mm": 1500
+          },
+          "rotation_z_deg": 0,
+          "tolerance_mm": 0.5,
+          "execution_contract": {
+            "apply_dimensions_directly": false,
+            "allow_recalculation": false,
+            "requires_dinabox": true
+          },
+          "notes": "Mesma pendência do MODULO_007.",
+          "measurement_mode": "HYPOTHESIS_DIMENSIONS",
+          "validation_status": "PENDING_HUMAN_VALIDATION",
+          "source_refs": [
+            "SRC006"
+          ],
+          "history": {
+            "reason": "Posição aproximada.",
+            "applied_before_origin": true
+          }
+        },
+        {
+          "module_id": "MODULO_010",
+          "type": "AEREO",
+          "instance_name": "Aéreo Geladeira 01",
+          "wall_id": "WALL_A_2786_continuacao",
+          "final_dimensions_mm": {
+            "width_mm": 700,
+            "height_mm": 720,
+            "depth_mm": 328
+          },
+          "raw_dimensions_mm": {
+            "width_mm": 700,
+            "height_mm": 720,
+            "depth_mm": 350
+          },
+          "applied_discounts_mm": {
+            "depth_mm": 22
+          },
+          "anchor": "BACK_LEFT_BOTTOM",
+          "position_mm": {
+            "x_mm": 0,
+            "y_mm": 1200,
+            "z_mm": 1500
+          },
+          "rotation_z_deg": 0,
+          "tolerance_mm": 0.5,
+          "execution_contract": {
+            "apply_dimensions_directly": false,
+            "allow_recalculation": false,
+            "requires_dinabox": true
+          },
+          "notes": "RESOLVIDO: Charles confirmou que se o levantamento nao mostra quina, e erro do arquiteto assumir Parede C separada. Geladeira/torre fica na mesma parede continua (cadeia 950+2786+965+1474), nao em retorno perpendicular.",
+          "measurement_mode": "FINAL_DIMENSIONS_READY",
+          "validation_status": "CONFIRMED",
+          "source_refs": [
+            "SRC006",
+            "SRC004"
+          ],
+          "history": {
+            "reason": "Parede C descartada como suposicao errada do arquiteto (levantamento nao mostra quina). Modulo fica na parede continua.",
+            "applied_before_origin": true
+          }
+        }
+      ],
+      "equipment": [
+        {
+          "equipment_id": "EQ_GELADEIRA",
+          "name": "Geladeira Brastemp BRO Side by Side",
+          "dimensions_mm": {
+            "width_mm": 820,
+            "height_mm": 1860,
+            "depth_mm": 770
+          },
+          "validation_status": "CONFIRMED",
+          "measurement_mode": "FINAL_DIMENSIONS_READY",
+          "position_mm": null,
+          "source_refs": [
+            "SRC004"
+          ]
+        },
+        {
+          "equipment_id": "EQ_COOKTOP",
+          "name": "Cooktop",
+          "dimensions_mm": {
+            "width_mm": 770,
+            "height_mm": 54,
+            "depth_mm": 510
+          },
+          "validation_status": "CONFIRMED",
+          "measurement_mode": "FINAL_DIMENSIONS_READY",
+          "position_mm": {
+            "x_mm": null,
+            "y_mm": null,
+            "z_mm": null,
+            "note": "Vai no tampo do MODULO_001, posição exata dentro do módulo ainda não definida."
+          },
+          "source_refs": [
+            "SRC004"
+          ]
+        },
+        {
+          "equipment_id": "EQ_FORNO",
+          "name": "Forno elétrico de embutir",
+          "dimensions_mm": {
+            "nicho_width_mm": 570,
+            "nicho_height_mm": 610,
+            "nicho_depth_mm": 580
+          },
+          "validation_status": "CONFIRMED",
+          "measurement_mode": "FINAL_DIMENSIONS_READY",
+          "position_mm": null,
+          "source_refs": [
+            "SRC004"
+          ],
+          "note": "Não aparece em nenhum módulo do SRC006 — nicho ainda sem módulo/torre associado."
+        },
+        {
+          "equipment_id": "EQ_LAVALOUCAS",
+          "name": "Lava-louças",
+          "dimensions_mm": {
+            "width_mm": 600,
+            "height_mm": 850,
+            "depth_mm": 590
+          },
+          "validation_status": "CONFIRMED",
+          "measurement_mode": "FINAL_DIMENSIONS_READY",
+          "position_mm": null,
+          "source_refs": [
+            "SRC004"
+          ]
+        },
+        {
+          "equipment_id": "EQ_MICROONDAS",
+          "name": "Micro-ondas",
+          "dimensions_mm": {
+            "width_mm": 553,
+            "height_mm": 311,
+            "depth_mm": 467
+          },
+          "validation_status": "CONFIRMED",
+          "measurement_mode": "FINAL_DIMENSIONS_READY",
+          "position_mm": null,
+          "source_refs": [
+            "SRC004"
+          ]
+        },
+        {
+          "equipment_id": "EQ_AIRFRYER",
+          "name": "Airfryer Philips Walita",
+          "dimensions_mm": {
+            "width_mm": 340,
+            "height_mm": 370,
+            "depth_mm": 360
+          },
+          "validation_status": "CONFIRMED",
+          "measurement_mode": "FINAL_DIMENSIONS_READY",
+          "position_mm": null,
+          "source_refs": [
+            "SRC004"
+          ]
+        },
+        {
+          "equipment_id": "EQ_LIXEIRA",
+          "name": "Lixeira de embutir",
+          "dimensions_mm": {
+            "width_mm": 490,
+            "depth_mm": 360,
+            "height_mm": 500
+          },
+          "validation_status": "CONFIRMED",
+          "measurement_mode": "FINAL_DIMENSIONS_READY",
+          "source_refs": [
+            "SRC005"
+          ],
+          "note": "CORRIGIDO: ficha tecnica real do produto (print da pagina) -- comprimento 49cm, largura 36cm, altura 50cm. Substitui o valor anterior (1200x840x698mm) que veio de resposta verbal e ja estava sinalizado como suspeito.",
+          "note_anterior_descartada": "1200 x 840 x 698mm (verbal, 2026-07-17) -- incorreto, substituido pela ficha real.",
+          "material": {
+            "estrutura": "Aco cromado",
+            "tampa": "Plastico",
+            "abertura": "Deslizante",
+            "instalacao": "Embutir no piso"
+          }
+        }
+      ]
+    }
+  ],
+  "placeholders": [
+    {
+      "placeholder_id": "PLACEHOLDER_001",
+      "room_id": "COZ001",
+      "wall_id": "WALL_A_2786_continuacao",
+      "type": "AIR_FRYER_NICHE",
+      "instance_name": "Nicho Air Fryer 01",
+      "status": "PLACEHOLDER",
+      "reason": "SRC006: 'HIPÓTESE: Parede C, x=0, não confirmado.' Motivo do placeholder: não existe caixa-mestre DinaBox pra tipo Nicho.",
+      "dimensions_mm": {
+        "width_mm": 700,
+        "height_mm": 400,
+        "depth_mm": 350
+      },
+      "note": "Posicao resolvida: parede continua, sem quina (erro do arquiteto descartado).",
+      "visual_marker": "WARNING_COLOR",
+      "validation_status": "CONFIRMED",
+      "measurement_mode": "PLACEHOLDER_DIMENSIONS",
+      "source_refs": [
+        "SRC006",
+        "SRC004",
+        "SRC005"
+      ]
+    },
+    {
+      "placeholder_id": "PH_CHURRASQUEIRA",
+      "room_id": "COZ001",
+      "type": "CHURRASQUEIRA_NICHO",
+      "status": "PLACEHOLDER",
+      "reason": "Charles: se nao tem movel/marcenaria ali, nao precisa detalhe -- nicho e de pedra, desconsiderar do escopo DinaBox (igual a serralheria da Taciana).",
+      "dimensions_mm": null,
+      "visual_marker": "WARNING_COLOR",
+      "validation_status": "CONFIRMED_OUT_OF_DINABOX_SCOPE",
+      "measurement_mode": "PLACEHOLDER_DIMENSIONS",
+      "source_refs": [
+        "SRC003"
+      ]
+    },
+    {
+      "placeholder_id": "PH_TANQUE_LAVANDERIA",
+      "room_id": "COZ001",
+      "type": "TANQUE_LAVANDERIA",
+      "status": "PLACEHOLDER",
+      "reason": "Confirmado por Charles: Vista Superior Lavanderia (Cozinha.pdf), largura 1200mm, profundidade 698mm (corrige a leitura anterior de 610mm).",
+      "dimensions_mm": {
+        "width_mm": 1200,
+        "depth_mm": 698
+      },
+      "visual_marker": "WARNING_COLOR",
+      "validation_status": "CONFIRMED",
+      "measurement_mode": "FINAL_DIMENSIONS_READY",
+      "source_refs": [
+        "SRC001",
+        "SRC003"
+      ]
+    }
+  ],
+  "materials_palette": {
+    "corpo": "MDF Cinza Puro (Arauco)",
+    "frente": "MDF Jatobá Brasileiro (Arauco)",
+    "bancada_rodabanca": "Quartzo Branco",
+    "puxador": "Cielo RM378 (Rometal, preto fosco) e/ou puxador Cava — pendência HANDLE_DECISION_001, ainda não resolvida na reconciliação",
+    "piso": [
+      "Rockface Travertino",
+      "Porcelanato Marmo Gris (Eliane)",
+      "Porcelanato Branco"
+    ],
+    "validation_status": "CONFIRMED",
+    "source_refs": [
+      "SRC002",
+      "SRC005"
+    ]
+  },
+  "validation": {
+    "status": "BLOCKED_FOR_EXECUTION",
+    "can_generate_execution_file": false,
+    "reason": "Mesmo depois da reconciliação com o layout técnico do WORK, nenhum módulo reúne ao mesmo tempo: origem física confirmada da parede (canto x=0 real), profundidade bruta confirmada por medição de campo (não CSV técnico), e position_mm de equipamento definido. Módulos 001/002/004/005/006 estão mais próximos de ficar prontos que 003/007-010/PLACEHOLDER_001.",
+    "warnings_count": 7,
+    "errors_count": 0
+  },
+  "pending_decisions": [
+    {
+      "id": "WALL_MAPPING_001",
+      "summary": "Confirmar fisicamente qual parede é 'Parede A' (2786mm) e onde fica o canto x=0/y=0 real. Também entender o segmento extra de 950mm que não aparece no layout técnico.",
+      "blocks": [
+        "MODULO_001",
+        "MODULO_002",
+        "MODULO_003",
+        "MODULO_004",
+        "MODULO_005",
+        "MODULO_006",
+        "MODULO_007",
+        "MODULO_008",
+        "MODULO_009"
+      ]
+    },
+    {
+      "id": "WALL_A_WIDTH_GAP_001",
+      "summary": "REFORMULAR: pergunta anterior nao ficou clara pro Charles. Precisa citar arquivo+pagina exata. Gap de 86mm entre soma dos modulos (2700mm) e wall_a (2786mm) -- fonte: SRC006 (LAYOUT_WORK_MODULO_001_010_PLACEHOLDER_001.json, campo max_width_mm=2740 por modulo) comparado com Cozinha.pdf pagina 1 (segmento de 2786mm).",
+      "blocks": [
+        "MODULO_004"
+      ],
+      "status": "DEFERRED_TO_3D_REVIEW",
+      "resolution": "Charles: deixar pro usuario decidir quando o 3D estiver no SketchUp -- mais facil ver visualmente do que resolver em abstrato agora. Nao bloqueante."
+    },
+    {
+      "id": "LAUNDRY_TANK_001",
+      "summary": "Confirmar se a bancada 1200x610mm é a mesma do tanque em foto real.",
+      "blocks": [
+        "PH_TANQUE_LAVANDERIA"
+      ],
+      "status": "RESOLVED",
+      "resolution": "Largura 1200mm, profundidade 698mm -- confirmado por Charles direto na Vista Superior Lavanderia."
+    },
+    {
+      "id": "HANDLE_DECISION_001",
+      "summary": "Puxador (Cielo RM378 ou Cava) -- Charles: deixar pro humano decidir, e normal confirmar isso so depois do projeto. Nao bloqueante.",
+      "blocks": [
+        "MODULO_001",
+        "MODULO_002",
+        "MODULO_003",
+        "MODULO_004"
+      ],
+      "status": "DEFERRED_NORMAL"
+    }
+  ],
+  "execution_readiness": {
+    "ready_modules": [
+      "MODULO_001",
+      "MODULO_002",
+      "MODULO_004",
+      "MODULO_005",
+      "MODULO_006"
+    ],
+    "executed_success": {
+      "modules": [
+        "MODULO_001",
+        "MODULO_002",
+        "MODULO_004",
+        "MODULO_005",
+        "MODULO_006"
+      ],
+      "build_id": "CP004_HOTFIX008_POSITION_AREA_MATERIAL",
+      "executed_at": "2026-07-17T14:19:54Z",
+      "status": "HOMOLOGADO_TESTE_HUMANO_REAL",
+      "note": "Executado com sucesso no SketchUp real (DIAGNOSTIC mode). Zero colisões. Gap de 86mm no fim da parede A e profundidade de piso default (1200mm em vez de 965mm real) ainda pendentes de ajuste fino. x=0 continua sendo suposição a partir do desenho, não confirmação física ao vivo na obra."
+    },
+    "closest_to_ready": [],
+    "blocked_modules": [
+      "MODULO_003",
+      "MODULO_007",
+      "MODULO_008",
+      "MODULO_009",
+      "MODULO_010",
+      "PLACEHOLDER_001",
+      "PH_CHURRASQUEIRA",
+      "PH_TANQUE_LAVANDERIA",
+      "OPENING_001"
+    ],
+    "reason": "Módulos executados com sucesso tecnicamente, mas ainda não é homologação final — falta confirmação física do canto de origem na obra e resolver o gap de 86mm."
+  },
+  "warnings": [
+    "SRC006 usa medidas de geladeira (829x750mm) levemente diferentes da ficha real (820x770mm) — usar a ficha real no Execution File.",
+    "Segmento de 950mm do levantamento real (SRC001) não tem correspondência em nenhum módulo do layout técnico (SRC006) — pode ser parede/vão não coberto pelo teste.",
+    "Todos os módulos do SRC006 vinham marcados 'FINAL_DIMENSIONS_APPLY_DIRECTLY', mas eu rebaixei para HYPOTHESIS_DIMENSIONS / PENDING_HUMAN_VALIDATION porque a origem física da parede ainda não foi confirmada por mim, conforme instruído a não promover automaticamente.",
+    "Puxador continua indefinido (Cielo RM378 e/ou Cava).",
+    "Nicho do forno elétrico (EQ_FORNO) não tem nenhum módulo/torre associado em nenhuma das duas fontes.",
+    "Janela da cozinha continua sem confirmação em qualquer fonte.",
+    "Fotos reais existem (Gourmet, SRC003) mas ainda não foram usadas para medir nada com régua — só como confirmação visual de que a obra está em acabamento."
+  ],
+  "errors": [],
+  "audit": {
+    "reconciled_at": "2026-07-17",
+    "reconciled_by": "Claude (papel Claude+Janaína, auditor)",
+    "inputs": [
+      "ORIGIN_PROJECT_FILE_V1_DRAFT.json",
+      "LAYOUT_WORK_MODULO_001_010_PLACEHOLDER_001.json",
+      "LAYOUT_WORK_MODULO_001_010_RESUMO.ndjson"
+    ],
+    "method": "Cruzamento campo a campo, sem promover nenhum module de FINAL_DIMENSIONS_APPLY_DIRECTLY (fonte antiga) para CONFIRMED sem confirmação física adicional, conforme instrução recebida em COMANDO_CLAUDE_RECONCILIAR_LAYOUT_WORK.txt."
+  }
+}

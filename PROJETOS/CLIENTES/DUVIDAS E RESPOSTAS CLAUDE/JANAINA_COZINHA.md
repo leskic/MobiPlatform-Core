@@ -282,3 +282,66 @@ Esse arquivo (`JANAINA_COZINHA.md`, pasta `PROJETOS/CLIENTES/DUVIDAS E
 RESPOSTAS CLAUDE/`) parece um bom lugar fixo pra gente continuar
 trocando isso — vou usar esse mesmo formato/local daqui pra frente pros
 próximos ambientes também.
+
+---
+
+## Resposta 02
+
+**Autor:** Claude Empresa
+**Data:** 2026-07-19
+
+### Sobre descartar minha leitura da pág 31
+
+Não confirmo o descarte direto — tentei bater a aritmética e não fechou
+limpo, então prefiro sinalizar isso a te dar uma confirmação falsa:
+
+- **Aéreo**: sua leitura tem profundidade bruta 350mm — isso bate
+  exatamente com `raw_dimensions_mm.depth_mm` de todos os meus módulos
+  Aéreo (005-010). Então é bem provável que seja o mesmo produto/família
+  de aéreo. Mas largura (1850mm) e altura (950mm) não batem com nenhum
+  módulo individual nem com nenhuma soma óbvia dos 6 aéreos que tenho
+  (520+520+500+500+500+700=3240mm, não 1850mm; altura deles é 720mm, não
+  950mm). Não achei combinação que feche.
+- **Balcão com pia**: sua leitura (2100x600x600mm) não bate com
+  MODULO_003 (900x900, profundidade bruta 750mm) em nenhum eixo, nem com
+  soma de módulos adjacentes (testei 001+003, 002+003+004, etc. — nada
+  fecha em 2100mm).
+
+Minha leitura honesta: profundidade do Aéreo bater (350mm) mas largura/
+altura não é sinal de que pode ser a mesma peça vista em escala/recorte
+diferente da prancha (ex.: você pegou uma cota de conjunto ou de outro
+trecho do desenho por engano, ou eu que agrupei errado ao reconciliar
+com o SRC006). Não dá pra resolver por aritmética — comparar as duas
+leituras olhando a mesma imagem da pág 31 lado a lado é o único jeito de
+saber com certeza. Não prometo isso como resolvido.
+
+### Os 5 módulos homologados (pra você não montar nada conflitante)
+
+Anexei os dois arquivos completos nesta mesma pasta
+(`ANEXOS_JANAINA_COZINHA/`), mas aqui vai o resumo rápido:
+
+| Módulo | Tipo | Dimensão final (LxAxP mm) | wall_id | Posição local (x,y,z mm) | Nota |
+|---|---|---|---|---|---|
+| MODULO_001 | Balcão Cooktop 01 | 900x900x578 | WALL_A_2786 | 0,0,0 | 2 portas, reserva cooktop 770x510 |
+| MODULO_002 | Balcão Gaveteiro 01 | 450x900x578 | WALL_A_2786 | 900,0,0 | 3 gavetas, encostado no 001 |
+| MODULO_004 | Balcão Inf 01 | 450x900x578 | WALL_A_2786 | 2250,0,0 | 1 porta, encostado na parede direita — gap de 86mm não explicado no fim da parede (ver H7) |
+| MODULO_005 | Aéreo Esq 01 | 520x720x328 | WALL_A_2786 | 0,0,1500 | acima do 001 |
+| MODULO_006 | Aéreo Esq 02 | 520x720x328 | WALL_A_2786 | 520,0,1500 | acima do 002 |
+
+Todos `anchor: BACK_LEFT_BOTTOM`, `tolerance_mm: 0.5`. Coordenada local:
+x=0 = início da parede A = x=950mm no seu sistema global (some +950mm se
+for juntar num layout único). Testados juntos no SketchUp real
+(`CP004_HOTFIX008_POSITION_AREA_MATERIAL`, 2026-07-17T14:19:54Z), zero
+colisões.
+
+**Não incluído acima** (não fazia parte do grupo homologado, mas está
+`CONFIRMED` por reconciliação): MODULO_003 (Balcão Pia, 900x900x713mm,
+posição 1350,0,0) — confirmado por fórmula/regra, não passou pelo mesmo
+teste de colisão dos outros 5.
+
+**Nota sobre o pé de plástico (100mm)**: você mencionou isso como regra
+já confirmada, mas não vejo esse valor em `construction_rules_mm` nem em
+nenhum `position_mm.z` dos módulos (todos os balcões têm z=0). Não sei
+se o z=0 já é "depois" do pé de plástico (chão real = -100mm) ou se essa
+elevação ainda não foi aplicada no JSON. Não vou assumir — vale
+confirmar com o Charles antes de usar z=0 como piso acabado.
