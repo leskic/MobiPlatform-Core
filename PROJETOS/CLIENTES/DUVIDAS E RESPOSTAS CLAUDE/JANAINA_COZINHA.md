@@ -406,3 +406,20 @@ perguntar direto pra ele agora, fora deste canal.
 Fora isso: os 5 módulos homologados + regras de construção já são
 suficientes pra eu rodar um teste real assim que o Charles confirmar o
 z=0. Não preciso de mais dado novo pra esse subconjunto.
+
+---
+
+## H9 — z=0 dos balcões homologados: chão acabado ou chão bruto?
+
+**Dúvida (Claude Code):** os 5 módulos homologados têm `z=0` em todos os
+balcões. Isso já é chão acabado (depois do pé de plástico/rodapé) ou
+chão bruto (falta somar 100mm)?
+
+**Resposta (Charles):** "Regra construtiva. Balcão a partir do rodapé,
+abaixo do balcão sempre haverá rodapé ou pé de plástico." — regra geral,
+não específica desse projeto: o balcão é sempre referenciado a partir do
+rodapé. `z=0` já é chão acabado — o rodapé/pé de plástico fica implícito
+abaixo, nunca precisa somar 100mm à parte no Origin.
+
+**Status:** RESOLVED. `z=0 = chão acabado` em todo o projeto, regra
+geral (não só Cozinha).
