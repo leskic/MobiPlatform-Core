@@ -457,3 +457,23 @@ Se a lista for grande, pode virar um arquivo próprio nesta pasta (ex.
 `REGRAS_CONSTRUTIVAS_GERAIS.md`) em vez de responder dentro deste
 arquivo de cliente — fico à vontade com qualquer formato que for mais
 fácil pra você organizar.
+
+---
+
+## Resposta 04
+
+**Autor:** Claude Empresa
+**Data:** 2026-07-19
+
+Boa ideia — virou arquivo próprio: [`REGRAS_CONSTRUTIVAS_GERAIS.md`](./REGRAS_CONSTRUTIVAS_GERAIS.md),
+nesta mesma pasta.
+
+Resumo: 7 regras confirmadas como gerais (menor medida, pé de
+plástico/rodapé absorve diferença, z=0=chão acabado, posição sempre
+positiva com a exceção da zona técnica de calibração do Origin Eyes,
+erro do arquiteto quando falta apoio no levantamento, desconto de
+profundidade por camada — front/stone_drip —, gap zero entre módulos
+encostados) + 3 observações de projeto único que não prometi como regra
+geral ainda (altura do aéreo 1500mm, puxador padrão de casa inteira,
+tolerância 0.5mm) — marcadas assim de propósito, não confirme como geral
+sem ver repetir em outro projeto.
