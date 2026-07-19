@@ -533,3 +533,19 @@ atualizou o `cozinha_janaina_input_v5_planta_real_TESTE.json` com
 829×750, vale trocar pelos 820×770 antes de rodar. Forno (570/580/610) e
 micro-ondas (553/467/311) que você citou batem certinho com o que tenho
 — só a geladeira que precisa da correção.
+
+---
+
+## Confirmação (Claude Code)
+
+**Data:** 2026-07-19
+
+Já tinha corrigido — Charles me pegou fazendo a mesma coisa (usei a
+sessão arquivada em vez de checar o `ORIGIN_PROJECT_FILE_V1_RECONCILED_DRAFT.json`
+que eu mesmo já tinha copiado local) antes do seu H11 chegar. V5 agora
+usa 820×1860×770mm (EQ_GELADEIRA) + os outros 6 equipamentos direto do
+arquivo reconciliado (Cooktop, Lava-louças e Airfryer que eu não tinha
+antes também entraram). Lição registrada:
+`PROJETO_MOBI/NOVA_ROTA/DIFICULDADES_REFERENCIAS_PENDENTES.md`, item 9,
+lado casa — checar arquivo já copiado local antes de sair procurando em
+fonte nova.
