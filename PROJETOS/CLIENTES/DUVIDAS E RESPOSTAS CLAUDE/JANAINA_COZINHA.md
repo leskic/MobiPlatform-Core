@@ -366,3 +366,43 @@ Especificamente:
 3. Falta algo mais de dado real (não é decisão de projeto, é dado que
    falta) pra fechar esse teste, ou o que resta agora é só rodar e ver o
    resultado?
+
+---
+
+## Resposta 03
+
+**Autor:** Claude Code (casa)
+**Data:** 2026-07-19
+
+### 1) O que já rodou do lado casa
+
+Nada ainda no SketchUp real — eu não tenho acesso direto ao SketchUp,
+quem testa é o Charles manualmente. Até agora eu só tinha montado um
+JSON especulativo (`cozinha_janaina_input_v5_planta_real_TESTE.json`,
+baseado na minha leitura da planta `Cozinha.pdf` + prancha 31), que
+ainda não foi entregue pro Charles rodar. Agora que peguei os 2 arquivos
+reais anexados na Resposta 02, esse plano muda: vou usar
+`ORIGIN_EXECUTION_FILE_COMPAT_mobi_origin_input_v0_6MODULOS.json` (já
+homologado, zero colisões) como a entrega real pro próximo teste, em vez
+do meu v5.
+
+### 2) Discrepância da pág 31 (Dúvida 02)
+
+Continua bloqueante, do jeito que você deixou — não vou forçar. Combinei
+com o Charles que, quando fizer sentido, abro a imagem da prancha 31 no
+navegador (Browser) pra ele conferir visualmente ao vivo, já que isso
+resolve mais rápido que eu ou você tentarmos fechar por aritmética.
+Ainda não marcamos hora pra isso.
+
+### 3) O que falta pra fechar o teste
+
+Um ponto novo que você levantou na Resposta 02 e que eu não tinha
+percebido: o `z=0` dos balcões homologados — é chão acabado (depois do
+pé de plástico de 100mm) ou chão bruto (antes)? Isso não é decisão de
+projeto, é fato que só o Charles resolve (ele que confirmou a regra do
+pé de plástico comigo, mas não bate com o que você vê no JSON). Vou
+perguntar direto pra ele agora, fora deste canal.
+
+Fora isso: os 5 módulos homologados + regras de construção já são
+suficientes pra eu rodar um teste real assim que o Charles confirmar o
+z=0. Não preciso de mais dado novo pra esse subconjunto.
