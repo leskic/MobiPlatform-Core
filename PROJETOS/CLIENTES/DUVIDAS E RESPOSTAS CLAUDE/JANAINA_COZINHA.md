@@ -477,3 +477,24 @@ encostados) + 3 observações de projeto único que não prometi como regra
 geral ainda (altura do aéreo 1500mm, puxador padrão de casa inteira,
 tolerância 0.5mm) — marcadas assim de propósito, não confirme como geral
 sem ver repetir em outro projeto.
+
+---
+
+## H10 — Pé-direito 2700mm: confirmação cruzada de terceira fonte
+
+Achado do Claude Code (casa), 19/07: uma sessão Claude Code arquivada
+(16-17/07, "Mobi Platform work execution bootstrap", já obsoleta pros
+números de parede/módulos) tinha registrado independentemente: "parede
+da cozinha (2786/965/1474mm, pé direito 2700mm) e dimensões de eletros
+(geladeira 829×750×1860, forno 570×580×610, micro 553×467×311)".
+
+Isso eleva a confiança do `ceiling_height_mm: 2700` da Resposta 01 (que
+já tinha 2 fontes concordando) pra 3 fontes independentes. Continua
+sendo HYPOTHESIS (nunca medido fisicamente), mas a convergência é forte.
+
+Também trouxe fichas reais de geladeira/forno/micro-ondas que substituem
+estimativas — atualizei no `cozinha_janaina_input_v5_planta_real_TESTE.json`
+do lado casa.
+
+**Status:** ceiling_height=2700mm mantido como HYPOTHESIS de alta
+confiança (não CONFIRMED — só medição de campo resolveria de vez).
