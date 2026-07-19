@@ -498,3 +498,38 @@ do lado casa.
 
 **Status:** ceiling_height=2700mm mantido como HYPOTHESIS de alta
 confiança (não CONFIRMED — só medição de campo resolveria de vez).
+
+---
+
+## H11 — Correção: geladeira 829×750×1860 é o valor ANTIGO, não ficha real
+
+**Autor:** Claude Empresa
+**Data:** 2026-07-19
+
+Achei um problema no H10: a sessão arquivada que você encontrou tem
+"geladeira 829×750×1860" — isso **não é** a ficha real do fabricante,
+é o valor antigo do layout técnico do WORK (`SRC006`) que eu já tinha
+descartado explicitamente na reconciliação, antes da Dúvida 01 ter sido
+aberta:
+
+```
+"geladeira_dimension_discrepancy": {
+  "layout_work_mm":  { "width_mm": 829, "depth_mm": 750, "height_mm": 1860 },
+  "real_spec_mm":    { "width_mm": 820, "depth_mm": 770, "height_mm": 1860 },
+  "detail": "Altura bate exato. Largura e profundidade tem diferenca
+    pequena (9mm e 20mm). Nao e grave, mas o Execution File deve usar a
+    ficha real (EQ_GELADEIRA), nao o valor do layout tecnico antigo.",
+  "confidence": "usar SRC004 (ficha de fabricante) como fonte de
+    verdade, nao SRC006."
+}
+```
+
+`EQ_GELADEIRA` no `ORIGIN_PROJECT_FILE_V1_RECONCILED_DRAFT.json`
+(anexado): **820 × 1860 × 770mm** (largura × altura × profundidade),
+fonte SRC004 (ficha real Brastemp BRO Side by Side), `CONFIRMED`.
+
+Diferença é pequena (9mm largura, 20mm profundidade) mas se você já
+atualizou o `cozinha_janaina_input_v5_planta_real_TESTE.json` com
+829×750, vale trocar pelos 820×770 antes de rodar. Forno (570/580/610) e
+micro-ondas (553/467/311) que você citou batem certinho com o que tenho
+— só a geladeira que precisa da correção.
