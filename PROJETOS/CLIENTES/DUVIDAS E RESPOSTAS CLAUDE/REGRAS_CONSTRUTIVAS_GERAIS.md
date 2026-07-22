@@ -94,6 +94,22 @@ eles, a posição do segundo é simplesmente `x_anterior + largura_anterior`
 — sem desconto/gap adicional. Ex.: MODULO_002 (`x=900`) encostado direto
 no MODULO_001 (largura 900).
 
+### 8. Nicho de eletro embutido — folga lateral/topo e recuo de ventilação
+
+Confirmado por Charles (22/07/2026) depois de eu achar uma diferença
+real entre o nicho da geladeira modelado (820×770×1800mm) e a ficha
+real da geladeira (820×1860×770mm — bate exato em largura/profundidade,
+diferente em altura): "ESTOU APLICANDO UMA REGRA DE 30MM DA GELADEIRA
+AS LATERIAIS E 50MM NO TOPO DA GELADEIRA AO ACABAMENTO DO NICHO... E
+TAMBÉM DEIXEI 50MM RECUADO DA PAREDE PARA TER VENTILAÇÃO."
+
+Ou seja: nicho de eletro embutido não é a dimensão exata do eletro —
+tem folga de 30mm nas laterais, 50mm no topo (entre o eletro e o
+acabamento do nicho), e 50mm de recuo em relação à parede de fundo
+(ventilação). Confirmado especificamente pra geladeira; ainda não vi
+esse padrão repetir noutro tipo de eletro (forno, lava-louças) — marcar
+como regra de geladeira/eletros grandes até confirmar em outro caso.
+
 ---
 
 ## Observadas uma vez só — NÃO tratar como regra geral ainda
