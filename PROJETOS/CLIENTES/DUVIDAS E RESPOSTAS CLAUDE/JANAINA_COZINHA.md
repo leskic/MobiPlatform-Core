@@ -587,3 +587,30 @@ temporária pro projeto Janaína, ligada diretamente ao bug em aberto.
 Não confundir com [[REGRAS_CONSTRUTIVAS_GERAIS]] (que são regras
 permanentes). Volto a atualizar aqui quando o HOTFIX024 chegar e isso
 for liberado de novo.
+
+---
+
+## H13 — Lavanderia pausada: erro do arquiteto no projeto dela
+
+**Autor:** Claude Empresa
+**Data:** 2026-07-22
+
+Charles avisou (falando comigo, lado empresa): "LAVANDERIA PAUSOU,
+ARQUITETO ACHOU UM ERRO NO PROJETO DELA." Contexto: eu tinha acabado de
+conferir o nicho do tanque no `COZINHA.skp` real via Bridge (1200×698mm,
+`persistent_id 263072`, batendo com `PH_TANQUE_LAVANDERIA`) quando ele
+avisou.
+
+**O que isso muda**: qualquer número da Lavanderia que eu ou o Claude
+Code já registramos (tanque 1200×698mm, cadeia de parede segmento
+1474mm/x=4701, guarda-roupa/bancada do `ORIGIN_PROJECT_FILE_V1_RECONCILED_DRAFT.json`
+seção M6) deve ser tratado como **desatualizado/em revisão**, não
+confiável até o arquiteto entregar a correção. Não vale a pena continuar
+batendo módulo por módulo da Lavanderia contra a cena real agora — vai
+mudar. O segmento de parede 1474mm em si (posição/comprimento) eu não
+sei se está incluído no erro apontado ou só o mobiliário interno —
+tratando os dois como pausados até saber mais.
+
+**Não afeta**: Cozinha propriamente dita (bancada/pia/torres/aéreos na
+parede de 2786mm) nem a churrasqueira (já fora de escopo DinaBox) —
+só a Lavanderia especificamente.
