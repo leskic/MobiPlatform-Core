@@ -129,6 +129,26 @@ como regra de geladeira/eletros grandes até confirmar em outro caso.
 
 ---
 
+## Observação de arquitetura (22/07/2026) — possível caminho de fundo pro bug do container fantasma
+
+Charles mostrou o `MOBI_OTIMIZADOR_CNC_MOC012_NESTING_CORTE_COMUM_DRAFT.rbz`
+(`Z:\PROJETOS plano de corte\PROJETOS\PLUGINS\CONHECIMENTO\`) e disse: "COM
+A CNC SKP, NAO PRECISAMOS MAIS DO DINABOX... TEMOS NOSSO MOTOR DE BLOCO
+DINAMICO E NOSSO LEITOR DE BLOCO DINAMICO." Li o código real — não é só
+fala, o motor já existe: `geometry_planner.rb` classifica geometria pura
+(sem depender de master DinaBox), `expression_engine.rb` é um avaliador
+de fórmula próprio (`dx/dy/dz`), `operation_library.rb` já tem preset
+real de furação/rasgo (dobradiça 35mm, Hettich 52mm, Minifix, Rafix, VB,
+rasgo 6mm) e `toolpath_engine.rb` simula o percurso real.
+
+Isso é relevante pro bug do container fantasma (H10-H11 nesta pasta,
+`PARA_WORK_CRITICO_GEOMETRIA_NAO_RECONSTROI.txt`): se o Otimizador CNC
+não depende do container interno do DinaBox pra furo/rasgo, pode ser um
+caminho pra contornar o bug de vez, não só esperar o HOTFIX024. Não
+tenho certeza se isso já é maduro o suficiente pra Cozinha real — é
+achado novo, ainda não testei o pipeline completo. Detalhe salvo na
+minha memória própria (`project_mobi_otimizador_cnc_pos_dinabox.md`).
+
 ## Fonte
 
 Regras 1, 2, 4, 5: memória de projeto (governança já fixada com Charles
