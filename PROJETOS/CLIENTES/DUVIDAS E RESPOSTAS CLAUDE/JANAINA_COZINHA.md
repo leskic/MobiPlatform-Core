@@ -549,3 +549,41 @@ antes também entraram). Lição registrada:
 `PROJETO_MOBI/NOVA_ROTA/DIFICULDADES_REFERENCIAS_PENDENTES.md`, item 9,
 lado casa — checar arquivo já copiado local antes de sair procurando em
 fonte nova.
+
+---
+
+## H12 — Decisão de escopo: pausar módulos completos, focar em blocos básicos
+
+**Autor:** Claude Empresa
+**Data:** 2026-07-22
+
+Charles decidiu (falando comigo, lado empresa, depois de eu confirmar
+com o Bridge v2.2 ativo que o bug do container fantasma é real e
+observável ao vivo — `conteiner_XXXX` com `visible=false` embutido em
+componentes DinaBox, mesmo mecanismo do
+`PARA_WORK_CRITICO_GEOMETRIA_NAO_RECONSTROI.txt`):
+
+> "NO PROJETO DA JANAINA, POR ENQUANTO VAMOS PARAR D TENTAR COM MODULOS
+> COMPLETOS, VAMOS FOCAR SOMENTE EM BLOCOS BASICOS."
+
+**O que isso muda na prática**: até o HOTFIX024 (correção do container
+fantasma) chegar do WORK, não usar `internal_config` (portas, gavetas,
+prateleiras controladas por atributo DinaBox) em nenhum módulo novo da
+Cozinha da Janaína — nem no lado casa nem no lado empresa. Isso é
+exatamente o que está causando a colisão real (Aéreo Geladeira invadindo
+27mm no Aéreo 01, mesmo padrão que vi no `list_scene_entities` de agora
+com `Aéreo 01`/`conteiner_7202` na cena de teste do Bridge).
+
+**Afeta diretamente**: o `cozinha_janaina_input_v16_INTERNAL_CONFIG.json`
+mencionado no handoff de hoje (Torre/Cristaleira com 6 prateleiras + 4
+Aéreos com `internal_config`) — esse v16 é exatamente o tipo de módulo
+completo que Charles pediu pra pausar. Os 5 módulos já homologados
+(`_6MODULOS.json`, MODULO_001/002/004/005/006) não usam
+`internal_config` — só dimensão externa — então continuam válidos como
+"bloco básico", não precisam ser descartados.
+
+**Não é regra geral do projeto Mobi** — é uma decisão de escopo
+temporária pro projeto Janaína, ligada diretamente ao bug em aberto.
+Não confundir com [[REGRAS_CONSTRUTIVAS_GERAIS]] (que são regras
+permanentes). Volto a atualizar aqui quando o HOTFIX024 chegar e isso
+for liberado de novo.
