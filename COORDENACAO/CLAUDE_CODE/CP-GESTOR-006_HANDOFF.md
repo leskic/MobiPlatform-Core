@@ -29,20 +29,20 @@ escolheu **estoque próprio, com quantidade mínima**.
 - Nova seção "Compras e estoque" na UI: cadastro de item + formulário
   de entrada/saída por item.
 
-## Suposições que PRECISAM da sua revisão
+## Suposições — já revisadas com Charles (24/07/2026)
 
-1. Estoque é global, um depósito só — sem múltiplas localizações.
+1. ~~Estoque é global, um depósito só~~ — **confirmado e refinado**:
+   ferragens usam 1 item compartilhado (estoque global, como
+   construído). MDF é por cliente — não muda o código, é convenção de
+   cadastro: um `ItemEstoque` por combinação material+cliente (ex.:
+   "MDF Branco 15mm — Torres"). Documentado em `ROADMAP.md`.
 2. Sem fornecedor nem preço de compra — só quantidade (nome, unidade,
-   mínimo, atual).
-3. Não vinculado a `ItemLevantamento`/BOM do projeto ainda — são dois
-   sistemas separados por enquanto (levantamento = nomes de móveis do
-   projeto; estoque = materiais/ferragens do almoxarifado). Se a
-   intenção real é ligar os dois (ex.: cada item do levantamento debita
-   estoque automaticamente), isso é modelo de dado diferente — avisa
-   que eu redesenho.
+   mínimo, atual). Não revisado ainda, segue como estava.
+3. Não vinculado a `ItemLevantamento`/BOM do projeto ainda — não
+   revisado ainda, segue como estava.
 4. Movimento de SAÍDA vinculado a projeto é só um campo opcional de
    rastreio (`projetoId`) — não desconta nada de orçamento nem afeta
-   custo real do CP005 automaticamente.
+   custo real do CP005 automaticamente. Não revisado ainda.
 
 ## Validação
 

@@ -242,3 +242,13 @@ painel de atenção quando abaixo do mínimo e some quando normaliza.
 formal, preço de compra (só quantidade); vínculo com
 `ItemLevantamento`/BOM do projeto; múltiplos depósitos/localizações
 (um estoque só, global).
+
+**Padrão de uso confirmado com Charles (24/07/2026)**: ferragens (padrão
+da marcenaria — dobradiça, puxador, parafuso...) usam **1 item de
+estoque compartilhado**, quantidade global — é assim que o CP006 já
+funciona. **MDF é por cliente** — não por mudança de código, mas de
+convenção de cadastro: cada combinação material+cliente vira seu
+próprio `ItemEstoque` (ex.: "MDF Branco 15mm — Torres" e "MDF Branco
+15mm — Ana e Bruno" são dois itens distintos, cada um com sua própria
+quantidade/mínimo). O modelo de dado já suporta isso sem nenhuma
+alteração — só decisão de nomenclatura na hora de cadastrar.
