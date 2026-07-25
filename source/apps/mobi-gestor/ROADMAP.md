@@ -23,7 +23,7 @@ uma vez sem especificação real de cada parte.
 | CP005 | Fechamento do projeto: custo estimado x real, log de mudança de escopo | **Implementado — ver seção abaixo** |
 | CP006 | Compras e estoque: itens faltantes, entrada/saída | **Implementado — ver seção abaixo** |
 | CP007 | Financeiro: valor vendido, custos, fluxo de caixa | **Implementado — ver seção abaixo** |
-| CP008 | Indicadores/KPIs: setor atrasando, ranking, tempo médio | Não iniciado |
+| CP008 | Indicadores/KPIs: setor atrasando, ranking, tempo médio | **Implementado — ver seção abaixo** |
 | CP009+ | Integrações externas (WhatsApp, ERP, ferramentas de corte, Power BI) e IA (perguntas em linguagem natural, sugestões) | Não iniciado — cada integração precisa de checkpoint próprio, credenciais e decisão de arquitetura separada |
 | CP00X | **Entrada de áudio + transcrição** (definido por Charles em 16/07): usuário fala sua visão do projeto ou uma atualização ("o que vai ter, o que vai sair"), sistema transcreve e pede confirmação se precisar validar dado. Depende de escolher serviço de voz→texto — decisão de arquitetura/custo, não iniciar sem definir isso primeiro. | Não iniciado |
 
@@ -299,6 +299,45 @@ compras de estoque (`ENTRADA`), sem risco de duplicar (são fontes
 diferentes de dado). As outras duas suposições ficaram confirmadas
 como estavam: vendido só conta fechado (não aprovado), e sem saldo
 cumulativo por enquanto.
+
+## CP008 — Indicadores/KPIs: setor atrasando, ranking, tempo médio (implementado 2026-07-24)
+
+Reaproveita 100% dado que já existia (`Projeto`, `Orcamento`) — nenhum
+campo novo, só cálculo (`IndicadoresEngine.ts`, mesmo padrão de função
+pura de `AtencaoEngine.ts`/`FinanceiroEngine.ts`).
+
+**3 decisões confirmadas com Charles antes de implementar** (cada item
+do nome do checkpoint tinha mais de uma leitura possível):
+
+1. **Setor atrasando** = por **etapa de produção** (Fila/Corte/
+   Montagem estrutura/Acabamento/Entrega), não por responsável.
+   Reaproveita o mesmo critério de "parado" do `AtencaoEngine`
+   (`DIAS_PARADO_LIMITE`), só que agrupado por etapa em vez de listado
+   por projeto. Mostra as 5 etapas sempre, com 0 onde não há atraso.
+2. **Ranking** = **responsável por projetos concluídos**, não cliente
+   por valor vendido.
+3. **Tempo médio** = do **início ao fechamento**
+   (`Projeto.criadoEm` → `Orcamento.fechadoEm`, em dias), não por
+   etapa de produção — o sistema não guarda histórico de quando cada
+   etapa começou/terminou, só a atual, então isso ficou fora de
+   escopo.
+
+Tela: lista das 5 etapas com contagem de parados, ranking numerado por
+responsável, 1 stat de tempo médio em dias.
+
+**Testado ao vivo no navegador** (fluxo completo, com manipulação
+direta do `localStorage` pra simular projeto parado há 10 dias e
+projeto criado há 20 dias — não dava pra esperar isso de verdade):
+confirmei "Corte: 1" depois de backdatar `atualizadoEm` de um projeto
+em produção; confirmei ranking "Bruno 1 / Ana 1" depois de concluir
+dois projetos de responsáveis diferentes; confirmei "20 dias" de tempo
+médio depois de backdatar `criadoEm` em 20 dias e fechar o orçamento
+no mesmo instante — bateu exato com a conta manual.
+
+**Fora de escopo deliberadamente**: ranking de clientes por valor
+vendido; tempo médio por etapa de produção (exigiria histórico de
+entrada/saída de etapa, não existe hoje); filtro por período (os
+indicadores são sobre todo o histórico).
 
 **Padrão de uso confirmado com Charles (24/07/2026)**: ferragens (padrão
 da marcenaria — dobradiça, puxador, parafuso...) usam **1 item de

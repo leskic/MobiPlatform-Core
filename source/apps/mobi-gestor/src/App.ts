@@ -1,6 +1,7 @@
 import { computeAtencao } from "./AtencaoEngine";
 import { ClienteRepository } from "./ClienteRepository";
 import { computeFluxoCaixa, custoTotalReal, formatarPeriodo, valorTotalVendido } from "./FinanceiroEngine";
+import { etapasAtrasadas, rankingResponsaveis, tempoMedioFechamentoDias } from "./IndicadoresEngine";
 import type {
   CategoriaMudancaEscopo,
   Cliente,
@@ -246,6 +247,7 @@ export class App {
 
         ${renderEstoque(itensEstoque, projetos)}
         ${renderFinanceiro(orcamentos, movimentosEstoque)}
+        ${renderIndicadores(projetos, orcamentos, agora)}
       </div>
     `;
 
@@ -871,6 +873,54 @@ function renderFinanceiro(orcamentos: Orcamento[], movimentosEstoque: MovimentoE
               </tbody>
             </table>`
       }
+    </section>`;
+}
+
+// CP008 - indicadores/KPIs. Escopo confirmado com Charles (24/07/2026):
+// setor atrasando = por etapa de produção; ranking = responsável por
+// concluídos; tempo médio = início (Projeto.criadoEm) ao fechamento
+// (Orcamento.fechadoEm). Só relatório, sem formulário.
+function renderIndicadores(projetos: Projeto[], orcamentos: Orcamento[], agora: number): string {
+  const etapas = etapasAtrasadas(projetos, agora);
+  const ranking = rankingResponsaveis(projetos);
+  const tempoMedio = tempoMedioFechamentoDias(orcamentos, projetos);
+
+  return `
+    <section class="painel" id="painel-indicadores">
+      <div class="painel-head">
+        <h2 class="section-title">Indicadores</h2>
+      </div>
+
+      <p class="label">Projetos parados por etapa de produção</p>
+      <ul class="lista-indicador">
+        ${etapas
+          .map(
+            (item) => `<li class="item-indicador ${item.quantidadeParada > 0 ? "item-indicador-alerta" : ""}">
+              <span>${ETAPA_LABEL[item.etapa]}</span>
+              <span class="contagem">${item.quantidadeParada}</span>
+            </li>`,
+          )
+          .join("")}
+      </ul>
+
+      <p class="label">Ranking — projetos concluídos por responsável</p>
+      ${
+        ranking.length === 0
+          ? '<p class="muted">Nenhum projeto concluído ainda.</p>'
+          : `<ul class="lista-indicador">
+              ${ranking
+                .map(
+                  (item, index) => `<li class="item-indicador">
+                    <span>${index + 1}º · ${escapeHtml(item.responsavel)}</span>
+                    <span class="contagem">${item.concluidos}</span>
+                  </li>`,
+                )
+                .join("")}
+            </ul>`
+      }
+
+      <p class="label">Tempo médio do início ao fechamento</p>
+      <p class="stat-value">${tempoMedio === null ? "—" : `${tempoMedio} dia${tempoMedio === 1 ? "" : "s"}`}</p>
     </section>`;
 }
 
