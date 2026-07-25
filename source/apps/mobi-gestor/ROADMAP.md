@@ -348,3 +348,41 @@ próprio `ItemEstoque` (ex.: "MDF Branco 15mm — Torres" e "MDF Branco
 15mm — Ana e Bruno" são dois itens distintos, cada um com sua própria
 quantidade/mínimo). O modelo de dado já suporta isso sem nenhuma
 alteração — só decisão de nomenclatura na hora de cadastrar.
+
+## Instalável como PWA (24/07/2026)
+
+Charles pediu pra deixar o app instalável em Windows e Mac. Como o
+Gestor é 100% client-side (sem backend, dado só em `localStorage`),
+virou um **PWA instalável** em vez de um empacotador nativo por SO
+(Electron/Tauri seria trabalho bem maior pro mesmo resultado, já que o
+app não depende de nada nativo). Mesmo código serve os dois sistemas —
+Chrome/Edge usam o mesmo motor em Windows e Mac.
+
+Arquivos novos: `public/manifest.webmanifest` (nome, ícone, cor,
+`display: standalone`), `public/icons/icon.svg` (ícone único em SVG,
+`sizes: "any"` — aceito por Chrome/Edge em desktop, evita depender de
+gerar PNGs em várias resoluções sem ferramenta de imagem), `public/sw.js`
+(service worker com estratégia stale-while-revalidate por request,
+sem precache por nome de arquivo — o build do Vite gera hash novo a
+cada build, então cachear por nome fixo quebraria a cada deploy).
+`index.html` linka o manifest/ícone/theme-color, `src/main.ts` registra
+o service worker.
+
+Testado ao vivo: manifest carrega, service worker registra e ativa,
+cache popula em requests reais (confirmado via `caches.open(...).keys()`).
+
+**Limitação conhecida**: ao publicar uma atualização, é preciso subir
+a versão do `CACHE_NAME` dentro de `public/sw.js` manualmente (ex.:
+`mobi-gestor-v1` → `v2`) pra forçar quem já instalou a buscar a versão
+nova — não há CI automatizando isso hoje.
+
+**Fora de escopo deliberadamente**: empacotamento nativo real
+(`.exe`/`.dmg`); push notifications / sync em background (o service
+worker só existe pra cache/offline); ícones em múltiplas resoluções
+PNG.
+
+**Como instalar**:
+- **Windows (Chrome/Edge)**: abrir o Gestor, clicar no ícone de
+  instalar na barra de endereço (ou menu ⋮ → "Instalar Mobi Gestor…").
+- **Mac (Chrome)**: mesmo menu. **Mac (Safari)**: "Arquivo → Adicionar
+  ao Dock".
