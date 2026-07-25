@@ -7,6 +7,20 @@ export interface ResultadoMovimento {
   movimento: MovimentoEstoque;
 }
 
+export interface DadosMovimento {
+  itemEstoqueId: string;
+  tipo: TipoMovimentoEstoque;
+  quantidade: number;
+  // ENTRADA: obrigatorios. SAIDA: ignorados (sempre gravados como null).
+  fornecedor: string | null;
+  precoUnitario: number | null;
+  // SAIDA: obrigatorio. ENTRADA: opcional (compra pro estoque geral,
+  // nao necessariamente de um projeto - exceto MDF por convencao de
+  // cadastro por cliente, ver ROADMAP.md).
+  projetoId: string | null;
+  motivo: string;
+}
+
 export class ItemEstoqueRepository {
   private readonly store: LocalStore<ItemEstoque>;
   private readonly movimentos: MovimentoEstoqueRepository;
@@ -27,19 +41,21 @@ export class ItemEstoqueRepository {
   }
 
   // Registra o movimento e atualiza a quantidade do item na mesma
-  // operacao. SAIDA que deixaria quantidadeAtual negativa e rejeitada -
-  // o predicado de LocalStore.update nao bate, nada muda (nem o item,
-  // nem o movimento e criado), mesmo idioma de
-  // OrcamentoRepository.registrarFechamento.
-  registrarMovimento(
-    itemEstoqueId: string,
-    tipo: TipoMovimentoEstoque,
-    quantidade: number,
-    projetoId: string | null,
-    motivo: string,
-    agora: number,
-  ): ResultadoMovimento | null {
+  // operacao. Rejeitado (retorna null, nada muda) quando:
+  // - quantidade <= 0;
+  // - SAIDA deixaria quantidadeAtual negativa;
+  // - SAIDA sem projetoId (Charles, 24/07/2026 - toda saida precisa
+  //   dizer pra qual projeto foi);
+  // - ENTRADA sem fornecedor ou sem precoUnitario > 0 (e' uma compra,
+  //   precisa registrar de quem e por quanto).
+  // Mesmo idioma de guarda do OrcamentoRepository.registrarFechamento -
+  // a regra de negocio vive no predicado do LocalStore.update.
+  registrarMovimento(dados: DadosMovimento, agora: number): ResultadoMovimento | null {
+    const { itemEstoqueId, tipo, quantidade, motivo } = dados;
     if (quantidade <= 0) return null;
+    if (tipo === "SAIDA" && !dados.projetoId) return null;
+    if (tipo === "ENTRADA" && (!dados.fornecedor || dados.precoUnitario === null || dados.precoUnitario <= 0)) return null;
+
     const delta = tipo === "ENTRADA" ? quantidade : -quantidade;
     const item = this.store.update(
       (candidato) => candidato.id === itemEstoqueId && candidato.quantidadeAtual + delta >= 0,
@@ -47,7 +63,18 @@ export class ItemEstoqueRepository {
     );
     if (!item) return null;
 
-    const movimento = this.movimentos.add({ itemEstoqueId, tipo, quantidade, projetoId, motivo }, agora);
+    const movimento = this.movimentos.add(
+      {
+        itemEstoqueId,
+        tipo,
+        quantidade,
+        motivo,
+        projetoId: dados.projetoId,
+        fornecedor: tipo === "ENTRADA" ? dados.fornecedor : null,
+        precoUnitario: tipo === "ENTRADA" ? dados.precoUnitario : null,
+      },
+      agora,
+    );
     return { item, movimento };
   }
 

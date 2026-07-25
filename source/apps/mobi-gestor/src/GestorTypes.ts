@@ -179,7 +179,13 @@ export interface MovimentoEstoque {
   // Sempre positivo - o campo "tipo" acima e quem da o sinal (soma ou
   // subtrai da quantidadeAtual do item).
   quantidade: number;
+  // ENTRADA: fornecedor/precoUnitario obrigatorios (e' uma compra).
+  // SAIDA: projetoId obrigatorio (Charles, 24/07/2026 - toda saida
+  // precisa dizer pra qual projeto foi), fornecedor/precoUnitario
+  // ficam null (nao se aplica a saida).
   projetoId: string | null;
+  fornecedor: string | null;
+  precoUnitario: number | null;
   motivo: string;
   criadoEm: number;
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it, beforeEach } from "vitest";
-import { ItemEstoqueRepository } from "../src/ItemEstoqueRepository";
+import { ItemEstoqueRepository, type DadosMovimento } from "../src/ItemEstoqueRepository";
 import { computeAtencao } from "../src/AtencaoEngine";
 import type { NovoItemEstoque, Projeto } from "../src/GestorTypes";
 
@@ -18,6 +18,32 @@ function novoItemEstoque(overrides: Partial<NovoItemEstoque> = {}): NovoItemEsto
     nome: "Dobradiça 35mm",
     unidade: "un",
     quantidadeMinima: 20,
+    ...overrides,
+  };
+}
+
+function entrada(itemEstoqueId: string, overrides: Partial<DadosMovimento> = {}): DadosMovimento {
+  return {
+    itemEstoqueId,
+    tipo: "ENTRADA",
+    quantidade: 50,
+    projetoId: null,
+    fornecedor: "Fornecedor Padrão Ltda",
+    precoUnitario: 2.5,
+    motivo: "Compra",
+    ...overrides,
+  };
+}
+
+function saida(itemEstoqueId: string, overrides: Partial<DadosMovimento> = {}): DadosMovimento {
+  return {
+    itemEstoqueId,
+    tipo: "SAIDA",
+    quantidade: 10,
+    projetoId: "proj-1",
+    fornecedor: null,
+    precoUnitario: null,
+    motivo: "Uso na obra",
     ...overrides,
   };
 }
@@ -43,29 +69,56 @@ describe("Mobi Gestor CP006 compras e estoque", () => {
       expect(repo.list().map((item) => item.nome)).toEqual(["Dobradiça", "Parafuso"]);
     });
 
-    it("adds quantity on ENTRADA and records the movement", () => {
+    it("adds quantity on ENTRADA and records fornecedor/preco", () => {
       const repo = new ItemEstoqueRepository(storage);
       const item = repo.add(novoItemEstoque(), 1000);
-      const resultado = repo.registrarMovimento(item.id, "ENTRADA", 50, null, "Compra inicial", 2000);
+      const resultado = repo.registrarMovimento(entrada(item.id, { quantidade: 50 }), 2000);
       expect(resultado?.item.quantidadeAtual).toBe(50);
       expect(resultado?.movimento.tipo).toBe("ENTRADA");
-      expect(resultado?.movimento.quantidade).toBe(50);
+      expect(resultado?.movimento.fornecedor).toBe("Fornecedor Padrão Ltda");
+      expect(resultado?.movimento.precoUnitario).toBe(2.5);
     });
 
-    it("subtracts quantity on a valid SAIDA", () => {
+    it("rejects an ENTRADA without fornecedor", () => {
       const repo = new ItemEstoqueRepository(storage);
       const item = repo.add(novoItemEstoque(), 1000);
-      repo.registrarMovimento(item.id, "ENTRADA", 50, null, "Compra", 2000);
-      const resultado = repo.registrarMovimento(item.id, "SAIDA", 30, "proj-1", "Uso na obra", 3000);
+      expect(repo.registrarMovimento(entrada(item.id, { fornecedor: null }), 2000)).toBeNull();
+      expect(repo.list()[0]?.quantidadeAtual).toBe(0);
+    });
+
+    it("rejects an ENTRADA without a positive precoUnitario", () => {
+      const repo = new ItemEstoqueRepository(storage);
+      const item = repo.add(novoItemEstoque(), 1000);
+      expect(repo.registrarMovimento(entrada(item.id, { precoUnitario: null }), 2000)).toBeNull();
+      expect(repo.registrarMovimento(entrada(item.id, { precoUnitario: 0 }), 2000)).toBeNull();
+      expect(repo.list()[0]?.quantidadeAtual).toBe(0);
+    });
+
+    it("subtracts quantity on a valid SAIDA linked to a project", () => {
+      const repo = new ItemEstoqueRepository(storage);
+      const item = repo.add(novoItemEstoque(), 1000);
+      repo.registrarMovimento(entrada(item.id, { quantidade: 50 }), 2000);
+      const resultado = repo.registrarMovimento(saida(item.id, { quantidade: 30, projetoId: "proj-1" }), 3000);
       expect(resultado?.item.quantidadeAtual).toBe(20);
       expect(resultado?.movimento.projetoId).toBe("proj-1");
+      expect(resultado?.movimento.fornecedor).toBeNull();
+      expect(resultado?.movimento.precoUnitario).toBeNull();
+    });
+
+    it("rejects a SAIDA without a projetoId", () => {
+      const repo = new ItemEstoqueRepository(storage);
+      const item = repo.add(novoItemEstoque(), 1000);
+      repo.registrarMovimento(entrada(item.id, { quantidade: 50 }), 2000);
+      const resultado = repo.registrarMovimento(saida(item.id, { projetoId: null }), 3000);
+      expect(resultado).toBeNull();
+      expect(repo.list()[0]?.quantidadeAtual).toBe(50);
     });
 
     it("rejects a SAIDA that would leave quantity negative, changing nothing", () => {
       const repo = new ItemEstoqueRepository(storage);
       const item = repo.add(novoItemEstoque(), 1000);
-      repo.registrarMovimento(item.id, "ENTRADA", 10, null, "Compra", 2000);
-      const resultado = repo.registrarMovimento(item.id, "SAIDA", 11, null, "Uso na obra", 3000);
+      repo.registrarMovimento(entrada(item.id, { quantidade: 10 }), 2000);
+      const resultado = repo.registrarMovimento(saida(item.id, { quantidade: 11 }), 3000);
       expect(resultado).toBeNull();
       expect(repo.list()[0]?.quantidadeAtual).toBe(10);
       expect(repo.listMovimentosPorItem(item.id)).toHaveLength(1);
@@ -74,16 +127,16 @@ describe("Mobi Gestor CP006 compras e estoque", () => {
     it("rejects a movement with zero or negative quantidade", () => {
       const repo = new ItemEstoqueRepository(storage);
       const item = repo.add(novoItemEstoque(), 1000);
-      expect(repo.registrarMovimento(item.id, "ENTRADA", 0, null, "Nada", 2000)).toBeNull();
-      expect(repo.registrarMovimento(item.id, "ENTRADA", -5, null, "Nada", 2000)).toBeNull();
+      expect(repo.registrarMovimento(entrada(item.id, { quantidade: 0 }), 2000)).toBeNull();
+      expect(repo.registrarMovimento(entrada(item.id, { quantidade: -5 }), 2000)).toBeNull();
     });
 
     it("lists movements for a specific item only", () => {
       const repo = new ItemEstoqueRepository(storage);
       const itemA = repo.add(novoItemEstoque({ nome: "A" }), 1000);
       const itemB = repo.add(novoItemEstoque({ nome: "B" }), 1000);
-      repo.registrarMovimento(itemA.id, "ENTRADA", 10, null, "Compra A", 2000);
-      repo.registrarMovimento(itemB.id, "ENTRADA", 5, null, "Compra B", 2000);
+      repo.registrarMovimento(entrada(itemA.id, { quantidade: 10 }), 2000);
+      repo.registrarMovimento(entrada(itemB.id, { quantidade: 5 }), 2000);
       expect(repo.listMovimentosPorItem(itemA.id)).toHaveLength(1);
       expect(repo.listMovimentosPorItem(itemA.id)[0]?.itemEstoqueId).toBe(itemA.id);
     });
@@ -97,7 +150,7 @@ describe("Mobi Gestor CP006 compras e estoque", () => {
     it("flags a stock item below its minimum", () => {
       const repo = new ItemEstoqueRepository(storage);
       const item = repo.add(novoItemEstoque({ nome: "Cola branca", unidade: "litro", quantidadeMinima: 10 }), 1000);
-      repo.registrarMovimento(item.id, "ENTRADA", 3, null, "Compra pequena", 2000);
+      repo.registrarMovimento(entrada(item.id, { quantidade: 3 }), 2000);
 
       const itens = computeAtencao([] as Projeto[], 3000, repo.list());
       expect(itens).toEqual([
@@ -113,7 +166,7 @@ describe("Mobi Gestor CP006 compras e estoque", () => {
     it("does not flag a stock item at or above its minimum", () => {
       const repo = new ItemEstoqueRepository(storage);
       const item = repo.add(novoItemEstoque({ quantidadeMinima: 10 }), 1000);
-      repo.registrarMovimento(item.id, "ENTRADA", 10, null, "Compra", 2000);
+      repo.registrarMovimento(entrada(item.id, { quantidade: 10 }), 2000);
       expect(computeAtencao([] as Projeto[], 3000, repo.list())).toEqual([]);
     });
   });

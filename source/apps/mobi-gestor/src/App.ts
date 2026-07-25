@@ -484,17 +484,37 @@ export class App {
         const quantidade = Number(data.get("quantidade"));
         const projetoId = String(data.get("projetoId") ?? "") || null;
         const motivo = String(data.get("motivo") ?? "").trim();
+        const fornecedor = String(data.get("fornecedor") ?? "").trim() || null;
+        const precoUnitario = parseCustoOpcional(data.get("precoUnitario"));
+
         if (!Number.isFinite(quantidade) || quantidade <= 0) {
           window.alert("Informe uma quantidade maior que zero.");
           return;
         }
-        const resultado = this.itensEstoque.registrarMovimento(itemEstoqueId, tipo, quantidade, projetoId, motivo, Date.now());
+        if (tipo === "SAIDA" && !projetoId) {
+          window.alert("Selecione o projeto — toda saída precisa estar vinculada a um projeto.");
+          return;
+        }
+        if (tipo === "ENTRADA" && (!fornecedor || precoUnitario === null || precoUnitario <= 0)) {
+          window.alert("Informe o fornecedor e o preço de compra (maior que zero) na entrada.");
+          return;
+        }
+
+        const resultado = this.itensEstoque.registrarMovimento(
+          { itemEstoqueId, tipo, quantidade, projetoId, motivo, fornecedor, precoUnitario },
+          Date.now(),
+        );
         if (!resultado) {
           window.alert("Saída maior que o estoque disponível — não é possível deixar a quantidade negativa.");
           return;
         }
         this.render();
       });
+    });
+
+    this.root.querySelectorAll<HTMLSelectElement>(".movimento-tipo-select").forEach((select) => {
+      select.addEventListener("change", () => toggleCamposMovimento(select));
+      toggleCamposMovimento(select);
     });
   }
 
@@ -784,19 +804,41 @@ function renderItemEstoque(item: ItemEstoque, projetos: Projeto[]): string {
     </div>
     <div class="card-projeto-meta muted">Mínimo: ${item.quantidadeMinima} ${escapeHtml(item.unidade)}${faltando ? " · abaixo do mínimo" : ""}</div>
     <form class="form-movimento-estoque" data-item-estoque-id="${item.id}">
-      <select name="tipo">
-        <option value="ENTRADA">Entrada</option>
+      <select name="tipo" class="movimento-tipo-select">
+        <option value="ENTRADA">Entrada (compra)</option>
         <option value="SAIDA">Saída</option>
       </select>
       <input name="quantidade" type="number" min="0.01" step="0.01" placeholder="Qtd." required />
-      <select name="projetoId">
-        <option value="">Sem projeto vinculado</option>
-        ${projetos.map((p) => `<option value="${p.id}">${escapeHtml(p.nome)}</option>`).join("")}
-      </select>
-      <input name="motivo" placeholder="Motivo (ex.: compra, uso na obra)" />
+      <span class="campo-entrada">
+        <input name="fornecedor" placeholder="Fornecedor" />
+      </span>
+      <span class="campo-entrada">
+        <input name="precoUnitario" type="number" min="0.01" step="0.01" placeholder="Preço unitário (R$)" />
+      </span>
+      <span class="campo-saida">
+        <select name="projetoId">
+          <option value="">Selecione o projeto</option>
+          ${projetos.map((p) => `<option value="${p.id}">${escapeHtml(p.nome)}</option>`).join("")}
+        </select>
+      </span>
+      <input name="motivo" placeholder="Motivo (opcional)" />
       <button type="submit" class="secondary-action">Registrar</button>
     </form>
   </li>`;
+}
+
+// CP006 - mostra fornecedor/preço só na ENTRADA (é uma compra) e o
+// seletor de projeto só na SAÍDA (obrigatório - Charles, 24/07/2026).
+function toggleCamposMovimento(select: HTMLSelectElement): void {
+  const form = select.closest("form");
+  if (!form) return;
+  const ehEntrada = select.value === "ENTRADA";
+  form.querySelectorAll<HTMLElement>(".campo-entrada").forEach((el) => {
+    el.style.display = ehEntrada ? "" : "none";
+  });
+  form.querySelectorAll<HTMLElement>(".campo-saida").forEach((el) => {
+    el.style.display = ehEntrada ? "none" : "";
+  });
 }
 
 function clampPercentual(raw: FormDataEntryValue | null): number {

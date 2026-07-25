@@ -238,8 +238,16 @@ maior que o estoque é bloqueada com alerta claro e **não altera nada**
 (confirmado via inspeção direta do DOM antes/depois), item aparece no
 painel de atenção quando abaixo do mínimo e some quando normaliza.
 
-**Fora de escopo deliberadamente**: fornecedor, pedido de compra
-formal, preço de compra (só quantidade); vínculo com
+**Revisão de escopo (Charles, 24/07/2026, mesmo dia)**: depois da
+primeira versão, Charles pediu 2 ajustes que já foram implementados —
+(1) `fornecedor` e `precoUnitario` em toda ENTRADA (é uma compra,
+precisa saber de quem e por quanto); (2) `projetoId` obrigatório em
+toda SAÍDA (antes era opcional). Saída continua sendo só rastreio —
+não desconta orçamento nem afeta o custo real fechado do CP005,
+confirmado explicitamente ("só rastreio").
+
+**Fora de escopo deliberadamente**: pedido de compra formal (só
+registra a compra já feita, não um fluxo de aprovação); vínculo com
 `ItemLevantamento`/BOM do projeto; múltiplos depósitos/localizações
 (um estoque só, global).
 

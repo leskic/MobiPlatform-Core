@@ -6,6 +6,8 @@ export interface NovoMovimentoEstoque {
   tipo: TipoMovimentoEstoque;
   quantidade: number;
   projetoId: string | null;
+  fornecedor: string | null;
+  precoUnitario: number | null;
   motivo: string;
 }
 
