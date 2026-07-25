@@ -81,4 +81,10 @@ export class ItemEstoqueRepository {
   listMovimentosPorItem(itemEstoqueId: string): MovimentoEstoque[] {
     return this.movimentos.listPorItem(itemEstoqueId);
   }
+
+  // CP007 - financeiro precisa de todas as compras (ENTRADA), nao por
+  // item especifico, pra calcular o fluxo de caixa.
+  listTodosMovimentos(): MovimentoEstoque[] {
+    return this.movimentos.list();
+  }
 }

@@ -1,11 +1,13 @@
 import { computeAtencao } from "./AtencaoEngine";
 import { ClienteRepository } from "./ClienteRepository";
+import { computeFluxoCaixa, custoTotalReal, formatarPeriodo, valorTotalVendido } from "./FinanceiroEngine";
 import type {
   CategoriaMudancaEscopo,
   Cliente,
   EtapaProducao,
   ItemEstoque,
   ItemLevantamento,
+  MovimentoEstoque,
   MudancaEscopo,
   Orcamento,
   OrigemLead,
@@ -114,6 +116,7 @@ export class App {
     const itensLevantamento = this.itensLevantamento.list();
     const mudancasEscopo = this.mudancasEscopo.list();
     const itensEstoque = this.itensEstoque.list();
+    const movimentosEstoque = this.itensEstoque.listTodosMovimentos();
     const agora = Date.now();
     const atencao = computeAtencao(projetos, agora, itensEstoque);
 
@@ -242,6 +245,7 @@ export class App {
         </div>
 
         ${renderEstoque(itensEstoque, projetos)}
+        ${renderFinanceiro(orcamentos, movimentosEstoque)}
       </div>
     `;
 
@@ -825,6 +829,49 @@ function renderItemEstoque(item: ItemEstoque, projetos: Projeto[]): string {
       <button type="submit" class="secondary-action">Registrar</button>
     </form>
   </li>`;
+}
+
+// CP007 - financeiro: vendido/custo só contam orçamento FECHADO
+// (fechadoEm != null - Charles, 24/07/2026), fluxo de caixa por mês.
+// Só relatório - sem formulário, o dado já vem do fechamento (CP005) e
+// do estoque (CP006).
+function renderFinanceiro(orcamentos: Orcamento[], movimentosEstoque: MovimentoEstoque[]): string {
+  const vendido = valorTotalVendido(orcamentos);
+  const custo = custoTotalReal(orcamentos);
+  const margem = vendido - custo;
+  const fluxo = computeFluxoCaixa(orcamentos, movimentosEstoque);
+
+  return `
+    <section class="painel" id="painel-financeiro">
+      <div class="painel-head">
+        <h2 class="section-title">Financeiro</h2>
+      </div>
+      <div class="financeiro-stats">
+        <div class="stat"><span class="stat-value stat-money">${moeda.format(vendido)}</span><span class="stat-label">vendido (projetos fechados)</span></div>
+        <div class="stat"><span class="stat-value stat-money">${moeda.format(custo)}</span><span class="stat-label">custo real</span></div>
+        <div class="stat stat-${margem >= 0 ? "ok" : "alert"}"><span class="stat-value stat-money">${moeda.format(margem)}</span><span class="stat-label">margem</span></div>
+      </div>
+      <p class="label">Fluxo de caixa por mês</p>
+      ${
+        fluxo.length === 0
+          ? '<p class="muted">Nenhum projeto fechado nem compra registrada ainda.</p>'
+          : `<table class="tabela-fluxo-caixa">
+              <thead><tr><th>Mês</th><th>Entradas</th><th>Saídas</th><th>Saldo</th></tr></thead>
+              <tbody>
+                ${fluxo
+                  .map(
+                    (ponto) => `<tr>
+                      <td>${formatarPeriodo(ponto.periodo)}</td>
+                      <td class="valor-positivo">${moeda.format(ponto.entradas)}</td>
+                      <td class="valor-negativo">${moeda.format(ponto.saidas)}</td>
+                      <td class="${ponto.saldo >= 0 ? "valor-positivo" : "valor-negativo"}">${moeda.format(ponto.saldo)}</td>
+                    </tr>`,
+                  )
+                  .join("")}
+              </tbody>
+            </table>`
+      }
+    </section>`;
 }
 
 // CP006 - mostra fornecedor/preço só na ENTRADA (é uma compra) e o

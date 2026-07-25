@@ -22,7 +22,7 @@ uma vez sem especificação real de cada parte.
 | CP004 | Produção: fila, etapas, responsável, prioridade | **Implementado — ver seção abaixo** |
 | CP005 | Fechamento do projeto: custo estimado x real, log de mudança de escopo | **Implementado — ver seção abaixo** |
 | CP006 | Compras e estoque: itens faltantes, entrada/saída | **Implementado — ver seção abaixo** |
-| CP007 | Financeiro: valor vendido, custos, fluxo de caixa | Não iniciado |
+| CP007 | Financeiro: valor vendido, custos, fluxo de caixa | **Implementado — ver seção abaixo** |
 | CP008 | Indicadores/KPIs: setor atrasando, ranking, tempo médio | Não iniciado |
 | CP009+ | Integrações externas (WhatsApp, ERP, ferramentas de corte, Power BI) e IA (perguntas em linguagem natural, sugestões) | Não iniciado — cada integração precisa de checkpoint próprio, credenciais e decisão de arquitetura separada |
 | CP00X | **Entrada de áudio + transcrição** (definido por Charles em 16/07): usuário fala sua visão do projeto ou uma atualização ("o que vai ter, o que vai sair"), sistema transcreve e pede confirmação se precisar validar dado. Depende de escolher serviço de voz→texto — decisão de arquitetura/custo, não iniciar sem definir isso primeiro. | Não iniciado |
@@ -250,6 +250,46 @@ confirmado explicitamente ("só rastreio").
 registra a compra já feita, não um fluxo de aprovação); vínculo com
 `ItemLevantamento`/BOM do projeto; múltiplos depósitos/localizações
 (um estoque só, global).
+
+## CP007 — Financeiro: valor vendido, custos, fluxo de caixa (implementado 2026-07-24)
+
+Reaproveita 100% dado que já existia — nenhum campo novo, só cálculo
+(`FinanceiroEngine.ts`, mesmo padrão de função pura do `AtencaoEngine.ts`).
+
+**3 decisões confirmadas com Charles antes de implementar** (evitar
+retrabalho, mesmo cuidado do CP006):
+
+1. **Vendido** = soma de `valorLiquido()` só dos orçamentos
+   **fechados** (`fechadoEm != null`, CP005) — não conta só por estar
+   Aprovado, precisa ter passado pelo fechamento real do projeto.
+2. **Custo real** = soma de `custoRealTotal` desses mesmos orçamentos
+   fechados. **Não soma compras de estoque de novo aqui** — evita
+   contar a mesma compra 2x, já que ela pode estar dentro do
+   `custoRealTotal` que o marceneiro registrou na hora de fechar.
+3. **Fluxo de caixa**, agrupado por mês: entrada = `valorLiquido()` no
+   mês do `fechadoEm` (mesmo evento do "vendido"); saída =
+   `quantidade × precoUnitario` de cada compra de estoque (`ENTRADA`)
+   no mês do seu `criadoEm`. Saldo do mês = entradas − saídas (não
+   cumulativo).
+
+Tela: 3 cards (Vendido / Custo real / Margem) + tabela do fluxo de
+caixa por mês. Só relatório — sem formulário, o dado já vem de
+Orçamento fechado (CP005) e Estoque (CP006).
+
+**Testado ao vivo no navegador** (fluxo completo, não só automatizado):
+criei cliente→projeto→orçamento de R$10.000 com 10% de desconto,
+aprovei, registrei fechamento com custo real R$4.000 — confirmei
+Vendido R$9.000, Custo R$4.000, Margem R$5.000, fluxo de caixa do mês
+com entrada R$9.000/saída R$0. Depois cadastrei item de estoque e
+registrei entrada de 4 chapas a R$300 — confirmei que a saída do fluxo
+subiu pra R$1.200 no mesmo mês (saldo R$7.800) **sem duplicar** no
+card de Custo real (continuou R$4.000, como esperado).
+
+**Fora de escopo deliberadamente**: saldo cumulativo ao longo do tempo
+(só por mês nesta fase); custos que não passam por `custoRealTotal`/
+estoque (despesas fixas da empresa fora de projeto — aluguel, salário
+fixo — não existe esse dado ainda); projeção de fluxo futuro (só
+histórico realizado); exportar relatório (PDF/Excel).
 
 **Padrão de uso confirmado com Charles (24/07/2026)**: ferragens (padrão
 da marcenaria — dobradiça, puxador, parafuso...) usam **1 item de
