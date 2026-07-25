@@ -21,7 +21,7 @@ uma vez sem especificação real de cada parte.
 | CP003b | Calculadora de preço a partir do custo real (matéria-prima + mão de obra + custo fixo + markup → sugestão de valor). **Implementado — versão simplificada, ver seção abaixo.** | **Implementado** |
 | CP004 | Produção: fila, etapas, responsável, prioridade | **Implementado — ver seção abaixo** |
 | CP005 | Fechamento do projeto: custo estimado x real, log de mudança de escopo | **Implementado — ver seção abaixo** |
-| CP006 | Compras e estoque: itens faltantes, entrada/saída | Não iniciado |
+| CP006 | Compras e estoque: itens faltantes, entrada/saída | **Implementado — ver seção abaixo** |
 | CP007 | Financeiro: valor vendido, custos, fluxo de caixa | Não iniciado |
 | CP008 | Indicadores/KPIs: setor atrasando, ranking, tempo médio | Não iniciado |
 | CP009+ | Integrações externas (WhatsApp, ERP, ferramentas de corte, Power BI) e IA (perguntas em linguagem natural, sugestões) | Não iniciado — cada integração precisa de checkpoint próprio, credenciais e decisão de arquitetura separada |
@@ -190,3 +190,55 @@ de visão futura). Este checkpoint só cria a estrutura de dado; a análise
 vem depois, quando existir volume. Também não existe ainda comparação de
 **prazo** (só custo) — `Projeto` não tem campo de prazo planejado, seria
 extensão de um checkpoint futuro.
+
+## CP006 — Compras e estoque: itens faltantes, entrada/saída (implementado 2026-07-24)
+
+Depois da homologação humana de CP001-CP005 (roteiro
+`03_MOBI_PLATFORM/testes/gestor_homologacao/ROTEIRO_TESTE_GESTOR.md`
+concluído por Charles), CP006 é o próximo item não iniciado do roadmap.
+
+**Decisão de escopo confirmada com Charles antes de implementar**:
+estoque é um domínio **próprio**, com quantidade mínima — não depende de
+estender `ItemLevantamento` (que hoje só guarda nome, sem quantidade;
+juntar os dois fica pra um checkpoint futuro se fizer sentido). "Itens
+faltantes" = itens com `quantidadeAtual` abaixo de `quantidadeMinima`.
+
+Dois conceitos novos em `GestorTypes.ts`:
+
+- **`ItemEstoque`** — `nome`, `unidade`, `quantidadeAtual` (sempre
+  começa em 0, só muda via movimento), `quantidadeMinima`.
+- **`MovimentoEstoque`** — log append-only de `ENTRADA`/`SAIDA`, com
+  `quantidade` sempre positiva (o `tipo` é quem dá o sinal),
+  `projetoId` opcional (saída pode ou não estar vinculada a um
+  projeto) e `motivo` livre.
+
+`ItemEstoqueRepository.registrarMovimento` orquestra os dois
+repositórios (item + movimento) numa única chamada: atualiza
+`quantidadeAtual` e grava o `MovimentoEstoque` juntos. Mesmo idioma de
+guarda já usado em `OrcamentoRepository.registrarFechamento` — a regra
+de negócio (aqui: "SAIDA não pode deixar quantidade negativa") vive
+inteira no predicado passado a `LocalStore.update()`; se não bate, `null`
+é devolvido e **nada muda**, nem o item nem o movimento é criado.
+
+`AtencaoEngine.computeAtencao` ganhou um terceiro parâmetro opcional
+(`itensEstoque`, default `[]` — mantém compatibilidade com as chamadas
+existentes) que adiciona um item de atenção `warning` por item abaixo do
+mínimo, reaproveitando o mesmo shape `ItemAtencao` (o campo `projetoId`
+carrega o id do `ItemEstoque` nesse caso — é uma lista única de
+atenção, não dois painéis separados).
+
+UI: nova seção "Compras e estoque" em `App.ts` (`renderEstoque`/
+`renderItemEstoque`), mesmo padrão de formulário+lista das outras
+seções — cadastro de item, e por item um mini-formulário de
+entrada/saída com quantidade, projeto opcional e motivo.
+
+**Testado manualmente no navegador** (não só testes automatizados):
+criar item, entrada soma corretamente, saída válida subtrai, saída
+maior que o estoque é bloqueada com alerta claro e **não altera nada**
+(confirmado via inspeção direta do DOM antes/depois), item aparece no
+painel de atenção quando abaixo do mínimo e some quando normaliza.
+
+**Fora de escopo deliberadamente**: fornecedor, pedido de compra
+formal, preço de compra (só quantidade); vínculo com
+`ItemLevantamento`/BOM do projeto; múltiplos depósitos/localizações
+(um estoque só, global).

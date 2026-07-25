@@ -153,6 +153,37 @@ export interface ComparativoFechamento {
   diferenca: number;
 }
 
+// CP006 - controle de estoque de materiais/ferragens, independente do
+// levantamento do projeto (ItemLevantamento hoje so tem nome, sem
+// quantidade - juntar os dois fica pra um checkpoint futuro se fizer
+// sentido). "Itens faltantes" = quantidadeAtual abaixo de
+// quantidadeMinima.
+export interface ItemEstoque {
+  id: string;
+  nome: string;
+  unidade: string;
+  quantidadeAtual: number;
+  quantidadeMinima: number;
+  criadoEm: number;
+  atualizadoEm: number;
+}
+
+export type NovoItemEstoque = Omit<ItemEstoque, "id" | "quantidadeAtual" | "criadoEm" | "atualizadoEm">;
+
+export type TipoMovimentoEstoque = "ENTRADA" | "SAIDA";
+
+export interface MovimentoEstoque {
+  id: string;
+  itemEstoqueId: string;
+  tipo: TipoMovimentoEstoque;
+  // Sempre positivo - o campo "tipo" acima e quem da o sinal (soma ou
+  // subtrai da quantidadeAtual do item).
+  quantidade: number;
+  projetoId: string | null;
+  motivo: string;
+  criadoEm: number;
+}
+
 export function compararFechamento(orcamento: Pick<Orcamento, "custoRealTotal" | "custoMateriaPrima" | "custoMaoDeObra" | "custoFixoRateado" | "valor">): ComparativoFechamento | null {
   if (orcamento.custoRealTotal === null) return null;
   const custoEstimado =

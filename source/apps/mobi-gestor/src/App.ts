@@ -4,6 +4,7 @@ import type {
   CategoriaMudancaEscopo,
   Cliente,
   EtapaProducao,
+  ItemEstoque,
   ItemLevantamento,
   MudancaEscopo,
   Orcamento,
@@ -12,9 +13,11 @@ import type {
   Projeto,
   StatusOrcamento,
   StatusProjeto,
+  TipoMovimentoEstoque,
 } from "./GestorTypes";
 import { compararFechamento, ETAPAS_PRODUCAO, precoVendaSugerido, valorLiquido } from "./GestorTypes";
 import type { ItemCandidato } from "./ItemCandidateHeuristic";
+import { ItemEstoqueRepository } from "./ItemEstoqueRepository";
 import { ItemLevantamentoRepository } from "./ItemLevantamentoRepository";
 import { MudancaEscopoRepository } from "./MudancaEscopoRepository";
 import { OrcamentoRepository } from "./OrcamentoRepository";
@@ -85,6 +88,7 @@ export class App {
   private readonly orcamentos: OrcamentoRepository;
   private readonly itensLevantamento: ItemLevantamentoRepository;
   private readonly mudancasEscopo: MudancaEscopoRepository;
+  private readonly itensEstoque: ItemEstoqueRepository;
   // Candidatos extraidos de um PDF, aguardando confirmacao do usuario.
   // Transiente de proposito - nao persiste, some se a pagina recarregar.
   private readonly candidatosPendentes = new Map<string, ItemCandidato[]>();
@@ -96,6 +100,7 @@ export class App {
     this.orcamentos = new OrcamentoRepository(window.localStorage);
     this.itensLevantamento = new ItemLevantamentoRepository(window.localStorage);
     this.mudancasEscopo = new MudancaEscopoRepository(window.localStorage);
+    this.itensEstoque = new ItemEstoqueRepository(window.localStorage);
   }
 
   mount(): void {
@@ -108,8 +113,9 @@ export class App {
     const orcamentos = this.orcamentos.list();
     const itensLevantamento = this.itensLevantamento.list();
     const mudancasEscopo = this.mudancasEscopo.list();
-    const atencao = computeAtencao(projetos, Date.now());
+    const itensEstoque = this.itensEstoque.list();
     const agora = Date.now();
+    const atencao = computeAtencao(projetos, agora, itensEstoque);
 
     const emNegociacao = orcamentos
       .filter((o) => o.status === "ABERTO" || o.status === "NEGOCIANDO")
@@ -234,6 +240,8 @@ export class App {
             </ul>
           </section>
         </div>
+
+        ${renderEstoque(itensEstoque, projetos)}
       </div>
     `;
 
@@ -447,6 +455,44 @@ export class App {
         const projetoId = button.dataset["projetoId"];
         if (!projetoId) return;
         this.candidatosPendentes.delete(projetoId);
+        this.render();
+      });
+    });
+
+    const formItemEstoque = this.root.querySelector<HTMLFormElement>("#form-item-estoque");
+    formItemEstoque?.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const data = new FormData(formItemEstoque);
+      const nome = String(data.get("nome") ?? "").trim();
+      const unidade = String(data.get("unidade") ?? "").trim();
+      const quantidadeMinima = Number(data.get("quantidadeMinima"));
+      if (!nome || !unidade || !Number.isFinite(quantidadeMinima) || quantidadeMinima < 0) {
+        window.alert("Preencha nome, unidade e uma quantidade mínima válida (0 ou mais).");
+        return;
+      }
+      this.itensEstoque.add({ nome, unidade, quantidadeMinima }, Date.now());
+      this.render();
+    });
+
+    this.root.querySelectorAll<HTMLFormElement>(".form-movimento-estoque").forEach((form) => {
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const itemEstoqueId = form.dataset["itemEstoqueId"];
+        if (!itemEstoqueId) return;
+        const data = new FormData(form);
+        const tipo = data.get("tipo") as TipoMovimentoEstoque;
+        const quantidade = Number(data.get("quantidade"));
+        const projetoId = String(data.get("projetoId") ?? "") || null;
+        const motivo = String(data.get("motivo") ?? "").trim();
+        if (!Number.isFinite(quantidade) || quantidade <= 0) {
+          window.alert("Informe uma quantidade maior que zero.");
+          return;
+        }
+        const resultado = this.itensEstoque.registrarMovimento(itemEstoqueId, tipo, quantidade, projetoId, motivo, Date.now());
+        if (!resultado) {
+          window.alert("Saída maior que o estoque disponível — não é possível deixar a quantidade negativa.");
+          return;
+        }
         this.render();
       });
     });
@@ -703,6 +749,54 @@ function renderFormOrcamento(projetoId: string): string {
       </details>
       <button type="submit">+ Orçamento</button>
     </form>`;
+}
+
+// CP006 - compras e estoque. Dominio proprio, independente de projeto
+// (ver ROADMAP.md) - "itens faltantes" e so quantidadeAtual abaixo de
+// quantidadeMinima, ja refletido no painel de atencao via AtencaoEngine.
+function renderEstoque(itens: ItemEstoque[], projetos: Projeto[]): string {
+  return `
+    <section class="painel" id="painel-estoque">
+      <div class="painel-head">
+        <h2 class="section-title">Compras e estoque</h2>
+        <span class="contagem">${itens.length}</span>
+      </div>
+      <form id="form-item-estoque" class="form">
+        <label class="field"><span>Nome do item</span><input name="nome" placeholder="Ex.: Dobradiça 35mm" required /></label>
+        <div class="field-row">
+          <label class="field"><span>Unidade</span><input name="unidade" placeholder="un, m, m², kg, chapa..." required /></label>
+          <label class="field"><span>Quantidade mínima</span><input name="quantidadeMinima" type="number" min="0" step="0.01" placeholder="0" required /></label>
+        </div>
+        <button type="submit" class="btn-primary">+ Adicionar item de estoque</button>
+      </form>
+      <ul class="lista">
+        ${itens.map((item) => renderItemEstoque(item, projetos)).join("") || '<li class="vazio">Nenhum item de estoque cadastrado ainda.</li>'}
+      </ul>
+    </section>`;
+}
+
+function renderItemEstoque(item: ItemEstoque, projetos: Projeto[]): string {
+  const faltando = item.quantidadeAtual < item.quantidadeMinima;
+  return `<li class="card-estoque ${faltando ? "card-estoque-faltando" : ""}">
+    <div class="card-projeto-top">
+      <b>${escapeHtml(item.nome)}</b>
+      <span class="badge ${faltando ? "badge-ATRASADO" : "badge-CONCLUIDO"}">${item.quantidadeAtual} ${escapeHtml(item.unidade)}</span>
+    </div>
+    <div class="card-projeto-meta muted">Mínimo: ${item.quantidadeMinima} ${escapeHtml(item.unidade)}${faltando ? " · abaixo do mínimo" : ""}</div>
+    <form class="form-movimento-estoque" data-item-estoque-id="${item.id}">
+      <select name="tipo">
+        <option value="ENTRADA">Entrada</option>
+        <option value="SAIDA">Saída</option>
+      </select>
+      <input name="quantidade" type="number" min="0.01" step="0.01" placeholder="Qtd." required />
+      <select name="projetoId">
+        <option value="">Sem projeto vinculado</option>
+        ${projetos.map((p) => `<option value="${p.id}">${escapeHtml(p.nome)}</option>`).join("")}
+      </select>
+      <input name="motivo" placeholder="Motivo (ex.: compra, uso na obra)" />
+      <button type="submit" class="secondary-action">Registrar</button>
+    </form>
+  </li>`;
 }
 
 function clampPercentual(raw: FormDataEntryValue | null): number {
