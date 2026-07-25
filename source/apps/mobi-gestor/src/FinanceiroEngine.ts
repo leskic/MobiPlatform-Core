@@ -1,26 +1,36 @@
 import { valorLiquido, type MovimentoEstoque, type Orcamento } from "./GestorTypes";
 
 // CP007 - financeiro: valor vendido, custo total, fluxo de caixa.
-// Decisoes confirmadas com Charles (24/07/2026):
+// Decisoes confirmadas com Charles (24/07/2026, revisadas no mesmo dia):
 // - "Vendido" so conta orcamento FECHADO (fechadoEm != null), nao so
 //   aprovado - e o mesmo evento que fecha o custo real (CP005).
-// - Custo total usa custoRealTotal do fechamento - NAO soma compras de
-//   estoque de novo aqui, pra nao contar a mesma compra 2x (pode ja
-//   estar dentro do custoRealTotal registrado no fechamento).
+// - Custo total = custoRealTotal do fechamento + compras de estoque
+//   (ENTRADA). Charles confirmou que o valor digitado no fechamento
+//   NAO inclui as compras de estoque - por isso soma os dois aqui, sem
+//   risco de duplicar (revisao da suposicao original, que assumia o
+//   contrario).
 // - Fluxo de caixa: entrada = valorLiquido no mes do fechadoEm; saida =
 //   quantidade*precoUnitario de cada MovimentoEstoque ENTRADA no mes do
-//   seu criadoEm. Saldo por mes, nao cumulativo (fora de escopo).
+//   seu criadoEm. Saldo por mes, nao cumulativo (Charles confirmou que
+//   nao precisa de acumulado por enquanto).
 
 function orcamentosFechados(orcamentos: readonly Orcamento[]): Orcamento[] {
   return orcamentos.filter((orcamento) => orcamento.fechadoEm !== null);
+}
+
+function custoComprasEstoque(movimentos: readonly MovimentoEstoque[]): number {
+  return movimentos
+    .filter((movimento) => movimento.tipo === "ENTRADA")
+    .reduce((soma, movimento) => soma + movimento.quantidade * (movimento.precoUnitario ?? 0), 0);
 }
 
 export function valorTotalVendido(orcamentos: readonly Orcamento[]): number {
   return orcamentosFechados(orcamentos).reduce((soma, orcamento) => soma + valorLiquido(orcamento), 0);
 }
 
-export function custoTotalReal(orcamentos: readonly Orcamento[]): number {
-  return orcamentosFechados(orcamentos).reduce((soma, orcamento) => soma + (orcamento.custoRealTotal ?? 0), 0);
+export function custoTotalReal(orcamentos: readonly Orcamento[], movimentos: readonly MovimentoEstoque[]): number {
+  const custoFechamentos = orcamentosFechados(orcamentos).reduce((soma, orcamento) => soma + (orcamento.custoRealTotal ?? 0), 0);
+  return custoFechamentos + custoComprasEstoque(movimentos);
 }
 
 export interface PontoFluxoCaixa {

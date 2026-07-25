@@ -67,12 +67,24 @@ describe("Mobi Gestor CP007 financeiro", () => {
     it("only counts custoRealTotal from closed budgets", () => {
       const fechado = orcamento({ custoRealTotal: 4000, fechadoEm: JAN_2026 });
       const aberto = orcamento({ custoRealTotal: null, fechadoEm: null });
-      expect(custoTotalReal([fechado, aberto])).toBe(4000);
+      expect(custoTotalReal([fechado, aberto], [])).toBe(4000);
     });
 
     it("treats a missing custoRealTotal on a closed budget as zero", () => {
       const fechadoSemCusto = orcamento({ custoRealTotal: null, fechadoEm: JAN_2026 });
-      expect(custoTotalReal([fechadoSemCusto])).toBe(0);
+      expect(custoTotalReal([fechadoSemCusto], [])).toBe(0);
+    });
+
+    it("adds stock purchases (ENTRADA) on top of custoRealTotal (Charles, 24/07: valor do fechamento não inclui compras de estoque)", () => {
+      const fechado = orcamento({ custoRealTotal: 4000, fechadoEm: JAN_2026 });
+      const compra = movimentoEntrada({ quantidade: 4, precoUnitario: 300 });
+      expect(custoTotalReal([fechado], [compra])).toBe(4000 + 1200);
+    });
+
+    it("ignores SAIDA movements when summing costs", () => {
+      const fechado = orcamento({ custoRealTotal: 4000, fechadoEm: JAN_2026 });
+      const saida = movimentoEntrada({ tipo: "SAIDA", precoUnitario: null, projetoId: "proj-1" });
+      expect(custoTotalReal([fechado], [saida])).toBe(4000);
     });
   });
 

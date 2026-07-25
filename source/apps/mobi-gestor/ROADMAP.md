@@ -291,6 +291,15 @@ estoque (despesas fixas da empresa fora de projeto — aluguel, salário
 fixo — não existe esse dado ainda); projeção de fluxo futuro (só
 histórico realizado); exportar relatório (PDF/Excel).
 
+**Revisão de escopo (Charles, 24/07/2026, mesmo dia)**: das 3
+suposições revisadas, uma estava errada — Charles confirmou que o
+valor digitado no fechamento do projeto **não inclui** as compras de
+estoque. `custoTotalReal` agora soma `custoRealTotal` (fechamentos) +
+compras de estoque (`ENTRADA`), sem risco de duplicar (são fontes
+diferentes de dado). As outras duas suposições ficaram confirmadas
+como estavam: vendido só conta fechado (não aprovado), e sem saldo
+cumulativo por enquanto.
+
 **Padrão de uso confirmado com Charles (24/07/2026)**: ferragens (padrão
 da marcenaria — dobradiça, puxador, parafuso...) usam **1 item de
 estoque compartilhado**, quantidade global — é assim que o CP006 já

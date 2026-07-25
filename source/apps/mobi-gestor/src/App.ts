@@ -837,7 +837,7 @@ function renderItemEstoque(item: ItemEstoque, projetos: Projeto[]): string {
 // do estoque (CP006).
 function renderFinanceiro(orcamentos: Orcamento[], movimentosEstoque: MovimentoEstoque[]): string {
   const vendido = valorTotalVendido(orcamentos);
-  const custo = custoTotalReal(orcamentos);
+  const custo = custoTotalReal(orcamentos, movimentosEstoque);
   const margem = vendido - custo;
   const fluxo = computeFluxoCaixa(orcamentos, movimentosEstoque);
 

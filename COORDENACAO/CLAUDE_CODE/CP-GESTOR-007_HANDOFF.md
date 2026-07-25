@@ -25,24 +25,23 @@ fluxo de caixa, fonte do custo pra não contar 2x) — decisões abaixo.
 - Nova seção "Financeiro" na UI: 3 cards + tabela do fluxo de caixa.
   Só leitura, sem formulário novo.
 
-## Suposições que PRECISAM da sua revisão
+## Suposições — todas revisadas com Charles (24/07/2026, mesmo dia)
 
-1. **"Vendido" só conta projeto fechado**, não aprovado — se você
-   queria ver o valor assim que aprova (antes de fechar), esse número
-   vai ficar menor/atrasado em relação ao que está em negociação (que
-   já aparece no topbar). Confirmar se faz sentido pro seu fluxo real.
-2. **Custo real não soma compras de estoque separadamente** — só usa o
-   número que você digita no fechamento do projeto (CP005). Se na
-   prática você não inclui as compras de estoque nesse número manual,
-   o "Custo real" do CP007 vai ficar subestimado. Vale confirmar como
-   você preenche o custo real hoje.
-3. **Sem saldo cumulativo** — cada mês mostra só o próprio saldo, não
-   o acumulado desde o início. Se precisar ver "quanto sobrou no total
-   até agora", é extensão pequena (soma progressiva), não implementada
-   ainda.
-4. Custos fora de projeto (aluguel, salário fixo da empresa) não
-   existem no sistema — o "Custo real" e o fluxo de caixa só refletem
-   o que passa por projeto/estoque.
+1. ~~"Vendido" só conta projeto fechado~~ — **confirmado, mantido como
+   estava**. Não conta na aprovação, só no fechamento formal.
+2. ~~Custo real não soma compras de estoque separadamente~~ —
+   **corrigido**: Charles confirmou que o valor digitado no fechamento
+   **não inclui** compras de estoque. `custoTotalReal(orcamentos,
+   movimentos)` agora soma os dois — `custoRealTotal` dos fechamentos +
+   `quantidade × precoUnitario` de toda compra (`ENTRADA`) registrada.
+   Testado ao vivo: R$4.000 (fechamento) + R$1.200 (compra) = R$5.200
+   no card de Custo Real (a leitura ao vivo mostrou o dobro porque o
+   `localStorage` tinha dado do teste anterior acumulado — matemática
+   conferida e bate: 2×4000 + 2×1200 = 10.400).
+3. ~~Sem saldo cumulativo~~ — **confirmado, mantido como estava**. Não
+   precisa por enquanto.
+4. Custos fora de projeto (aluguel, salário fixo da empresa) — não
+   revisado, segue fora de escopo como estava.
 
 ## Validação
 
