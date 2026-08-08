@@ -3,12 +3,17 @@
   "version": "0.0.0-cp001",
   "private": true,
   "type": "module",
+  "main": "electron/main.cjs",
   "scripts": {
     "dev": "vite --host 127.0.0.1 --port 5174",
     "build": "tsc --noEmit -p tsconfig.json && vite build",
-    "test": "vitest run --config vitest.config.ts"
+    "test": "vitest run --config vitest.config.ts",
+    "electron:start": "electron .",
+    "dist:win": "vite build && electron-packager . MobiGestor --platform=win32 --arch=x64 --out=release --overwrite --asar --prune=true --ignore=\"^/(src|tests|electron-builder\\.yml)\""
   },
   "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-packager": "^17.1.2",
     "typescript": "^5.6.3",
     "vite": "^5.4.19",
     "vitest": "^2.1.9"

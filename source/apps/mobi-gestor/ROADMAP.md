@@ -386,3 +386,44 @@ PNG.
   instalar na barra de endereço (ou menu ⋮ → "Instalar Mobi Gestor…").
 - **Mac (Chrome)**: mesmo menu. **Mac (Safari)**: "Arquivo → Adicionar
   ao Dock".
+
+## Empacotado como .exe (Electron) (07/08/2026)
+
+Charles pediu especificamente um `.exe` — programa nativo, sem
+depender de instalar pelo navegador. Escolhido **Electron**: mesmo
+código do Gestor (client-side, `localStorage`), rodando dentro de uma
+janela nativa em vez de uma aba de navegador.
+
+**Arquitetura**: `electron/main.cjs` sobe um servidor HTTP estático
+local (módulo `http` nativo do Node, sem dependência nova) servindo a
+pasta `dist/` já buildada pelo Vite, e abre a `BrowserWindow` apontando
+pra essa URL local (`http://127.0.0.1:<porta>`) — evita os problemas de
+caminho absoluto e registro de service worker que `file://` causaria.
+
+**Ferramenta de empacotamento — mudança de plano**: o plano original
+usava `electron-builder`, mas ele tenta baixar e extrair o pacote
+`winCodeSign` (ferramenta de assinatura de código do **macOS**) mesmo
+pra build só de Windows, e a extração falha nesta máquina porque criar
+link simbólico exige um privilégio que a conta atual não tem
+(`SeCreateSymbolicLinkPrivilege` — normalmente requer Modo
+Desenvolvedor ativado ou terminal como Administrador). Como isso não
+tinha relação nenhuma com o `.exe` de Windows em si, troquei pra
+**`electron-packager`**: mais simples, não faz assinatura de código,
+só empacota o Electron + o app numa pasta com o `.exe` dentro.
+Resultado idêntico pro usuário final.
+
+Script: `npm run dist:win` (builda o Vite e empacota). Gera
+`release/MobiGestor-win32-x64/MobiGestor.exe` (~344MB, inclui o
+runtime Chromium/Electron completo — normal pra esse tipo de
+empacotamento). Testado: o executável sobe os processos do Electron
+sem crashar (confirmado via `tasklist`); abrir a janela e navegar
+visualmente só o Charles pode confirmar nesta máquina.
+
+**Fora de escopo deliberadamente**: ícone customizado do `.exe` (fica
+o ícone padrão do Electron — gerar um `.ico` de qualidade a partir do
+`public/icons/icon.svg` exige um conversor raster que não está
+disponível nesta sessão); build `.dmg` pra Mac (pedido foi
+especificamente o `.exe`; o mesmo `electron/main.cjs` funciona rodando
+`electron-packager . MobiGestor --platform=darwin` numa máquina Mac,
+quando for a vez); auto-update (nova versão = gerar e reenviar um novo
+`.exe` manualmente).
